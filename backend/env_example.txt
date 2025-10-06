@@ -1,8 +1,0 @@
-# Database connection details
-# Copy this file and rename it to .env
-
-DB_HOST=apiict00.etsii.upm.es
-DB_USER=lectura
-DB_PASSWORD=ncorrea#2022
-DB_NAME=lectura
-
