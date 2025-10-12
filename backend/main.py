@@ -2,8 +2,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 
-# Create our API application
-# Think of this as creating a new website/service
+# Create our API application (as creating a new website/service)
 app = FastAPI(title="Variable Monitoring API")
 
 # Allow our React frontend to talk to this backend
