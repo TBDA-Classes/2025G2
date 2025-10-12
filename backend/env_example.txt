@@ -1,8 +1,9 @@
 # Database Configuration
 # Copy this file to .env and fill in the actual values from our professors presentation.
 
-DB_USER=your_username_here
-DB_PASSWORD=your_password_here
-DB_HOST=localhost
-DB_NAME=your_database_name_here
-DB_PORT=5432
+
+DB_HOST = host #use the correct port, see the phppgadmin panel
+DB_USER = username_here
+DB_PASSWORD = password_here
+DB_PORT = port #non-standard
+DB_NAME = database_name_here

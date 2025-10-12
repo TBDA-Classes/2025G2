@@ -1,6 +1,8 @@
 # Import the libraries we need
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from database import engine
+from database import text
 
 # Create our API application (as creating a new website/service)
 app = FastAPI(title="Variable Monitoring API")
@@ -25,5 +27,12 @@ def home():
 # Test endpoint to check database connection
 @app.get("/api/status")
 def status():
-    return {"status": "API is running", "database": "Not connected yet"}
+    try:
+        with engine.connect() as connection:
+            # Simply gives us the version information of POSTgreSQL
+            result = connection.execute(text("SELECT version()"))
+            version = result.fetchone()
+            return {"status": "API is running", "database": "Connected", "version": str(version)}
+    except Exception as e:
+        return {"status": "API is running", "database": f"Connection failed: {str(e)}"}
 

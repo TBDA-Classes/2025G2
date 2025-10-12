@@ -7,7 +7,7 @@ from dotenv import load_dotenv
 
 
 load_dotenv()
-   
+
 # Get each credential
 db_user = os.getenv("DB_USER")
 db_password = os.getenv("DB_PASSWORD")
