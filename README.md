@@ -7,6 +7,22 @@ The aim is to support operators and engineers by providing information on machin
 
 ---
 
+## Team Members & Roles
+
+| Name | Role / Responsibility |
+|------|------------------------|
+| Andres Janeiro Villar | Data Analysis|
+| Javier Pajares Camacho | Data Analysis|
+| Mayssa El Jamil | Data Analysis|
+| Atle Sund | Frontend / Backend|
+| Basile David | Frontend / Backend|
+| Erik Alexander Standal | Frontend / Backend|
+| Chorouk El Bouch | UI / UX|
+| Clemence Tardivel | UI / UX|
+| Jovan Bajcetic Maquieira | UI / UX, Scrum Master|
+
+---
+
 ## Business Case
 To analyze information collected by the numerical control and stored in high frequency, and to provide clear and understandable hints for human users.
 
