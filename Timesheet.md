@@ -35,7 +35,7 @@ This file is used by all team members to record their working hours and activiti
 | Name | Role | Activity | Description | Date | Working Hours |
 |------|------|-----------|--------------|------|----------------|
 | Jovan Bajcetic | UI/UX + Scrum master | Meeting with client and PO | Meeting with the client to see requirements related to UI/UX and data + Resolution of some doubts about the project with the PO | 2025-10-09 | 1 |
-
+| Javier Pajares | Data Analyst | Meeting with client and PO | Meeting with the client to see requirements related to UI/UX and data + Resolution of some doubts about the project with the PO | 2025-10-09 | 1 |
 ---
 
  *Tip:*  
