@@ -45,8 +45,6 @@ Example:
 
 ---
 
- **Now everyone can edit this file directly from GitHub!**
-Each commit will show who added what, so the log remains collaborative and transparent.
 
 
 
