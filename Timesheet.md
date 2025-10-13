@@ -1,10 +1,10 @@
-# 🕓 Team Timesheet
+# Team Timesheet
 
 This file is used by all team members to record their working hours and activities.
 
 ---
 
-## 🧭 How to add a new activity
+## How to add a new activity
 
 1. Scroll down to the **Activity Log Table** below.  
 2. Add a **new row at the bottom of the table** following the same format.  
@@ -14,7 +14,7 @@ This file is used by all team members to record their working hours and activiti
 
 ---
 
-## 📋 Column definitions
+## Column definitions
 
 | Column | Description |
 |--------|--------------|
@@ -27,9 +27,9 @@ This file is used by all team members to record their working hours and activiti
 
 ---
 
-## 📊 Activity Log Table (editable)
+## Activity Log Table (editable)
 
-> ✏️ **Instructions:** Add your new record as a new line below the header row,  
+> **Instructions:** Add your new record as a new line below the header row,  
 > keeping the `|` separators and the same order of columns.
 
 | Name | Role | Activity | Description | Date | Working Hours |
@@ -38,14 +38,14 @@ This file is used by all team members to record their working hours and activiti
 
 ---
 
-💡 *Tip:*  
+ *Tip:*  
 If the text in “Description” is long, you can use line breaks (`<br>`) to keep it readable.  
 Example:  
 `Reviewed UI screens<br>Created wireframes for dashboard`
 
 ---
 
-✅ **Now everyone can edit this file directly from GitHub!**
+ **Now everyone can edit this file directly from GitHub!**
 Each commit will show who added what, so the log remains collaborative and transparent.
 
 
