@@ -5,7 +5,7 @@ Here is a quick tour to set up the application on your device.
 ## What We're Building
 A web application with:
 - **Backend (FastAPI)**: Python server that talks to the PostgreSQL database
-- **Frontend (React)**: User interface that runs in the browser
+- **Frontend (Next.js - React)**: User interface that runs in the browser
 
 ---
 
