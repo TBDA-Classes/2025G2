@@ -28,7 +28,7 @@ To analyze information collected by the numerical control and stored in high fre
 
 ---
 
-## Needs
+## Project Needs
 - Identify operation periods of the machine  
 - Create a user interface to facilitate interaction  
 - Determine when the machine is working  
@@ -55,6 +55,12 @@ We will follow an **iterative approach using Scrum with weekly sprints**. The de
 - **Further iterations:** add energy calculations per program, contextualized alerts and improved visualizations.
 - **Continuous improvement:** refine the UI, extend backend endpoints, and ensure scalability so the solution can resemble a real-world system.  
 
+**Scrum / Sprint Board:**
+[Open Microsoft Planner Board](https://planner.cloud.microsoft/webui/plan/CvHDhx-jAUGVX_BxlIv045cAC1Zn/view/board?tid=6afea85d-c323-4270-b69d-a4fb3927c254)  
+
+If the link does not open directly, copy and paste this URL below into your browser or reach out to the team:  
+`https://planner.cloud.microsoft/webui/plan/CvHDhx-jAUGVX_BxlIv045cAC1Zn/view/board?tid=6afea85d-c323-4270-b69d-a4fb3927c254`
+
 ---
 
 ## Structure (draft)
@@ -64,3 +70,14 @@ We will follow an **iterative approach using Scrum with weekly sprints**. The de
 ├── frontend/       # React app
 ├── docs/           # Documentation & approach
 └── README.md
+```
+
+---
+
+## Documentation
+The **documentation/** folder contains:
+
+- `Timesheet.md` → used by team members to log their working hours  
+- Additional documentation files
+
+As of now, the detailed documentation for the **frontend** and **backend** will be determined later, since it may be integrated directly with the respective technologies (FastAPI or React). Updates will be added here as the project structure evolves.
