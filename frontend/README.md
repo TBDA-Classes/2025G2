@@ -1,6 +1,6 @@
 # Frontend Setup Guide
 
-This is a [Next.js](https://nextjs.org) dashboard for monitoring CNC machine data.
+This is a [Next.js](https://nextjs.org) dashboard for monitoring numerical machine data.
 
 ---
 
