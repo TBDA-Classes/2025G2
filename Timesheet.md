@@ -34,8 +34,12 @@ This file is used by all team members to record their working hours and activiti
 
 | Name | Role | Activity | Description | Date | Working Hours |
 |------|------|-----------|--------------|------|----------------|
+| Atle Sund | Frontend/Backend | Setup Backend | Set up a simple backend project in FastAPI | 2025-10-06 | 1 |
 | Jovan Bajcetic | UI/UX + Scrum master | Meeting with client and PO | Meeting with the client to see requirements related to UI/UX and data + Resolution of some doubts about the project with the PO | 2025-10-09 | 1 |
 | Javier Pajares | Data Analyst | Meeting with client and PO | Meeting with the client to see requirements related to UI/UX and data + Resolution of some doubts about the project with the PO | 2025-10-09 | 1 |
+| Atle Sund | Frontend/Backend | Setup Backend | Successfully connected to the PostgreSQL DB and created an endpoint for the frontend to access | 2025-10-12 | 1 |
+| Atle Sund | Frontend/Backend | Setup Frontend and connect to Backend | Created a frontend project in Next.js and connected to an existing GET endpoint in the backend. The data was retrieved successfully and shown in localhost | 2025-10-12 | 1.5 |
+
 ---
 
  *Tip:*  
