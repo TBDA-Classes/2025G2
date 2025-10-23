@@ -1,0 +1,119 @@
+---
+title: "SQL Queries for Data Analysis"
+author: "Data analysis team"
+output: html_document
+---
+
+# Clarification: The dates used for the queries can be changed depending on the needs,
+# these are just reference dates to have usable queries
+
+
+##### PERIOD IDENTIFYING QUERIES #####
+
+### Query for identifying NaNs in time intervals
+
+WITH base_data AS (
+    SELECT 
+        to_timestamp(ROUND((TRUNC(CAST(a.date AS bigint)/1000) / 30))*30) AS dt
+    FROM pu0blic.variable_log_float a
+    JOIN variable b ON a.id_var = b.id
+    WHERE b.name = 'TEMPERATURA_BASE' AND a.value::text = 'NaN'
+),
+
+grouped AS (
+    SELECT 
+        dt,
+        dt - INTERVAL '30 seconds' * ROW_NUMBER() OVER (ORDER BY dt) AS grp
+    FROM base_data
+),
+
+downtime_periods_raw AS (
+    SELECT 
+        MIN(dt) AS start_time,
+        MAX(dt) + INTERVAL '30 seconds' AS end_time
+    FROM grouped
+    GROUP BY grp
+)
+
+SELECT 
+    start_time,
+    end_time,
+    end_time - start_time AS duration,
+    EXTRACT(EPOCH FROM (end_time - start_time)) / 60 AS duration_minutes
+FROM downtime_periods_raw
+ORDER BY start_time;
+
+##### ALARM IDENTIFYING QUERIES #####
+
+
+
+
+
+##### QUERIES TO EXTRACT DATA #####
+
+### Query to unite float and string data
+
+SELECT 
+    a.id_var,
+    b.name,
+    to_timestamp(ROUND((TRUNC(CAST(a.date AS bigint)/1000) / 30))*30) AS dt,
+    a.value::text AS value
+FROM "public"."variable_log_float" a
+JOIN variable b 
+    ON a.id_var = b.id
+
+WHERE to_timestamp(ROUND((TRUNC(CAST(a.date AS bigint)/1000) / 30))*30) >= '2022-02-23 13:39:30+01'
+  AND to_timestamp(ROUND((TRUNC(CAST(a.date AS bigint)/1000) / 30))*30) < '2022-02-23 15:00:00+01'
+
+UNION ALL
+
+SELECT 
+    a.id_var,
+    b.name,
+    to_timestamp(ROUND((TRUNC(CAST(a.date AS bigint)/1000) / 30))*30) AS dt,
+    a.value::text AS value
+FROM "public"."variable_log_string" a
+JOIN variable b 
+    ON a.id_var = b.id
+
+WHERE to_timestamp(ROUND((TRUNC(CAST(a.date AS bigint)/1000) / 30))*30) >= '2022-02-23 13:39:30+01'
+  AND to_timestamp(ROUND((TRUNC(CAST(a.date AS bigint)/1000) / 30))*30) < '2022-02-23 15:00:00+01'
+
+ORDER BY dt, name;
+
+### Query to count the amount of variables that change during a time period (in this case, every hour)
+
+SELECT count(distinct(id_var)) ,to_timestamp(ROUND((TRUNC(CAST(date as bigint)/1000) / 3600))*3600) 
+as dt FROM "public"."variable_log_float" 
+WHERE to_timestamp(TRUNC(CAST(date as bigint)/1000)) >= '2020-12-28 00:00:00+01' 
+and to_timestamp(TRUNC(CAST(date as bigint)/1000)) < '2021-01-10 06:00:00+01'
+group by dt
+
+### Query to identify the minimum and maximum date present in the database
+
+SELECT to_timestamp(cast(min(date) as bigint)/ 1000) AS min_date, 
+to_timestamp(cast(max(date) as bigint)/ 1000) AS max_date 
+FROM "public"."variable_log_string";
+
+### Query for details of the values captured for every variable in a given timeframe (for string or float data)
+
+SELECT 
+    a.id_var,
+    b.name,
+    to_timestamp(ROUND((TRUNC(CAST(a.date as bigint)/1000) / 30))*30) as dt,
+    a.value
+FROM "public"."variable_log_float" a
+JOIN variable b 
+    ON a.id_var = b.id
+WHERE to_timestamp(ROUND((TRUNC(CAST(a.date as bigint)/1000) / 30))*30) >= '2021-01-04 13:39:30+01'
+  AND to_timestamp(ROUND((TRUNC(CAST(a.date as bigint)/1000) / 30))*30) < '2021-01-04 22:00:00+01'
+ORDER BY dt;
+
+
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(DBI)
+library(RPostgres)
