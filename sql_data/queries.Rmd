@@ -20,6 +20,7 @@ WITH horas AS (
       interval '1 hour'
     ) AS dt
   ) sub
+  WHERE EXTRACT(DOW FROM dt) NOT IN (0,6)
 ),
 cambios_por_hora AS (
   SELECT 
@@ -32,9 +33,10 @@ cambios_por_hora AS (
 )
 SELECT
   h.dt,
-  TO_CHAR(h.dt, 'Day') AS dia_semana,
+  TO_CHAR(h.dt, 'FMDay') AS dia_semana,
   COALESCE(c.total_variables, 0) AS total_variables,
   CASE 
+    WHEN COALESCE(c.total_variables, 0) = 0 THEN 'Máquina parada'
     WHEN COALESCE(c.total_variables, 0) < 30 THEN 'Parada probable'
     WHEN COALESCE(c.total_variables, 0) BETWEEN 30 AND 80 THEN 'Actividad media'
     ELSE 'Máquina en operación'
