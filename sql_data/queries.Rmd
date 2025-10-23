@@ -50,7 +50,7 @@ ORDER BY h.dt;
 WITH base_data AS (
     SELECT 
         to_timestamp(ROUND((TRUNC(CAST(a.date AS bigint)/1000) / 30))*30) AS dt
-    FROM pu0blic.variable_log_float a
+    FROM public.variable_log_float a
     JOIN variable b ON a.id_var = b.id
     WHERE b.name = 'TEMPERATURA_BASE' AND a.value::text = 'NaN'
 ),
