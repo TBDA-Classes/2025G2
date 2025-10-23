@@ -78,6 +78,65 @@ SELECT
 FROM downtime_periods_raw
 ORDER BY start_time;
 
+
+### Query for identifying the variables that have registered NaNs
+
+WITH base_data AS (
+    SELECT 
+        id_var,
+        to_timestamp(ROUND((TRUNC(CAST(a.date AS bigint)/1000) / 30))*30) AS dt
+    FROM public.variable_log_float a
+    WHERE a.value::text = 'NaN'
+),
+
+grouped AS (
+    SELECT 
+        id_var,
+        dt,
+        dt - INTERVAL '30 seconds' * ROW_NUMBER() OVER (ORDER BY dt) AS grp
+    FROM base_data
+),
+
+downtime_periods_raw AS (
+    SELECT 
+        grp,
+        MIN(dt) AS start_time,
+        MAX(dt) + INTERVAL '30 seconds' AS end_time
+    FROM grouped
+    GROUP BY grp
+),
+
+variables_por_periodo AS (
+    SELECT 
+        d.start_time,
+        d.end_time,
+        d.end_time - d.start_time AS duration,
+        EXTRACT(EPOCH FROM (d.end_time - d.start_time)) / 60 AS duration_minutes,
+        array_agg(DISTINCT v.id_var) AS variables_nan
+    FROM downtime_periods_raw d
+    JOIN grouped v
+      ON v.dt BETWEEN d.start_time AND d.end_time
+      AND v.grp = d.grp
+    GROUP BY d.start_time, d.end_time
+)
+
+SELECT
+    vpp.start_time,
+    vpp.end_time,
+    vpp.duration,
+    vpp.duration_minutes,
+    vpp.variables_nan,
+    -- Aquí obtenemos los nombres de variables usando un subquery
+    (
+      SELECT array_agg(DISTINCT var.name)
+      FROM variable var
+      WHERE var.id = ANY(vpp.variables_nan)
+    ) AS nombres_variables
+FROM variables_por_periodo vpp
+ORDER BY vpp.start_time;
+
+
+
 ##### ALARM IDENTIFYING QUERIES #####
 
 ### Query to identify the different types of alarms
