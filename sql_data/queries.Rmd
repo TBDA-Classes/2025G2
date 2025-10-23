@@ -45,7 +45,17 @@ ORDER BY start_time;
 
 ##### ALARM IDENTIFYING QUERIES #####
 
+### Query to identify the different types of alarms
 
+SELECT DISTINCT
+    TRIM(jsonb_array_elements(value::jsonb)->>1) AS descripcion_alarma
+FROM variable_log_string a
+JOIN variable b ON a.id_var = b.id
+WHERE b.name = 'ALARMS'
+  AND value IS NOT NULL
+  AND value LIKE '[%'
+  AND value LIKE '%]'
+ORDER BY descripcion_alarma;
 
 
 
