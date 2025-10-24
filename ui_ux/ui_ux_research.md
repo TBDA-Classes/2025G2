@@ -565,7 +565,6 @@ Each component includes a representative image example and a link to its origina
   ![Audit trail example](https://cdn.dribbble.com/userupload/10518883/file/original-36d0590f3b37b5f6bb9e3a0db13fa0c8.png)  
   _Source: Dribbble – “Activity Log Dashboard.”_
 
----
 
 
 ---
