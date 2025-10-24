@@ -170,8 +170,6 @@ Manufacturing dashboards are often viewed on diverse hardware (HMI panels, table
 - **Job/Program panel** (program name, count, cycle time, remaining).
 
 **Examples & references**
-- **MachineMetrics – real‑time dashboards & alerts** (status color coding, notifications).  
-  <https://www.machinemetrics.com/machine-monitoring>
 
 - **FANUC MT‑LINKi** (monitoring many CNCs; dashboards of utilization, cycle time, alarms).  
   Brochure (PDF): <https://www.fanucamerica.com/docs/default-source/cnc-files/brochures/mt-linki%28e%29-01.pdf>  
@@ -450,10 +448,10 @@ Traceability is critical in regulated and data-driven environments. The `AuditTr
 - **Asseco Spain** – MES/MOM & dashboards in production control (Spanish article).  
   <https://assecospaingroup.es/noticias/details/sistemas-mes-y-mom-de-control-digital-de-produccion-industrial-462/>
 
-- **Tulip (ES)** – dashboards de fabricación y orígenes de datos típicos.  
+- **Tulip (ES)** – manufacturing dashboards and typical data sources.  
   <https://tulip.co/es/blog/6-manufacturing-dashboards-for-visualizing-production/>
 
-- **SCADA academic example (ES)** – diseño de interfaz para línea automatizada (PDF).  
+- **SCADA academic example (ES)** – interface design for automated production line (PDF).  
   <https://www.dspace.espol.edu.ec/bitstream/123456789/54280/1/T-112156%20CORELLA%20ZAMORA-REYES%20ANGUISACA.pdf>
 
 ---
