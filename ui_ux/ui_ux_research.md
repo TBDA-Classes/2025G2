@@ -1,16 +1,16 @@
 # UI/UX Research: Interfaces for NC Machine Operations
 
-This document compiles a survey of user interfaces, dashboards, and interaction patterns relevant to a system that analyzes high‑frequency data from **Numerical Control (NC) machines** and transforms it into actionable insights. The research focuses on visual and interactive solutions that help operators and engineers understand **machine operation**, **energy usage**, **timing per program**, and **alerts**, with examples from different sources.
+This document compiles a survey of user interfaces, dashboards, and interaction patterns relevant to a system that analyzes high‑frequency data from **Numerical Control (NC) machines** and transforms it into actionable insights. The research focuses on visual and interactive solutions that help operators and engineers understand **machine operation**, **energy usage**, **timing per program**, and **alerts**, with examples from different sources. The purpose of this research is also to give to the frontend developers some ideas and insights on how the team can approach the design of the UI/UX.
 
 The structure follows the project’s needs and proposes concrete UI components for each one, with references and example visuals.
 
 ---
 
 ## 1) Identification of operation periods
-**Goal:** Clearly show periods of **RUN / IDLE / DOWN** and transitions over time.
-**RUN** → the machine is actively working (executing a program, cutting, milling, etc.).
-**IDLE** → the machine is powered on but not performing productive work (waiting, setup, no command).
-**DOWN** → the machine is stopped due to an error, maintenance, or shutdown
+- **Goal:** Clearly show periods of **RUN / IDLE / DOWN** and transitions over time.
+- **RUN** → the machine is actively working (executing a program, cutting, milling, etc.).
+- **IDLE** → the machine is powered on but not performing productive work (waiting, setup, no command).
+- **DOWN** → the machine is stopped due to an error, maintenance, or shutdown
 
 **UI patterns & components**
 - **State timeline / band chart** (stacked color bands per machine state).
@@ -23,7 +23,7 @@ The structure follows the project’s needs and proposes concrete UI components 
 - Operators can instantly read *when* and *how long* a machine ran, idled, or stopped and correlate with shifts and programs.
 - Pairing the timeline with a **Pareto of downtime reasons** supports root‑cause analysis.
 
-**Example**
+**Examples**
 - **MachineMetrics – “Current Shift Dashboard”** (real‑time factory dashboards with color‑coded status and OEE context).  
   ![MachineMetrics current shift dashboard](https://www.machinemetrics.com/hubfs/current-shift-dashboard.png)  
   _Source: MachineMetrics, “CNC Machine Monitoring Software.”_  
@@ -37,6 +37,57 @@ The structure follows the project’s needs and proposes concrete UI components 
 - `MachineStateTimeline` (bands for RUN/IDLE/ALARM, hover tooltips, shift shading).
 - `DowntimePareto` (top N reasons; clickable to filter timeline).
 - `UtilizationSummaryCard` (RUN %, planned vs. actual).
+
+### Component Details
+
+#### **1. `MachineStateTimeline`**
+
+**Description:**  
+A timeline visualization that displays each machine’s activity across time, using colored bands to represent operational states such as RUN, IDLE, and ALARM. It allows users to instantly interpret how the machine’s condition changes during the day or across shifts.
+
+**Features:**  
+- Bands for **RUN / IDLE / ALARM** states with distinct color coding.  
+- **Hover tooltips** showing details such as timestamps, duration, and cause of state changes.  
+- **Shift shading** to visually differentiate work shifts or production periods.  
+- Supports **zooming and panning** for detailed inspection of specific time windows.  
+- Optional **real-time refresh** to update ongoing operations.
+
+**Why it matters:**  
+This visualization makes it easy for operators and engineers to identify when and for how long the machine was running, idle, or down. It provides immediate situational awareness, helps correlate events with production schedules, and supports decision-making for efficiency improvements.
+
+---
+
+#### **2. `DowntimePareto`**
+
+**Description:**  
+A Pareto chart that highlights the most frequent or impactful causes of machine downtime. It organizes downtime categories (e.g., maintenance, tool change, material shortage) by frequency or duration to reveal the dominant factors affecting productivity.
+
+**Features:**  
+- Displays the **top N downtime reasons** sorted by impact.  
+- **Interactive filtering**—clicking on a downtime reason filters the timeline to highlight the corresponding events.  
+- **Tooltips** showing cumulative percentages and occurrence counts.  
+- Can switch between **duration-based** and **frequency-based** ranking.  
+- Optional **export** or **drill-down** to view detailed event logs.
+
+**Why it matters:**  
+By visualizing which issues cause the most downtime, teams can prioritize corrective actions and maintenance planning. Connecting it with the timeline view helps users link root causes to specific time periods, making the analysis both quantitative and contextual.
+
+---
+
+#### **3. `UtilizationSummaryCard`**
+
+**Description:**  
+A compact KPI component that summarizes machine utilization over a selected time window. It shows the percentage of time spent in each operational state and compares planned vs. actual utilization.
+
+**Features:**  
+- Displays **RUN %**, **IDLE %**, and **DOWN %** in numeric or gauge form.  
+- Highlights **planned vs. actual** utilization for performance tracking.  
+- Supports **color coding** (green/yellow/red) for performance thresholds.  
+- Can include **mini-trend sparkline** to show utilization evolution over time.  
+- Responsive layout suitable for dashboards, tablets, or mobile screens.
+
+**Why it matters:**  
+This card offers a concise snapshot of performance for quick daily or shift reviews. It supports supervisors and operators by providing an at-a-glance understanding of machine effectiveness, helping to identify deviations and confirm improvements after interventions.
 
 ---
 
