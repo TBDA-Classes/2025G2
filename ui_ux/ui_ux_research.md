@@ -460,111 +460,84 @@ Traceability is critical in regulated and data-driven environments. The `AuditTr
 
 ## Summary of recommended UI component library (for implementation)
 
-Below is an overview of the key UI components recommended for implementation, grouped by functionality area.  
-Each component includes a representative image example and a link to its original source for reference.
+Below is a summary of the main UI components identified through research. Each component includes a link to a page where the team can view **visual examples, dashboards, or official documentation** showing similar designs or patterns.
 
 ---
 
-###  **Global Navigation**
-
-- **`AppShell`** — overall application layout, including header, sidebar, and breadcrumb navigation (Line → Cell → Machine).  
-  ![Dashboard layout shell example](https://miro.medium.com/v2/resize:fit:1400/1*fT2r2A4OAjr2z0uvhsp0MA.png)  
-  _Source: “Building dashboards with navigation in React” (Medium)._  
-  <https://medium.com/>
+###  Global Navigation
+- **`AppShell`** — overall layout: header, sidebar, and breadcrumb navigation (Line → Cell → Machine).  
+  🔗 Example: Material UI App Bar & Drawer — [https://mui.com/material-ui/react-app-bar/](https://mui.com/material-ui/react-app-bar/)  
+  🔗 Breadcrumbs examples — [https://mui.com/material-ui/react-breadcrumbs/](https://mui.com/material-ui/react-breadcrumbs/)
 
 ---
 
-###  **Overview Dashboard**
-
+###  Overview Dashboard
 - **`KPIBar`** — top-level metrics such as OEE, Availability, Performance, and Quality.  
-  ![KPI bar example](https://grafana.com/api/dashboards/14500/images/11716/image)  
-  _Source: Grafana Labs – “KPI Dashboard Template.”_  
-  <https://grafana.com/grafana/dashboards/14500/>
+  🔗 Grafana KPI Dashboard Template — [https://grafana.com/grafana/dashboards/14500/](https://grafana.com/grafana/dashboards/14500/)
 
 - **`FleetGrid`** — grid view of machine statuses (RUN/IDLE/DOWN).  
-  ![Fleet grid example](https://www.machinemetrics.com/hubfs/current-shift-dashboard.png)  
-  _Source: MachineMetrics – “Current Shift Dashboard.”_  
-  <https://www.machinemetrics.com/machine-monitoring>
+  🔗 MachineMetrics “Current Shift Dashboard” — [https://www.machinemetrics.com/blog/current-shift-dashboard](https://www.machinemetrics.com/blog/current-shift-dashboard)
 
 - **`AlertTicker`** — scrolling ticker showing active alerts.  
-  ![Alert ticker example](https://cdn.dribbble.com/userupload/11293439/file/original-0d174b1b8a16a040b216bc6f8b1c70f4.png)  
-  _Source: Dribbble – “Factory Dashboard Alert UI.”_  
-  <https://dribbble.com/>
+  🔗 Grafana Alert List visualization — [https://grafana.com/docs/grafana/latest/panels-visualizations/visualizations/alert-list/](https://grafana.com/docs/grafana/latest/panels-visualizations/visualizations/alert-list/)
 
 ---
 
-###  **Machine Detail**
+###  Machine Detail
+- **`MachineStatusCard`** — shows machine state, operator, job, and OEE mini metric.  
+  🔗 MachineMetrics Dashboard Example — [https://support.machinemetrics.com/hc/en-us/articles/360026591133-Current-Shift-Dashboard](https://support.machinemetrics.com/hc/en-us/articles/360026591133-Current-Shift-Dashboard)
 
-- **`MachineStatusCard`** — displays current state, operator, job, and OEE mini metric.  
-  ![Machine status card example](https://cdn.dribbble.com/userupload/9953919/file/original-9db6875b8b7a9c30a63b856ca81d8ad7.png)  
-  _Source: Dribbble – “Industrial Dashboard Card Design.”_
+- **`MachineStateTimeline`** — visualizes RUN/IDLE/ALARM states over time.  
+  🔗 Highcharts Timeline / Gantt Chart Demos — [https://www.highcharts.com/demo/gantt](https://www.highcharts.com/demo/gantt)
 
-- **`MachineStateTimeline`** — shows RUN/IDLE/ALARM states over time.  
-  ![Machine state timeline example](https://cdn.worldvectorlogo.com/logos/gantt-chart-example.svg)  
-  _Source: Wikimedia Commons – “Gantt chart example.”_
+- **`ProgramNow`** — current program, cycle time, and progress overview.  
+  🔗 FANUC MT-LINKi brochure (example UI) — [https://www.fanucamerica.com/docs/default-source/cnc-files/brochures/mt-linki%28e%29-01.pdf](https://www.fanucamerica.com/docs/default-source/cnc-files/brochures/mt-linki%28e%29-01.pdf)
 
-- **`ProgramNow`** — current job information and cycle progress.  
-  ![Program panel example](https://cdn.dribbble.com/userupload/9729802/file/original-06a99a20a7dbf3aee73640b6a8fbd1e3.png)  
-  _Source: Dribbble – “Manufacturing Process Dashboard.”_
+- **`ToolSpindleWidget`** — shows spindle load, RPM, and temperature with sparklines.  
+  🔗 FANUC MT-LINKi product page — [https://www.fanucamerica.com/products/cnc/cnc-software/machine-tool-data-collection-software/cnc-machine-monitoring-software-mtlink-i](https://www.fanucamerica.com/products/cnc/cnc-software/machine-tool-data-collection-software/cnc-machine-monitoring-software-mtlink-i)
 
-- **`ToolSpindleWidget`** — displays spindle load, RPM, and temperature with sparklines.  
-  ![Spindle widget example](https://cdn.dribbble.com/userupload/8560649/file/original-676b78b946f41c52df95f2077af3b4a2.png)  
-  _Source: Dribbble – “Equipment Performance Monitor.”_
-
-- **`AlarmFeed`** — shows the latest alarms with severity levels.  
-  ![Alarm feed example](https://cdn.dribbble.com/userupload/10873644/file/original-4fcb1b9127b257a7a89c97dc6ddda96f.png)  
-  _Source: Dribbble – “Alert Feed UI.”_
+- **`AlarmFeed`** — displays latest alarms with severity and filters.  
+  🔗 Grafana Alerting UI — [https://grafana.com/docs/grafana/latest/alerting/](https://grafana.com/docs/grafana/latest/alerting/)  
+  🔗 FANUC MT-LINKi Alarm Monitoring — same brochure as above.
 
 ---
 
-###  **Energy & Cost**
+###  Energy & Cost
+- **`EnergyKPI`** — displays real-time power usage, kWh, and cost.  
+  🔗 Grafana “Energy Monitoring Dashboard” — [https://grafana.com/grafana/dashboards/12091-energy-monitoring/](https://grafana.com/grafana/dashboards/12091-energy-monitoring/)
 
-- **`EnergyKPI`** — real-time and cumulative energy consumption and cost.  
-  ![Energy KPI example](https://grafana.com/api/dashboards/12091/images/7918/image)  
-  _Source: Grafana Labs – “Energy Monitoring Dashboard.”_  
-  <https://grafana.com/grafana/dashboards/12091-energy-monitoring/>
-
-- **`EnergyOverTime`** — line chart of energy usage across time intervals.  
-  ![Energy over time chart example](https://grafana.com/api/dashboards/17181/images/12544/image)  
-  _Source: Grafana Labs – “Energy Overview Dashboard.”_  
-  <https://grafana.com/grafana/dashboards/17181-energy/>
+- **`EnergyOverTime`** — shows energy usage across time intervals.  
+  🔗 Grafana “Energy Overview” Dashboard — [https://grafana.com/grafana/dashboards/17181-energy/](https://grafana.com/grafana/dashboards/17181-energy/)
 
 - **`EnergyHistogram`** — histogram of energy consumption by shift/day.  
-  ![Energy histogram example](https://cdn.dribbble.com/userupload/11195486/file/original-bab272cb482f837c348b2e552063fcb5.png)  
-  _Source: Dribbble – “Data Histogram Visualization.”_
+  🔗 Grafana Histogram visualization guide — [https://grafana.com/docs/grafana/latest/panels-visualizations/visualizations/histogram/](https://grafana.com/docs/grafana/latest/panels-visualizations/visualizations/histogram/)
 
-- **`ProgramEnergyTable`** — per-program table with kWh/cycle, cost, and efficiency variance.  
-  ![Energy program table example](https://cdn.dribbble.com/userupload/10701647/file/original-1e35ee779e49ed0c901b1b0e8ff5b183.png)  
-  _Source: Dribbble – “Energy Data Table UI.”_
+- **`ProgramEnergyTable`** — table comparing program energy usage and cost.  
+  🔗 Grafana Table visualization — [https://grafana.com/docs/grafana/latest/panels-visualizations/visualizations/table/](https://grafana.com/docs/grafana/latest/panels-visualizations/visualizations/table/)
 
 ---
 
-###  **Analysis**
+###  Analysis
+- **`DowntimePareto`** — Pareto chart showing top downtime causes.  
+  🔗 Highcharts Pareto chart demo — [https://www.highcharts.com/demo/highcharts/pareto](https://www.highcharts.com/demo/highcharts/pareto)
 
-- **`DowntimePareto`** — Pareto chart showing top causes of downtime.  
-  ![Downtime Pareto example](https://www.researchgate.net/publication/342784709/figure/fig3/AS:917180184514561@1594019950399/Pareto-Chart-showing-the-distribution-of-downtime-reasons.png)  
-  _Source: ResearchGate – “Pareto Chart for Downtime Analysis.”_
-
-- **`DrilldownTabs`** — navigational tabs for switching between Overview, Shift, Program, Alarms, and Energy views.  
-  ![Drilldown tabs example](https://cdn.dribbble.com/userupload/10490916/file/original-716acb48c84bb2b342ff53e5d89fc1a4.png)  
-  _Source: Dribbble – “Dashboard Navigation Tabs.”_
+- **`DrilldownTabs`** — navigation tabs for Overview, Shift, Program, Alarms, and Energy.  
+  🔗 Material UI Tabs — [https://mui.com/material-ui/react-tabs/](https://mui.com/material-ui/react-tabs/)
 
 ---
 
-###  **Transparency**
-
-- **`KPIInfoPopover`** — explains formulas, data sources, and examples for each KPI.  
-  ![KPI info popover example](https://cdn.dribbble.com/userupload/10804343/file/original-44e0139d4ab95c42de6ee568a4b53c5b.png)  
-  _Source: Dribbble – “Tooltip Information Component.”_
+###  Transparency
+- **`KPIInfoPopover`** — shows formulas, data sources, and calculation windows.  
+  🔗 Tableau “Explain Data” feature overview — [https://help.tableau.com/current/pro/desktop/en-us/explain_data.htm](https://help.tableau.com/current/pro/desktop/en-us/explain_data.htm)
 
 - **`DataQualityBadge`** — indicates data freshness and reliability.  
-  ![Data quality badge example](https://cdn.dribbble.com/userupload/11098943/file/original-5a5e9f9fd9a24c74541f4ad8f2b7db35.png)  
-  _Source: Dribbble – “Status Indicator UI.”_
+  🔗 Microsoft Power BI Lineage View — [https://learn.microsoft.com/en-us/power-bi/collaborate-share/service-data-lineage](https://learn.microsoft.com/en-us/power-bi/collaborate-share/service-data-lineage)
 
-- **`AuditTrail`** — log of user and configuration changes for traceability.  
-  ![Audit trail example](https://cdn.dribbble.com/userupload/10518883/file/original-36d0590f3b37b5f6bb9e3a0db13fa0c8.png)  
-  _Source: Dribbble – “Activity Log Dashboard.”_
+- **`AuditTrail`** — logs user and configuration changes for traceability.  
+  🔗 Grafana Change History & Audit Example — [https://grafana.com/docs/grafana/latest/administration/audit-logs/](https://grafana.com/docs/grafana/latest/administration/audit-logs/)  
+  🔗 Microsoft Power BI Lineage & governance — [https://learn.microsoft.com/en-us/power-bi/collaborate-share/service-data-lineage](https://learn.microsoft.com/en-us/power-bi/collaborate-share/service-data-lineage)
 
+---
 
 
 ---
