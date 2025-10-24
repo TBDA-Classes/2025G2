@@ -468,7 +468,7 @@ Below is a summary of the main UI components identified through research. Each c
 
 ###  Overview Dashboard
 - **`KPIBar`** — top-level metrics such as OEE, Availability, Performance, and Quality.  
-  🔗 Grafana KPI Dashboard Template — [https://grafana.com/grafana/dashboards/14500/](https://grafana.com/grafana/dashboards/14500/)
+  🔗 Grafana KPI Dashboard Template — [https://docs.cilium.io/en/v1.10/gettingstarted/grafana/](https://docs.cilium.io/en/v1.10/gettingstarted/grafana/)
 
 - **`FleetGrid`** — grid view of machine statuses (RUN/IDLE/DOWN).  
   🔗 MachineMetrics “Current Shift Dashboard” — [https://www.machinemetrics.com/blog/current-shift-dashboard](https://www.machinemetrics.com/blog/current-shift-dashboard)
