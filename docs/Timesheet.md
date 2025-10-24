@@ -41,7 +41,8 @@ This file is used by all team members to record their working hours and activiti
 | Atle Sund | Frontend/Backend | Setup Frontend and connect to Backend | Created a frontend project in Next.js and connected to an existing GET endpoint in the backend. The data was retrieved successfully and shown in localhost | 2025-10-12 | 1.5 |
 | Erik Alexander Standal | Frontend / Backend | Study and evaluate project technologies | Read documentation and watched some videos on the project tech | 2025-10-17 | 1 |
 | Erik Alexander Standal | Frontend / Backend | GitHub cleanup | Made a documentation folder and updated the README.md file | 2025-10-20 | 0.5 |
-
+| Jovan Bajcetic | UI/UX + Scrum master | UI/UX research doc | Creation and elaboration of the ui_ux_research.md document with the research done | 2025-10-23 | 1 |
+| Jovan Bajcetic | UI/UX + Scrum master | UI/UX research doc | Revision of some points and links on the doc + restructuration of the file | 2025-10-24 | 0.5 |
 ---
 
  *Tip:*  
