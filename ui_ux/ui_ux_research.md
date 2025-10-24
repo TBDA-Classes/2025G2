@@ -451,9 +451,6 @@ Traceability is critical in regulated and data-driven environments. The `AuditTr
 - **Tulip (ES)** – manufacturing dashboards and typical data sources.  
   <https://tulip.co/es/blog/6-manufacturing-dashboards-for-visualizing-production/>
 
-- **SCADA academic example (ES)** – interface design for automated production line (PDF).  
-  <https://www.dspace.espol.edu.ec/bitstream/123456789/54280/1/T-112156%20CORELLA%20ZAMORA-REYES%20ANGUISACA.pdf>
-
 ---
 
 ## Summary of recommended UI component library (for implementation)
