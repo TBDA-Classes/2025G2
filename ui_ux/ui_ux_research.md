@@ -525,13 +525,8 @@ Below is a summary of the main UI components identified through research. Each c
   🔗 Tableau “Explain Data” feature overview — [https://help.tableau.com/current/pro/desktop/en-us/explain_data.htm](https://help.tableau.com/current/pro/desktop/en-us/explain_data.htm)
 
 - **`DataQualityBadge`** — indicates data freshness and reliability.  
-  🔗 Microsoft Power BI Lineage View — [https://learn.microsoft.com/en-us/power-bi/collaborate-share/service-data-lineage](https://learn.microsoft.com/en-us/power-bi/collaborate-share/service-data-lineage)
+  🔗 Microsoft Power BI Lineage View& governance — [https://learn.microsoft.com/en-us/power-bi/collaborate-share/service-data-lineage](https://learn.microsoft.com/en-us/power-bi/collaborate-share/service-data-lineage)
 
-- **`AuditTrail`** — logs user and configuration changes for traceability.  
-  🔗 Grafana Change History & Audit Example — [https://grafana.com/docs/grafana/latest/administration/audit-logs/](https://grafana.com/docs/grafana/latest/administration/audit-logs/)  
-  🔗 Microsoft Power BI Lineage & governance — [https://learn.microsoft.com/en-us/power-bi/collaborate-share/service-data-lineage](https://learn.microsoft.com/en-us/power-bi/collaborate-share/service-data-lineage)
-
----
 
 
 ---
