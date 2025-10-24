@@ -2,7 +2,7 @@
 
 This document compiles a survey of user interfaces, dashboards, and interaction patterns relevant to a system that analyzes high‑frequency data from **Numerical Control (NC) machines** and transforms it into actionable insights. The research focuses on visual and interactive solutions that help operators and engineers understand **machine operation**, **energy usage**, **timing per program**, and **alerts**, with examples from different sources. The purpose of this research is also to give to the frontend developers some ideas and insights on how the team can approach the design of the UI/UX.
 
-The structure follows the project’s needs and proposes concrete UI components for each one, with references and example visuals.
+**The structure follows the project’s needs and proposes concrete UI components for each one, with references and example visuals.**
 
 ---
 
@@ -23,7 +23,7 @@ The structure follows the project’s needs and proposes concrete UI components 
 - Operators can instantly read *when* and *how long* a machine ran, idled, or stopped and correlate with shifts and programs.
 - Pairing the timeline with a **Pareto of downtime reasons** supports root‑cause analysis.
 
-**Examples**
+**Examples & references**
 - **MachineMetrics – “Current Shift Dashboard”** (real‑time factory dashboards with color‑coded status and OEE context).  
   ![MachineMetrics current shift dashboard](https://www.machinemetrics.com/hubfs/current-shift-dashboard.png)  
   _Source: MachineMetrics, “CNC Machine Monitoring Software.”_  
@@ -97,7 +97,7 @@ This card offers a concise snapshot of performance for quick daily or shift revi
 - **Keyboard + touch affordances** (big hit targets, sticky headers, multi-select filters).
 - **Dark theme** option for shop‑floor glare; high‑contrast theme for accessibility.
 
-**Example**
+**Examples & references**
 - **Siemens MindSphere / Insights Hub – Dashboard Designer** (rich visualizations, queries, and OEE building blocks).  
   Docs (web): <https://documentation.mindsphere.io/MindSphere/apps/dashboard-designer-v10/creating-dashboards.html>  
   PDF (v10): <https://documentation.mindsphere.io/MindSphere/output-pdf-files/Dashboard%20Designer%20v10.pdf>
@@ -169,7 +169,7 @@ Manufacturing dashboards are often viewed on diverse hardware (HMI panels, table
 - **Tool/Spindle widget** (RPM, load, temperature, following error; sparklines).
 - **Job/Program panel** (program name, count, cycle time, remaining).
 
-**Examples**
+**Examples & references**
 - **MachineMetrics – real‑time dashboards & alerts** (status color coding, notifications).  
   <https://www.machinemetrics.com/machine-monitoring>
 
@@ -241,7 +241,7 @@ Quick visibility of recent alarms helps operators respond faster to critical iss
 - **Daily/shift usage histograms** with anomaly flags.
 - **Correlation view**: energy vs. spindle load vs. feed rate.
 
-**Examples**
+**Examples & references**
 - **Grafana – Energy Monitoring dashboards** (open templates; time series + KPIs + histograms).  
   ![Grafana energy monitoring dashboard](https://grafana.com/api/dashboards/12091/images/7918/image)  
   _Source: Grafana Labs, “Energy Monitoring” dashboard template._  
@@ -312,7 +312,7 @@ Visualizing energy usage distribution helps detect irregularities, inefficiencie
 - **Context panel** that shows the related timeline window, last events, and playbook steps.
 - **Notification routing** (email/SMS/in-app) with acknowledgement flow.
 
-**Examples**
+**Examples & references**
 - **Ignition (Inductive Automation) – customer projects with real-time alarming and mobile access.**  
   <https://inductiveautomation.com/resources/customerproject/oee-spc-and-realtime-dashboards-for-greater-insight-into-six-production-lines>
 
@@ -381,7 +381,7 @@ When alarms occur, knowing *where* they happened is as important as knowing *wha
 - **Model status** (last data ingest, latency, missing sensors).
 - **Change log & data lineage** (source → transform → KPI).
 
-**Reference examples**
+**Examples & references**
 - **MindSphere / Performance Insight**—end‑user dashboard creation and KPI building blocks.  
   PDF: <https://support.industry.siemens.com/cs/attachments/109777035/109777035_MindSphere_Applications_PerformanceInsight_DOC_v10_en.pdf>
 
@@ -459,12 +459,114 @@ Traceability is critical in regulated and data-driven environments. The `AuditTr
 ---
 
 ## Summary of recommended UI component library (for implementation)
-- **Global navigation:** `AppShell`, breadcrumb for Line → Cell → Machine.
-- **Overview dashboard:** `KPIBar` (OEE, Availability, Performance, Quality), `FleetGrid` (status per machine), `AlertTicker`.
-- **Machine detail:** `MachineStatusCard`, `MachineStateTimeline`, `ProgramNow`, `ToolSpindleWidget`, `AlarmFeed`.
-- **Energy & cost:** `EnergyKPI`, `EnergyOverTime`, `EnergyHistogram`, `ProgramEnergyTable`.
-- **Analysis:** `DowntimePareto`, `DrilldownTabs` (Overview, Shift, Program, Alarms, Energy).
-- **Transparency:** `KPIInfoPopover`, `DataQualityBadge`, `AuditTrail`.
+
+Below is an overview of the key UI components recommended for implementation, grouped by functionality area.  
+Each component includes a representative image example and a link to its original source for reference.
+
+---
+
+###  **Global Navigation**
+
+- **`AppShell`** — overall application layout, including header, sidebar, and breadcrumb navigation (Line → Cell → Machine).  
+  ![Dashboard layout shell example](https://miro.medium.com/v2/resize:fit:1400/1*fT2r2A4OAjr2z0uvhsp0MA.png)  
+  _Source: “Building dashboards with navigation in React” (Medium)._  
+  <https://medium.com/>
+
+---
+
+###  **Overview Dashboard**
+
+- **`KPIBar`** — top-level metrics such as OEE, Availability, Performance, and Quality.  
+  ![KPI bar example](https://grafana.com/api/dashboards/14500/images/11716/image)  
+  _Source: Grafana Labs – “KPI Dashboard Template.”_  
+  <https://grafana.com/grafana/dashboards/14500/>
+
+- **`FleetGrid`** — grid view of machine statuses (RUN/IDLE/DOWN).  
+  ![Fleet grid example](https://www.machinemetrics.com/hubfs/current-shift-dashboard.png)  
+  _Source: MachineMetrics – “Current Shift Dashboard.”_  
+  <https://www.machinemetrics.com/machine-monitoring>
+
+- **`AlertTicker`** — scrolling ticker showing active alerts.  
+  ![Alert ticker example](https://cdn.dribbble.com/userupload/11293439/file/original-0d174b1b8a16a040b216bc6f8b1c70f4.png)  
+  _Source: Dribbble – “Factory Dashboard Alert UI.”_  
+  <https://dribbble.com/>
+
+---
+
+###  **Machine Detail**
+
+- **`MachineStatusCard`** — displays current state, operator, job, and OEE mini metric.  
+  ![Machine status card example](https://cdn.dribbble.com/userupload/9953919/file/original-9db6875b8b7a9c30a63b856ca81d8ad7.png)  
+  _Source: Dribbble – “Industrial Dashboard Card Design.”_
+
+- **`MachineStateTimeline`** — shows RUN/IDLE/ALARM states over time.  
+  ![Machine state timeline example](https://cdn.worldvectorlogo.com/logos/gantt-chart-example.svg)  
+  _Source: Wikimedia Commons – “Gantt chart example.”_
+
+- **`ProgramNow`** — current job information and cycle progress.  
+  ![Program panel example](https://cdn.dribbble.com/userupload/9729802/file/original-06a99a20a7dbf3aee73640b6a8fbd1e3.png)  
+  _Source: Dribbble – “Manufacturing Process Dashboard.”_
+
+- **`ToolSpindleWidget`** — displays spindle load, RPM, and temperature with sparklines.  
+  ![Spindle widget example](https://cdn.dribbble.com/userupload/8560649/file/original-676b78b946f41c52df95f2077af3b4a2.png)  
+  _Source: Dribbble – “Equipment Performance Monitor.”_
+
+- **`AlarmFeed`** — shows the latest alarms with severity levels.  
+  ![Alarm feed example](https://cdn.dribbble.com/userupload/10873644/file/original-4fcb1b9127b257a7a89c97dc6ddda96f.png)  
+  _Source: Dribbble – “Alert Feed UI.”_
+
+---
+
+###  **Energy & Cost**
+
+- **`EnergyKPI`** — real-time and cumulative energy consumption and cost.  
+  ![Energy KPI example](https://grafana.com/api/dashboards/12091/images/7918/image)  
+  _Source: Grafana Labs – “Energy Monitoring Dashboard.”_  
+  <https://grafana.com/grafana/dashboards/12091-energy-monitoring/>
+
+- **`EnergyOverTime`** — line chart of energy usage across time intervals.  
+  ![Energy over time chart example](https://grafana.com/api/dashboards/17181/images/12544/image)  
+  _Source: Grafana Labs – “Energy Overview Dashboard.”_  
+  <https://grafana.com/grafana/dashboards/17181-energy/>
+
+- **`EnergyHistogram`** — histogram of energy consumption by shift/day.  
+  ![Energy histogram example](https://cdn.dribbble.com/userupload/11195486/file/original-bab272cb482f837c348b2e552063fcb5.png)  
+  _Source: Dribbble – “Data Histogram Visualization.”_
+
+- **`ProgramEnergyTable`** — per-program table with kWh/cycle, cost, and efficiency variance.  
+  ![Energy program table example](https://cdn.dribbble.com/userupload/10701647/file/original-1e35ee779e49ed0c901b1b0e8ff5b183.png)  
+  _Source: Dribbble – “Energy Data Table UI.”_
+
+---
+
+###  **Analysis**
+
+- **`DowntimePareto`** — Pareto chart showing top causes of downtime.  
+  ![Downtime Pareto example](https://www.researchgate.net/publication/342784709/figure/fig3/AS:917180184514561@1594019950399/Pareto-Chart-showing-the-distribution-of-downtime-reasons.png)  
+  _Source: ResearchGate – “Pareto Chart for Downtime Analysis.”_
+
+- **`DrilldownTabs`** — navigational tabs for switching between Overview, Shift, Program, Alarms, and Energy views.  
+  ![Drilldown tabs example](https://cdn.dribbble.com/userupload/10490916/file/original-716acb48c84bb2b342ff53e5d89fc1a4.png)  
+  _Source: Dribbble – “Dashboard Navigation Tabs.”_
+
+---
+
+###  **Transparency**
+
+- **`KPIInfoPopover`** — explains formulas, data sources, and examples for each KPI.  
+  ![KPI info popover example](https://cdn.dribbble.com/userupload/10804343/file/original-44e0139d4ab95c42de6ee568a4b53c5b.png)  
+  _Source: Dribbble – “Tooltip Information Component.”_
+
+- **`DataQualityBadge`** — indicates data freshness and reliability.  
+  ![Data quality badge example](https://cdn.dribbble.com/userupload/11098943/file/original-5a5e9f9fd9a24c74541f4ad8f2b7db35.png)  
+  _Source: Dribbble – “Status Indicator UI.”_
+
+- **`AuditTrail`** — log of user and configuration changes for traceability.  
+  ![Audit trail example](https://cdn.dribbble.com/userupload/10518883/file/original-36d0590f3b37b5f6bb9e3a0db13fa0c8.png)  
+  _Source: Dribbble – “Activity Log Dashboard.”_
+
+---
+
 
 ---
 
