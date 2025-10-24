@@ -491,8 +491,7 @@ Below is a summary of the main UI components identified through research. Each c
 - **`ToolSpindleWidget`** — shows spindle load, RPM, and temperature with sparklines.  
   🔗 FANUC MT-LINKi product page — [https://www.fanucamerica.com/products/cnc/cnc-software/machine-tool-data-collection-software/cnc-machine-monitoring-software-mtlink-i](https://www.fanucamerica.com/products/cnc/cnc-software/machine-tool-data-collection-software/cnc-machine-monitoring-software-mtlink-i)
 
-- **`AlarmFeed`** — displays latest alarms with severity and filters.  
-  🔗 Grafana Alerting UI — [https://grafana.com/docs/grafana/latest/alerting/](https://grafana.com/docs/grafana/latest/alerting/)  
+- **`AlarmFeed`** — displays latest alarms with severity and filters.   
   🔗 FANUC MT-LINKi Alarm Monitoring — same brochure as above.
 
 ---
