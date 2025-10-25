@@ -43,6 +43,8 @@ This file is used by all team members to record their working hours and activiti
 | Erik Alexander Standal | Frontend / Backend | GitHub cleanup | Made a documentation folder and updated the README.md file | 2025-10-20 | 0.5 |
 | Jovan Bajcetic | UI/UX + Scrum master | UI/UX research doc | Creation and elaboration of the ui_ux_research.md document with the research done | 2025-10-23 | 1 |
 | Jovan Bajcetic | UI/UX + Scrum master | UI/UX research doc | Revision of some points and links on the doc + restructuration of the file | 2025-10-24 | 0.5 |
+| Atle Sund | Frontend/Backend | Data analysis and frontend | Read through the documentation by the data analysis team and worked on their quieries and findings in order to understand better which elements we need in the frontend. Spent some time also looking into the libraries recharts, nivo, react-charjs-2, visx etc. Landed on using nivo for the basic plots as it is comprehensive enough and fast. Created two static plots using this, one calendar plot and one stacked bar plot  | 2025-10-26 | 5 |
+| Atle Sund | Frontend/Backend | Backend | Changed the approach to utilize sqlalchemy to the fullest. Now we don't query with raw SQL, only with ORM, see main.py | 2025-10-26 | 2 |
 ---
 
  *Tip:*  
