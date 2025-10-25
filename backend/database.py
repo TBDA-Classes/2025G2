@@ -2,7 +2,7 @@
 
 import os
 from sqlalchemy import create_engine, text
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, Session
 from dotenv import load_dotenv
 
 
@@ -17,3 +17,13 @@ db_port = os.getenv("DB_PORT")
 
 DATABASE_URL = f'postgresql+psycopg://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}'
 engine = create_engine(DATABASE_URL)
+
+SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+
+def get_db():
+    db = SessionLocal() # Create a new session
+    try:
+        yield db # Provide the session to the endpoint
+    finally:
+        db.close()
