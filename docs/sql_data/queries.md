@@ -4,8 +4,7 @@ author: "Data analysis team"
 output: html_document
 ---
 
-# Clarification: The dates used for the queries can be changed depending on the needs,
-# these are just reference dates to have usable queries
+# Clarification: The dates used for the queries can be changed depending on the needs,these are just reference dates to have usable queries
 
 
 ##### PERIOD IDENTIFYING QUERIES #####
