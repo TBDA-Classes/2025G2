@@ -24,8 +24,16 @@ app.add_middleware(
 class PeriodOut(BaseModel):
     id: int
     name: str
-    
-class DateStatusOut(BaseModel):
+
+#SELECT vf.value, TO_TIMESTAMP(vf.date/1000), v.name, v.datatype, units.prettyname 
+# FROM variable_log_float vf 
+# LEFT JOIN variable v ON vf.id_var = v.id 
+# LEFT JOIN units ON units.name = v.name 
+# WHERE v.name = 'MACHINE_IN_OPERATION';
+
+
+#class DateStatusOut(BaseModel):
+
 
 
 # Our first endpoint - just to test if the API is working
