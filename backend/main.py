@@ -25,6 +25,8 @@ class PeriodOut(BaseModel):
     id: int
     name: str
     
+class DateStatusOut(BaseModel):
+
 
 # Our first endpoint - just to test if the API is working
 # When you visit http://localhost:8000/ you'll see this message
@@ -62,3 +64,5 @@ def get_period(db: Session = Depends(get_db)):
     if not periods:
         raise HTTPException(status_code=404, detail="Period(s) not found")
     return [PeriodOut(id=p.id, name=p.name) for p in periods]
+
+
