@@ -25,14 +25,18 @@ class PeriodOut(BaseModel):
     id: int
     name: str
 
-#SELECT vf.value, TO_TIMESTAMP(vf.date/1000), v.name, v.datatype, units.prettyname 
+# SELECT vf.value, TO_TIMESTAMP(vf.date/1000), v.name, v.datatype, units.prettyname 
 # FROM variable_log_float vf 
 # LEFT JOIN variable v ON vf.id_var = v.id 
 # LEFT JOIN units ON units.name = v.name 
 # WHERE v.name = 'MACHINE_IN_OPERATION';
 
 
-#class DateStatusOut(BaseModel):
+class DateStatusOut(BaseModel):
+    date: int
+    running_hours: float
+    planned_downtime: float
+    unplanned_downtime: float
 
 
 
@@ -74,3 +78,26 @@ def get_period(db: Session = Depends(get_db)):
     return [PeriodOut(id=p.id, name=p.name) for p in periods]
 
 
+@app.get("/api/v1/total_status", response_model=List[DateStatusOut])
+def get_date_status_out(db: Session = Depends(get_db)):
+    """
+    For each every date in a time interval, fetch
+    1) The hours where the machine was executing a program (variable.name = MACHINE_IN_OPERATION)
+    2) The unplanned downtime, when machine emergency pulsed (variable.name = MACHINE_EMERGENCY)
+    3) The planned downtime, when the NC STOP active (variable.name = MACHINE_STOP_ACTIVE)
+
+    Args:
+        db: Database session
+    Returns:
+        List of DateStatusOut objects
+        
+    """
+
+    #We need to:
+    # Define from_ts and to_ts (either as parameters or hard coded in the query)
+    # Normalize the signals to 0/1 for tracking true/false (some values contain 255, NaN etc.)
+    # Build an event stream (track changes in the logs)
+    # Compute duration
+    # Sum hours to find total up- and downtime
+
+    
