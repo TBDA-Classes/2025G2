@@ -47,7 +47,7 @@ This file is used by all team members to record their working hours and activiti
 | Atle Sund | Frontend/Backend | Data analysis and frontend | Read through the documentation by the data analysis team and worked on their quieries and findings in order to understand better which elements we need in the frontend. Spent some time also looking into the libraries recharts, nivo, react-charjs-2, visx etc. Landed on using nivo for the basic plots as it is comprehensive enough and fast. Created two static plots using this, one calendar plot and one stacked bar plot  | 2025-10-26 | 5 |
 | Atle Sund | Frontend/Backend | Backend | Changed the approach to utilize sqlalchemy to the fullest. Now we don't query with raw SQL, only with ORM, see main.py | 2025-10-26 | 2 |
 | Atle Sund | Frontend/Backend | Backend | Created a document to explain to the data analysis team exactly how we need to receive their data based on the queries they have made | 2025-10-27 | 2 |
-| Atle Sund | Frontend/Backend | Backend | Made a docs/backend and docs/frontend, and filled in our existing documentation | 2025-10-27 | 1 |
+| Atle Sund | Frontend/Backend | Backend | Made a docs/backend and docs/frontend, and filled in our existing documentation. Created an endpoint for the current query from DA (successfull) | 2025-10-29 | 4 |
 
 ---
 
