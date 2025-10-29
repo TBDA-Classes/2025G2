@@ -39,15 +39,15 @@ This file is used by all team members to record their working hours and activiti
 | Javier Pajares | Data Analyst | Meeting with client and PO | Meeting with the client to see requirements related to UI/UX and data + Resolution of some doubts about the project with the PO | 2025-10-09 | 1 |
 | Atle Sund | Frontend/Backend | Setup Backend | Successfully connected to the PostgreSQL DB and created an endpoint for the frontend to access | 2025-10-12 | 1 |
 | Atle Sund | Frontend/Backend | Setup Frontend and connect to Backend | Created a frontend project in Next.js and connected to an existing GET endpoint in the backend. The data was retrieved successfully and shown in localhost | 2025-10-12 | 1.5 |
-| Atle Sund | Frontend/Backend | Generated ER diagrams (using DBeaver, found at docs/ER_diagrams) of tables 1245 and 2207 which are useful for us in the backend when creating models (see backend/models.py). | 2025-10-12 | 0.5 |
+| Atle Sund | Frontend/Backend | Backend | Generated ER diagrams (using DBeaver, found at docs/ER_diagrams) of tables 1245 and 2207 which are useful for us in the backend when creating models (see backend/models.py). | 2025-10-12 | 0.5 |
 | Erik Alexander Standal | Frontend / Backend | Study and evaluate project technologies | Read documentation and watched some videos on the project tech | 2025-10-17 | 1 |
 | Erik Alexander Standal | Frontend / Backend | GitHub cleanup | Made a documentation folder and updated the README.md file | 2025-10-20 | 0.5 |
 | Jovan Bajcetic | UI/UX + Scrum master | UI/UX research doc | Creation and elaboration of the ui_ux_research.md document with the research done | 2025-10-23 | 1 |
 | Jovan Bajcetic | UI/UX + Scrum master | UI/UX research doc | Revision of some points and links on the doc + restructuration of the file | 2025-10-24 | 0.5 |
 | Atle Sund | Frontend/Backend | Data analysis and frontend | Read through the documentation by the data analysis team and worked on their quieries and findings in order to understand better which elements we need in the frontend. Spent some time also looking into the libraries recharts, nivo, react-charjs-2, visx etc. Landed on using nivo for the basic plots as it is comprehensive enough and fast. Created two static plots using this, one calendar plot and one stacked bar plot  | 2025-10-26 | 5 |
 | Atle Sund | Frontend/Backend | Backend | Changed the approach to utilize sqlalchemy to the fullest. Now we don't query with raw SQL, only with ORM, see main.py | 2025-10-26 | 2 |
-| Atle Sund | Frontend/Backend | Backend | Created a document to explain to the data analysis team exactly how we need to receive their data based on the queries they have made | 2025-10-27 | 2 |
-| Atle Sund | Frontend/Backend | Backend | Made a docs/backend and docs/frontend, and filled in our existing documentation. Created an endpoint for the current query from DA (successfull) | 2025-10-29 | 4 |
+| Atle Sund | Frontend/Backend | Backend | Created a document to explain to the data analysis team exactly how we need to receive their data based on the queries they have made | 2025-10-27 | 1 |
+| Atle Sund | Frontend/Backend | Backend | Made a docs/backend and docs/frontend, and filled in our existing documentation. Created an endpoint for the current query from DA (successful) | 2025-10-29 | 4 |
 
 ---
 
