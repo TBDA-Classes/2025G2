@@ -6,6 +6,7 @@ from database import engine, text, get_db
 from pydantic import BaseModel
 from models import Period
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 
 # Create our API app instance, with versioning
 app = FastAPI(title="Variable Monitoring API", version="1.0.0")
@@ -78,8 +79,8 @@ def get_period(db: Session = Depends(get_db)):
     return [PeriodOut(id=p.id, name=p.name) for p in periods]
 
 
-@app.get("/api/v1/total_status", response_model=List[DateStatusOut])
-def get_date_status_out(db: Session = Depends(get_db)):
+#@app.get("/api/v1/total_status", response_model=List[DateStatusOut])
+#def get_date_status_out(db: Session = Depends(get_db)):
     """
     For each every date in a time interval, fetch
     1) The hours where the machine was executing a program (variable.name = MACHINE_IN_OPERATION)
@@ -100,4 +101,4 @@ def get_date_status_out(db: Session = Depends(get_db)):
     # Compute duration
     # Sum hours to find total up- and downtime
 
-    
+
