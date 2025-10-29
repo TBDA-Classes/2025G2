@@ -1,6 +1,6 @@
-from turtle import back
-from sqlalchemy.orm import DeclarativeBase, Mapped, MappedCollection, foreign, mapped_column, relationship
-from sqlalchemy import ForeignKey, Optional
+from sqlalchemy.orm import DeclarativeBase, Mapped, MappedCollection, mapped_column, relationship
+from sqlalchemy import ForeignKey
+from typing import Optional
 
 
 # IMPORTANT: 
@@ -51,8 +51,8 @@ class VariableLogFloat(Base):
 class VariableLogString(Base):
     __tablename__ = "variable_log_string"
 
-    id_var: Mapped[int] = mapped_column(ForeignKey("variable.id"))
-    date: Mapped[int]
+    id_var: Mapped[int] = mapped_column(ForeignKey("variable.id"), primary_key=True)
+    date: Mapped[int] = mapped_column(primary_key=True)
     value: Mapped[Optional[str]]
 
     variable: Mapped["Variable"] = relationship(back_populates="variable_log_strings")
