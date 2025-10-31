@@ -7,7 +7,7 @@ output: html_document
 # Clarification: The dates used for the queries can be changed depending on the needs,these are just reference dates to have usable queries
 
 
-##### PERIOD IDENTIFYING QUERIES #####
+## PERIOD IDENTIFYING QUERIES ##
 
 ### Query to identify the hours in which changes in variables are registered, based on the working day (in order to know possible start and end times for the machine)
 
@@ -406,7 +406,7 @@ ORDER BY vpp.start_time;
 ```
 
 
-##### ALARM IDENTIFYING QUERIES #####
+## ALARM IDENTIFYING QUERIES ##
 
 ### Query to identify the different types of alarms
 
@@ -423,7 +423,7 @@ ORDER BY descripcion_alarma;
 ```
 
 
-##### QUERIES TO EXTRACT DATA #####
+## QUERIES TO EXTRACT DATA ##
 
 ### Query to unite float and string data
 
