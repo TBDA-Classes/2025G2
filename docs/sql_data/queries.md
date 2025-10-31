@@ -49,61 +49,78 @@ ORDER BY h.dt;
 ### Query for detecting the exact timestamps in which variable changes are detected (also includes the days of the week)
 
 WITH horas AS (
-  SELECT generate_series(
+  SELECT dt AS hora
+  FROM (
+    SELECT generate_series(
       '2021-01-07 00:00:00'::timestamp,
       '2021-01-15 23:00:00'::timestamp,
       interval '1 hour'
-  ) AS hora
+    ) AS dt
+  ) sub
+  WHERE EXTRACT(DOW FROM dt) NOT IN (0, 6)  -- excluir sábados y domingos
 ),
 
-cambios AS (
+cambios_float AS (
   SELECT
-    to_timestamp(CAST(a.date AS bigint)/1000) AS dt,
-    date_trunc('hour', to_timestamp(CAST(a.date AS bigint)/1000)) AS hora,
-    a.id_var,
-    b.name AS variable,
-    a.value::float AS valor,
-    LAG(a.value::float) OVER (
-      PARTITION BY a.id_var 
-      ORDER BY to_timestamp(CAST(a.date AS bigint)/1000)
-    ) AS valor_anterior
+    to_timestamp(TRUNC(CAST(a.date AS bigint)/1000)) AS dt,
+    b.name AS variable
   FROM variable_log_float a
   JOIN variable b ON a.id_var = b.id
-  WHERE to_timestamp(CAST(a.date AS bigint)/1000)
+  WHERE to_timestamp(TRUNC(CAST(a.date AS bigint)/1000))
         BETWEEN '2021-01-07 00:00:00' AND '2021-01-15 23:59:59'
 ),
 
-cambios_filtrados AS (
-  SELECT *
-  FROM cambios
-  WHERE valor IS DISTINCT FROM valor_anterior
+cambios_string AS (
+  SELECT
+    to_timestamp(TRUNC(CAST(a.date AS bigint)/1000)) AS dt,
+    b.name AS variable
+  FROM variable_log_string a
+  JOIN variable b ON a.id_var = b.id
+  WHERE to_timestamp(TRUNC(CAST(a.date AS bigint)/1000))
+        BETWEEN '2021-01-07 00:00:00' AND '2021-01-15 23:59:59'
 ),
 
-resumen_cambios AS (
+-- Unir ambos tipos de cambios
+todos_cambios AS (
+  SELECT * FROM cambios_float
+  UNION ALL
+  SELECT * FROM cambios_string
+),
+
+-- Agrupar cambios por franja horaria
+cambios_por_hora AS (
   SELECT
-    hora,
-    COUNT(DISTINCT id_var) AS total_variables_que_cambiaron,
+    date_trunc('hour', dt) AS hora,
+    COUNT(DISTINCT variable) AS total_variables,
     MIN(dt) AS primer_cambio,
     MAX(dt) AS ultimo_cambio
-  FROM cambios_filtrados
-  GROUP BY hora
+  FROM todos_cambios
+  GROUP BY date_trunc('hour', dt)
 )
 
 SELECT
   h.hora,
-  COALESCE(r.total_variables_que_cambiaron, 0) AS total_variables_que_cambiaron,
-  r.primer_cambio,
-  r.ultimo_cambio,
+  CASE EXTRACT(DOW FROM h.hora)
+    WHEN 0 THEN 'Domingo'
+    WHEN 1 THEN 'Lunes'
+    WHEN 2 THEN 'Martes'
+    WHEN 3 THEN 'Miércoles'
+    WHEN 4 THEN 'Jueves'
+    WHEN 5 THEN 'Viernes'
+    WHEN 6 THEN 'Sábado'
+  END AS dia_semana,
+  COALESCE(c.total_variables, 0) AS total_variables,
+  c.primer_cambio,
+  c.ultimo_cambio,
   CASE
-    WHEN COALESCE(r.total_variables_que_cambiaron, 0) = 0 THEN 'Máquina parada'
-    WHEN COALESCE(r.total_variables_que_cambiaron, 0) < 30 THEN 'Parada probable'
-    WHEN COALESCE(r.total_variables_que_cambiaron, 0) BETWEEN 30 AND 80 THEN 'Actividad media'
+    WHEN COALESCE(c.total_variables, 0) = 0 THEN 'Máquina parada'
+    WHEN COALESCE(c.total_variables, 0) < 30 THEN 'Parada probable'
+    WHEN COALESCE(c.total_variables, 0) BETWEEN 30 AND 80 THEN 'Actividad media'
     ELSE 'Máquina en operación'
   END AS estado_maquina
 FROM horas h
-LEFT JOIN resumen_cambios r ON h.hora = r.hora
+LEFT JOIN cambios_por_hora c ON h.hora = c.hora
 ORDER BY h.hora;
-
 
 
 
