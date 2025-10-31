@@ -47,6 +47,7 @@ ORDER BY h.dt;
 
 ### Query for detecting the exact timestamps in which variable changes are detected (also includes the days of the week)
 
+``` sql
 WITH horas AS (
   SELECT dt AS hora
   FROM (
@@ -119,6 +120,8 @@ SELECT
 FROM horas h
 LEFT JOIN cambios_por_hora c ON h.hora = c.hora
 ORDER BY h.hora;
+```
+
 
 ### Query to count the average working hours per day, by days counted
 
