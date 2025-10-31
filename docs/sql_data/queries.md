@@ -259,6 +259,70 @@ GROUP BY dia_semana, num_dia_semana
 ORDER BY num_dia_semana;
 ```
 
+### Query to count the working hours each day, and the time the machine started and ended working
+
+```sql
+WITH cambios AS (
+  -- Combinar logs de tipo FLOAT
+  SELECT
+    to_timestamp(TRUNC(CAST(a.date AS bigint)/1000)) AS dt,
+    b.name AS variable
+  FROM variable_log_float a
+  JOIN variable b ON a.id_var = b.id
+  WHERE to_timestamp(TRUNC(CAST(a.date AS bigint)/1000))
+        BETWEEN '2021-01-07 00:00:00' AND '2021-01-15 23:59:59'
+
+  UNION ALL
+
+  -- Combinar logs de tipo STRING
+  SELECT
+    to_timestamp(TRUNC(CAST(a.date AS bigint)/1000)) AS dt,
+    b.name AS variable
+  FROM variable_log_string a
+  JOIN variable b ON a.id_var = b.id
+  WHERE to_timestamp(TRUNC(CAST(a.date AS bigint)/1000))
+        BETWEEN '2021-01-07 00:00:00' AND '2021-01-15 23:59:59'
+),
+
+--  Agrupar por segundo para reducir carga y definir actividad
+cambios_por_segundo AS (
+  SELECT
+    date_trunc('second', dt) AS segundo,
+    COUNT(DISTINCT variable) AS total_variables
+  FROM cambios
+  GROUP BY 1
+),
+
+--  Detectar inicios y fines de actividad por día
+actividad_diaria AS (
+  SELECT
+    date(segundo) AS fecha,
+    MIN(segundo) AS inicio,
+    MAX(segundo) AS fin,
+    ROUND(EXTRACT(EPOCH FROM (MAX(segundo) - MIN(segundo)))/3600.0, 2) AS horas_operacion
+  FROM cambios_por_segundo
+  GROUP BY date(segundo)
+)
+
+--  Resultado final
+SELECT
+  a.fecha,
+  CASE EXTRACT(DOW FROM a.fecha)
+    WHEN 0 THEN 'Domingo'
+    WHEN 1 THEN 'Lunes'
+    WHEN 2 THEN 'Martes'
+    WHEN 3 THEN 'Miércoles'
+    WHEN 4 THEN 'Jueves'
+    WHEN 5 THEN 'Viernes'
+    WHEN 6 THEN 'Sábado'
+  END AS dia_semana,
+  a.inicio,
+  a.fin,
+  a.horas_operacion
+FROM actividad_diaria a
+ORDER BY a.fecha;
+```
+
 
 ### Query to count the working hours each day
 
