@@ -181,6 +181,76 @@ FROM horas_por_dia
 GROUP BY num_dia_semana
 ORDER BY num_dia_semana;
 
+### Query to know the average working hours of the entire database (note: for saturday and sunday the result means that, if the machine operates in these days, the average time of operation is the one shown in the result
+
+WITH cambios_float AS (
+  SELECT
+    to_timestamp(TRUNC(CAST(a.date AS bigint)/1000)) AS dt
+  FROM variable_log_float a
+),
+
+cambios_string AS (
+  SELECT
+    to_timestamp(TRUNC(CAST(a.date AS bigint)/1000)) AS dt
+  FROM variable_log_string a
+),
+
+-- Unir todas las marcas de tiempo donde hubo algún cambio
+todos_cambios AS (
+  SELECT dt FROM cambios_float
+  UNION ALL
+  SELECT dt FROM cambios_string
+),
+
+-- Contar cuántas variables cambiaron por hora
+cambios_por_hora AS (
+  SELECT
+    date_trunc('hour', dt) AS hora,
+    COUNT(*) AS total_cambios
+  FROM todos_cambios
+  GROUP BY date_trunc('hour', dt)
+),
+
+-- Clasificar cada hora según la actividad de la máquina
+estado_por_hora AS (
+  SELECT
+    hora,
+    CASE
+      WHEN total_cambios = 0 THEN 'Máquina parada'
+      WHEN total_cambios < 30 THEN 'Parada probable'
+      WHEN total_cambios BETWEEN 30 AND 80 THEN 'Actividad media'
+      ELSE 'Máquina en operación'
+    END AS estado
+  FROM cambios_por_hora
+),
+
+-- Calcular las horas trabajadas por día
+horas_por_dia AS (
+  SELECT
+    DATE(hora) AS dia,
+    EXTRACT(DOW FROM hora) AS num_dia_semana,
+    CASE EXTRACT(DOW FROM hora)
+      WHEN 0 THEN 'Domingo'
+      WHEN 1 THEN 'Lunes'
+      WHEN 2 THEN 'Martes'
+      WHEN 3 THEN 'Miércoles'
+      WHEN 4 THEN 'Jueves'
+      WHEN 5 THEN 'Viernes'
+      WHEN 6 THEN 'Sábado'
+    END AS dia_semana,
+    COUNT(*) FILTER (WHERE estado IN ('Máquina en operación', 'Actividad media')) AS horas_trabajadas
+  FROM estado_por_hora
+  GROUP BY DATE(hora), EXTRACT(DOW FROM hora)
+)
+
+-- Promedio de horas trabajadas por día de la semana
+SELECT
+  dia_semana,
+  ROUND(AVG(horas_trabajadas)::numeric, 2) AS promedio_horas_trabajadas
+FROM horas_por_dia
+GROUP BY dia_semana, num_dia_semana
+ORDER BY num_dia_semana;
+
 
 
 ### Query to count the working hours each day
