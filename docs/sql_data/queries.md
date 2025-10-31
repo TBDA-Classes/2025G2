@@ -46,6 +46,68 @@ LEFT JOIN cambios_por_hora c ON h.dt = c.dt
 ORDER BY h.dt;
 ```
 
+### Query for detecting the exact timestamps in which variable changes are detected (also includes the days of the week)
+
+WITH horas AS (
+  SELECT generate_series(
+      '2021-01-07 00:00:00'::timestamp,
+      '2021-01-15 23:00:00'::timestamp,
+      interval '1 hour'
+  ) AS hora
+),
+
+cambios AS (
+  SELECT
+    to_timestamp(CAST(a.date AS bigint)/1000) AS dt,
+    date_trunc('hour', to_timestamp(CAST(a.date AS bigint)/1000)) AS hora,
+    a.id_var,
+    b.name AS variable,
+    a.value::float AS valor,
+    LAG(a.value::float) OVER (
+      PARTITION BY a.id_var 
+      ORDER BY to_timestamp(CAST(a.date AS bigint)/1000)
+    ) AS valor_anterior
+  FROM variable_log_float a
+  JOIN variable b ON a.id_var = b.id
+  WHERE to_timestamp(CAST(a.date AS bigint)/1000)
+        BETWEEN '2021-01-07 00:00:00' AND '2021-01-15 23:59:59'
+),
+
+cambios_filtrados AS (
+  SELECT *
+  FROM cambios
+  WHERE valor IS DISTINCT FROM valor_anterior
+),
+
+resumen_cambios AS (
+  SELECT
+    hora,
+    COUNT(DISTINCT id_var) AS total_variables_que_cambiaron,
+    MIN(dt) AS primer_cambio,
+    MAX(dt) AS ultimo_cambio
+  FROM cambios_filtrados
+  GROUP BY hora
+)
+
+SELECT
+  h.hora,
+  COALESCE(r.total_variables_que_cambiaron, 0) AS total_variables_que_cambiaron,
+  r.primer_cambio,
+  r.ultimo_cambio,
+  CASE
+    WHEN COALESCE(r.total_variables_que_cambiaron, 0) = 0 THEN 'Máquina parada'
+    WHEN COALESCE(r.total_variables_que_cambiaron, 0) < 30 THEN 'Parada probable'
+    WHEN COALESCE(r.total_variables_que_cambiaron, 0) BETWEEN 30 AND 80 THEN 'Actividad media'
+    ELSE 'Máquina en operación'
+  END AS estado_maquina
+FROM horas h
+LEFT JOIN resumen_cambios r ON h.hora = r.hora
+ORDER BY h.hora;
+
+
+
+
+
 ### Query for identifying NaNs in time intervals
 
 WITH base_data AS (
