@@ -19,8 +19,7 @@ WITH horas AS (
       '2021-01-15 23:00:00'::timestamp,  
       interval '1 hour'  
     ) AS dt  
-  ) sub  
-  WHERE EXTRACT(DOW FROM dt) NOT IN (0,6)  
+  ) sub
 ),  
 cambios_por_hora AS (  
   SELECT   
@@ -57,7 +56,6 @@ WITH horas AS (
       interval '1 hour'
     ) AS dt
   ) sub
-  WHERE EXTRACT(DOW FROM dt) NOT IN (0, 6)  -- excluir sábados y domingos
 ),
 
 cambios_float AS (
@@ -121,6 +119,7 @@ SELECT
 FROM horas h
 LEFT JOIN cambios_por_hora c ON h.hora = c.hora
 ORDER BY h.hora;
+
 
 ### Query to count the working hours each day
 
