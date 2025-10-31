@@ -122,7 +122,56 @@ FROM horas h
 LEFT JOIN cambios_por_hora c ON h.hora = c.hora
 ORDER BY h.hora;
 
+### Query to count the working hours each day
 
+WITH cambios_float AS (
+  SELECT
+    to_timestamp(CAST(a.date AS bigint)/1000) AS dt
+  FROM variable_log_float a
+  WHERE to_timestamp(CAST(a.date AS bigint)/1000)
+        BETWEEN '2021-01-07 00:00:00' AND '2021-03-15 23:59:59'
+),
+cambios_string AS (
+  SELECT
+    to_timestamp(CAST(a.date AS bigint)/1000) AS dt
+  FROM variable_log_string a
+  WHERE to_timestamp(CAST(a.date AS bigint)/1000)
+        BETWEEN '2021-01-07 00:00:00' AND '2021-03-15 23:59:59'
+),
+todos_cambios AS (
+  SELECT dt FROM cambios_float
+  UNION ALL
+  SELECT dt FROM cambios_string
+),
+diferencias AS (
+  SELECT
+    dt,
+    LAG(dt) OVER (ORDER BY dt) AS dt_anterior
+  FROM todos_cambios
+),
+duraciones AS (
+  SELECT
+    DATE(dt) AS dia,
+    EXTRACT(EPOCH FROM (dt - dt_anterior)) / 3600 AS horas
+  FROM diferencias
+  WHERE dt_anterior IS NOT NULL
+    AND EXTRACT(EPOCH FROM (dt - dt_anterior)) < 3600  -- ignorar huecos mayores a 1 hora
+)
+SELECT
+  dia,
+  CASE EXTRACT(DOW FROM dia)
+    WHEN 0 THEN 'Domingo'
+    WHEN 1 THEN 'Lunes'
+    WHEN 2 THEN 'Martes'
+    WHEN 3 THEN 'Miércoles'
+    WHEN 4 THEN 'Jueves'
+    WHEN 5 THEN 'Viernes'
+    WHEN 6 THEN 'Sábado'
+  END AS dia_semana,
+  ROUND(SUM(horas)::numeric, 2) AS horas_trabajadas
+FROM duraciones
+GROUP BY dia
+ORDER BY dia;
 
 
 ### Query for identifying NaNs in time intervals
