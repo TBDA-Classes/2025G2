@@ -125,6 +125,7 @@ ORDER BY h.hora;
 
 ### Query to count the average working hours per day, by days counted
 
+```sql
 WITH cambios_float AS (
   SELECT
     to_timestamp(CAST(a.date AS bigint)/1000) AS dt
@@ -183,9 +184,12 @@ SELECT
 FROM horas_por_dia
 GROUP BY num_dia_semana
 ORDER BY num_dia_semana;
+```
+
 
 ### Query to know the average working hours of the entire database (note: for saturday and sunday the result means that, if the machine operates in these days, the average time of operation is the one shown in the result
 
+```sql
 WITH cambios_float AS (
   SELECT
     to_timestamp(TRUNC(CAST(a.date AS bigint)/1000)) AS dt
@@ -253,11 +257,12 @@ SELECT
 FROM horas_por_dia
 GROUP BY dia_semana, num_dia_semana
 ORDER BY num_dia_semana;
-
+```
 
 
 ### Query to count the working hours each day
 
+```sql
 WITH cambios_float AS (
   SELECT
     to_timestamp(CAST(a.date AS bigint)/1000) AS dt
@@ -306,10 +311,11 @@ SELECT
 FROM duraciones
 GROUP BY dia
 ORDER BY dia;
-
+```
 
 ### Query for identifying NaNs in time intervals
 
+```sql
 WITH base_data AS (
     SELECT 
         to_timestamp(ROUND((TRUNC(CAST(a.date AS bigint)/1000) / 30))*30) AS dt
@@ -397,13 +403,14 @@ SELECT
     ) AS nombres_variables
 FROM variables_por_periodo vpp
 ORDER BY vpp.start_time;
-
+```
 
 
 ##### ALARM IDENTIFYING QUERIES #####
 
 ### Query to identify the different types of alarms
 
+```sql
 SELECT DISTINCT
     TRIM(jsonb_array_elements(value::jsonb)->>1) AS descripcion_alarma
 FROM variable_log_string a
@@ -413,13 +420,14 @@ WHERE b.name = 'ALARMS'
   AND value LIKE '[%'
   AND value LIKE '%]'
 ORDER BY descripcion_alarma;
-
+```
 
 
 ##### QUERIES TO EXTRACT DATA #####
 
 ### Query to unite float and string data
 
+```sql
 SELECT 
     a.id_var,
     b.name,
@@ -447,23 +455,30 @@ WHERE to_timestamp(ROUND((TRUNC(CAST(a.date AS bigint)/1000) / 30))*30) >= '2022
   AND to_timestamp(ROUND((TRUNC(CAST(a.date AS bigint)/1000) / 30))*30) < '2022-02-23 15:00:00+01'
 
 ORDER BY dt, name;
+```
+
 
 ### Query to count the amount of variables that change during a time period (in this case, every hour)
 
+```sql
 SELECT count(distinct(id_var)) ,to_timestamp(ROUND((TRUNC(CAST(date as bigint)/1000) / 3600))*3600) 
 as dt FROM "public"."variable_log_float" 
 WHERE to_timestamp(TRUNC(CAST(date as bigint)/1000)) >= '2020-12-28 00:00:00+01' 
 and to_timestamp(TRUNC(CAST(date as bigint)/1000)) < '2021-01-10 06:00:00+01'
 group by dt
+```
 
 ### Query to identify the minimum and maximum date present in the database
 
+```sql
 SELECT to_timestamp(cast(min(date) as bigint)/ 1000) AS min_date, 
 to_timestamp(cast(max(date) as bigint)/ 1000) AS max_date 
 FROM "public"."variable_log_string";
+```
 
 ### Query for details of the values captured for every variable in a given timeframe (for string or float data)
 
+```sql
 SELECT 
     a.id_var,
     b.name,
@@ -475,7 +490,7 @@ JOIN variable b
 WHERE to_timestamp(ROUND((TRUNC(CAST(a.date as bigint)/1000) / 30))*30) >= '2021-01-04 13:39:30+01'
   AND to_timestamp(ROUND((TRUNC(CAST(a.date as bigint)/1000) / 30))*30) < '2021-01-04 22:00:00+01'
 ORDER BY dt;
-
+```
 
 
 
