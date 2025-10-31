@@ -120,6 +120,68 @@ FROM horas h
 LEFT JOIN cambios_por_hora c ON h.hora = c.hora
 ORDER BY h.hora;
 
+### Query to count the average working hours per day, by days counted
+
+WITH cambios_float AS (
+  SELECT
+    to_timestamp(CAST(a.date AS bigint)/1000) AS dt
+  FROM variable_log_float a
+  WHERE to_timestamp(CAST(a.date AS bigint)/1000)
+        BETWEEN '2021-01-07 00:00:00' AND '2021-03-15 23:59:59'
+),
+cambios_string AS (
+  SELECT
+    to_timestamp(CAST(a.date AS bigint)/1000) AS dt
+  FROM variable_log_string a
+  WHERE to_timestamp(CAST(a.date AS bigint)/1000)
+        BETWEEN '2021-01-07 00:00:00' AND '2021-03-15 23:59:59'
+),
+todos_cambios AS (
+  SELECT dt FROM cambios_float
+  UNION ALL
+  SELECT dt FROM cambios_string
+),
+diferencias AS (
+  SELECT
+    dt,
+    LAG(dt) OVER (ORDER BY dt) AS dt_anterior
+  FROM todos_cambios
+),
+duraciones AS (
+  SELECT
+    DATE(dt) AS dia,
+    EXTRACT(DOW FROM dt) AS num_dia_semana, -- 0 = domingo, 1 = lunes...
+    EXTRACT(EPOCH FROM (dt - dt_anterior)) / 3600 AS horas
+  FROM diferencias
+  WHERE dt_anterior IS NOT NULL
+    AND EXTRACT(EPOCH FROM (dt - dt_anterior)) < 3600  -- ignorar huecos mayores a 1 hora
+),
+horas_por_dia AS (
+  SELECT
+    dia,
+    num_dia_semana::int AS num_dia_semana,
+    ROUND(SUM(horas)::numeric, 2) AS horas_trabajadas
+  FROM duraciones
+  GROUP BY dia, num_dia_semana
+)
+
+SELECT
+  CASE num_dia_semana
+    WHEN 1 THEN 'Lunes'
+    WHEN 2 THEN 'Martes'
+    WHEN 3 THEN 'Miércoles'
+    WHEN 4 THEN 'Jueves'
+    WHEN 5 THEN 'Viernes'
+    WHEN 6 THEN 'Sábado'
+    WHEN 0 THEN 'Domingo'
+  END AS dia_semana,
+  COUNT(*) AS dias_analizados,
+  ROUND(AVG(horas_trabajadas)::numeric, 2) AS promedio_horas_trabajadas
+FROM horas_por_dia
+GROUP BY num_dia_semana
+ORDER BY num_dia_semana;
+
+
 
 ### Query to count the working hours each day
 
