@@ -32,12 +32,18 @@ This will install:
 - **date-fns** - For date formatting
 - **Tailwind CSS** - For styling
 
-#### 3. Run the development server
+#### 3. Create a local variables file 
+Create a file where you add your base URL for the backend connection (see backend docs)
+```
+NEXT_PUBLIC_API_URL= http://some_local_url
+```
+
+#### 4. Run the development server
 ```bash
 npm run dev
 ```
 
-#### 4. Test it!
+#### 5. Test it!
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the dashboard.
 
 **Important:** Make sure your backend is running on port 8000 before starting the frontend!
