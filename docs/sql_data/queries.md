@@ -9,7 +9,7 @@ output: html_document
 
 ## PERIOD IDENTIFYING QUERIES ##
 
-### Query to identify the hours in which changes in variables are registered, based on the working day (in order to know possible start and end times for the machine)
+### PQ1 - Query to identify the hours in which changes in variables are registered, based on the working day (in order to know possible start and end times for the machine)
 
 ```sql
 WITH horas AS (  
@@ -45,7 +45,7 @@ LEFT JOIN cambios_por_hora c ON h.dt = c.dt
 ORDER BY h.dt;
 ```
 
-### Query for detecting the exact timestamps in which variable changes are detected (also includes the days of the week)
+### PQ2 - Query for detecting the exact timestamps in which variable changes are detected (also includes the days of the week)
 
 ``` sql
 WITH horas AS (
@@ -121,7 +121,7 @@ LEFT JOIN cambios_por_hora c ON h.hora = c.hora
 ORDER BY h.hora;
 ```
 
-### Query to count the working hours in every interval in which the machine is working (IMPORTANT: we consider that the machine stops if there are no new variable changes after 10 minutes)
+### PQ3 - Query to count the working hours in every interval in which the machine is working (IMPORTANT: we consider that the machine stops if there are no new variable changes after 10 minutes)
 
 WITH cambios AS (
   -- Unir logs de tipo FLOAT
@@ -202,7 +202,7 @@ FROM intervalos
 ORDER BY fecha, inicio_operacion;
 
 
-### Query to identify the stoppage times during the day and for how long the stoppage lasted (IMPORTANT: same consideration as in the query about the 10 minutes limit)
+### PQ4 - Query to identify the stoppage times during the day and for how long the stoppage lasted (IMPORTANT: same consideration as in the query about the 10 minutes limit)
 
 WITH cambios AS (
   -- Combinar los logs de float y string en una sola lista de timestamps
@@ -256,7 +256,7 @@ FROM paradas
 ORDER BY fecha, inicio_parada;
 
 
-### Query to count the average working hours per day, by days counted
+### PQ5 - Query to count the average working hours per day, by days counted
 
 ```sql
 WITH cambios_float AS (
@@ -320,7 +320,7 @@ ORDER BY num_dia_semana;
 ```
 
 
-### Query to know the average working hours of the entire database (note: for saturday and sunday the result means that, if the machine operates in these days, the average time of operation is the one shown in the result
+### PQ6 - Query to know the average working hours of the entire database (note: for saturday and sunday the result means that, if the machine operates in these days, the average time of operation is the one shown in the result
 
 ```sql
 WITH cambios_float AS (
@@ -392,7 +392,7 @@ GROUP BY dia_semana, num_dia_semana
 ORDER BY num_dia_semana;
 ```
 
-### Query to count the working hours each day and the number of times the machine stopped working during the day
+### PQ7 - Query to count the working hours each day and the number of times the machine stopped working during the day
 
 ```sql
 WITH cambios AS (
@@ -468,7 +468,7 @@ ORDER BY b.fecha;
 ```
 
 
-### Query to count the working hours each day
+### PQ8 - Query to count the working hours each day
 
 ```sql
 WITH cambios_float AS (
@@ -521,7 +521,7 @@ GROUP BY dia
 ORDER BY dia;
 ```
 
-### Query for identifying NaNs in time intervals
+### PQ9 - Query for identifying NaNs in time intervals
 
 ```sql
 WITH base_data AS (
@@ -617,7 +617,7 @@ ORDER BY vpp.start_time;
 
 ## ALARM IDENTIFYING QUERIES ##
 
-### Query to identify the different types of alarms
+### AQ1 - Query to identify the different types of alarms
 
 ```sql
 SELECT DISTINCT
@@ -634,7 +634,7 @@ ORDER BY descripcion_alarma;
 
 ## QUERIES TO EXTRACT DATA ##
 
-### Query to unite float and string data
+### QE1 - Query to unite float and string data
 
 ```sql
 SELECT 
@@ -667,7 +667,7 @@ ORDER BY dt, name;
 ```
 
 
-### Query to count the amount of variables that change during a time period (in this case, every hour)
+### QE2 - Query to count the amount of variables that change during a time period (in this case, every hour)
 
 ```sql
 SELECT count(distinct(id_var)) ,to_timestamp(ROUND((TRUNC(CAST(date as bigint)/1000) / 3600))*3600) 
@@ -677,7 +677,7 @@ and to_timestamp(TRUNC(CAST(date as bigint)/1000)) < '2021-01-10 06:00:00+01'
 group by dt
 ```
 
-### Query to identify the minimum and maximum date present in the database
+### QE3 - Query to identify the minimum and maximum date present in the database
 
 ```sql
 SELECT to_timestamp(cast(min(date) as bigint)/ 1000) AS min_date, 
@@ -685,7 +685,7 @@ to_timestamp(cast(max(date) as bigint)/ 1000) AS max_date
 FROM "public"."variable_log_string";
 ```
 
-### Query for details of the values captured for every variable in a given timeframe (for string or float data)
+### QE4 - Query for details of the values captured for every variable in a given timeframe (for string or float data)
 
 ```sql
 SELECT 
