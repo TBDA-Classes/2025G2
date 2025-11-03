@@ -380,7 +380,7 @@ horas_por_dia AS (
       WHEN 5 THEN 'Viernes'
       WHEN 6 THEN 'Sábado'
     END AS dia_semana,
-    COUNT(*) FILTER (WHERE estado IN ('Máquina en operación', 'Actividad media')) AS horas_trabajadas
+    COUNT(*) FILTER (WHERE estado IN ('Máquina en operación', 'Actividad media', 'Parada probable')) AS horas_trabajadas
   FROM estado_por_hora
   GROUP BY DATE(hora), EXTRACT(DOW FROM hora)
 )
