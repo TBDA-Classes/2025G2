@@ -558,7 +558,7 @@ FROM downtime_periods_raw
 ORDER BY start_time;
 ```
 
-### Query for identifying the variables that have registered NaNs
+### PQ10 - Query for identifying the variables that have registered NaNs
 
 ```sql
 WITH base_data AS (
