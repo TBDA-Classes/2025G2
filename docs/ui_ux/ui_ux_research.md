@@ -1,6 +1,6 @@
 # UI/UX Research: Interfaces for NC Machine Operations
 
-FIGMA FILE: https://www.figma.com/make/RSHfWMGrR5SyWN58c47tp1/Industrial-Dashboard-Prototype?fullscreen=1
+FIGMA PROTOTYPE: https://www.figma.com/make/RSHfWMGrR5SyWN58c47tp1/Industrial-Dashboard-Prototype?fullscreen=1
 
 This document compiles a survey of user interfaces, dashboards, and interaction patterns relevant to a system that analyzes high‑frequency data from **Numerical Control (NC) machines** and transforms it into actionable insights. The research focuses on visual and interactive solutions that help operators and engineers understand **machine operation**, **energy usage**, **timing per program**, and **alerts**, with examples from different sources. The purpose of this research is also to give to the frontend developers some ideas and insights on how the team can approach the design of the UI/UX.
 
