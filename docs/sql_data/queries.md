@@ -121,6 +121,140 @@ LEFT JOIN cambios_por_hora c ON h.hora = c.hora
 ORDER BY h.hora;
 ```
 
+### Query to count the working hours in every interval in which the machine is working (IMPORTANT: we consider that the machine stops if there are no new variable changes after 10 minutes)
+
+WITH cambios AS (
+  -- Unir logs de tipo FLOAT
+  SELECT
+    to_timestamp(TRUNC(CAST(a.date AS bigint)/1000)) AS dt
+  FROM variable_log_float a
+  WHERE to_timestamp(TRUNC(CAST(a.date AS bigint)/1000))
+        BETWEEN '2021-01-07 00:00:00' AND '2021-03-15 23:59:59'
+
+  UNION ALL
+
+  -- Unir logs de tipo STRING
+  SELECT
+    to_timestamp(TRUNC(CAST(a.date AS bigint)/1000)) AS dt
+  FROM variable_log_string a
+  WHERE to_timestamp(TRUNC(CAST(a.date AS bigint)/1000))
+        BETWEEN '2021-01-07 00:00:00' AND '2021-03-15 23:59:59'
+),
+
+ordenado AS (
+  SELECT
+    dt,
+    date(dt) AS fecha,
+    LAG(dt) OVER (PARTITION BY date(dt) ORDER BY dt) AS dt_anterior
+  FROM cambios
+),
+
+-- Detectar paradas: diferencia mayor a 10 minutos entre eventos
+marcado AS (
+  SELECT
+    fecha,
+    dt,
+    dt_anterior,
+    CASE
+      WHEN dt_anterior IS NULL THEN 1
+      WHEN EXTRACT(EPOCH FROM (dt - dt_anterior)) > 600 THEN 1  -- 600 segundos = 10 minutos
+      ELSE 0
+    END AS nueva_sesion
+  FROM ordenado
+),
+
+-- Asignar un número de bloque de operación continuo
+bloques AS (
+  SELECT
+    fecha,
+    dt,
+    SUM(nueva_sesion) OVER (PARTITION BY fecha ORDER BY dt) AS bloque_id
+  FROM marcado
+),
+
+-- Determinar inicio, fin y duración de cada bloque
+intervalos AS (
+  SELECT
+    fecha,
+    MIN(dt) AS inicio_operacion,
+    MAX(dt) AS fin_operacion,
+    ROUND(EXTRACT(EPOCH FROM (MAX(dt) - MIN(dt)))/3600.0, 2) AS horas_operacion
+  FROM bloques
+  GROUP BY fecha, bloque_id
+)
+
+-- Resultado final ordenado
+SELECT
+  fecha,
+  CASE EXTRACT(DOW FROM fecha)
+    WHEN 0 THEN 'Domingo'
+    WHEN 1 THEN 'Lunes'
+    WHEN 2 THEN 'Martes'
+    WHEN 3 THEN 'Miércoles'
+    WHEN 4 THEN 'Jueves'
+    WHEN 5 THEN 'Viernes'
+    WHEN 6 THEN 'Sábado'
+  END AS dia_semana,
+  inicio_operacion,
+  fin_operacion,
+  horas_operacion
+FROM intervalos
+ORDER BY fecha, inicio_operacion;
+
+
+### Query to identify the stoppage times during the day and for how long the stoppage lasted (IMPORTANT: same consideration as in the query about the 10 minutes limit)
+
+WITH cambios AS (
+  -- Combinar los logs de float y string en una sola lista de timestamps
+  SELECT to_timestamp(TRUNC(CAST(a.date AS bigint)/1000)) AS dt
+  FROM variable_log_float a
+  WHERE to_timestamp(TRUNC(CAST(a.date AS bigint)/1000))
+        BETWEEN '2021-01-07 00:00:00' AND '2021-03-15 23:59:59'
+
+  UNION ALL
+
+  SELECT to_timestamp(TRUNC(CAST(a.date AS bigint)/1000)) AS dt
+  FROM variable_log_string a
+  WHERE to_timestamp(TRUNC(CAST(a.date AS bigint)/1000))
+        BETWEEN '2021-01-07 00:00:00' AND '2021-03-15 23:59:59'
+),
+
+ordenado AS (
+  SELECT
+    dt,
+    date(dt) AS fecha,
+    LEAD(dt) OVER (PARTITION BY date(dt) ORDER BY dt) AS siguiente_dt
+  FROM cambios
+),
+
+paradas AS (
+  SELECT
+    fecha,
+    dt AS inicio_parada,
+    siguiente_dt AS fin_parada,
+    EXTRACT(EPOCH FROM (siguiente_dt - dt))/3600.0 AS horas_parada
+  FROM ordenado
+  WHERE siguiente_dt IS NOT NULL
+    AND EXTRACT(EPOCH FROM (siguiente_dt - dt)) > 600  -- Umbral de 10 minutos
+)
+
+SELECT
+  fecha,
+  CASE EXTRACT(DOW FROM fecha)
+    WHEN 0 THEN 'Domingo'
+    WHEN 1 THEN 'Lunes'
+    WHEN 2 THEN 'Martes'
+    WHEN 3 THEN 'Miércoles'
+    WHEN 4 THEN 'Jueves'
+    WHEN 5 THEN 'Viernes'
+    WHEN 6 THEN 'Sábado'
+  END AS dia_semana,
+  inicio_parada,
+  fin_parada,
+  ROUND(horas_parada, 2) AS horas_parada
+FROM paradas
+ORDER BY fecha, inicio_parada;
+
 
 ### Query to count the average working hours per day, by days counted
 
