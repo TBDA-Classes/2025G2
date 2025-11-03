@@ -267,7 +267,7 @@ WITH cambios AS (
     to_timestamp(TRUNC(CAST(a.date AS bigint)/1000)) AS dt
   FROM variable_log_float a
   WHERE to_timestamp(TRUNC(CAST(a.date AS bigint)/1000))
-        BETWEEN '2021-01-07 00:00:00' AND '2021-01-15 23:59:59'
+        BETWEEN '2021-01-07 00:00:00' AND '2021-03-15 23:59:59'
 
   UNION ALL
 
@@ -275,7 +275,7 @@ WITH cambios AS (
     to_timestamp(TRUNC(CAST(a.date AS bigint)/1000)) AS dt
   FROM variable_log_string a
   WHERE to_timestamp(TRUNC(CAST(a.date AS bigint)/1000))
-        BETWEEN '2021-01-07 00:00:00' AND '2021-01-15 23:59:59'
+        BETWEEN '2021-01-07 00:00:00' AND '2021-03-15 23:59:59'
 ),
 
 ordenado AS (
