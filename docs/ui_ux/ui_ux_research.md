@@ -2,10 +2,7 @@
 
 FIGMA PROTOTYPE: https://www.figma.com/make/RSHfWMGrR5SyWN58c47tp1/Industrial-Dashboard-Prototype?fullscreen=1
 
-This document compiles a survey of user interfaces, dashboards, and interaction patterns relevant to a system that analyzes high‑frequency data from **Numerical Control (NC) machines** and transforms it into actionable insights. The research focuses on visual and interactive solutions that help operators and engineers understand **machine operation**, **energy usage**, **timing per program**, and **alerts**, with examples from different sources. The purpose of this research is also to give to the frontend developers some ideas and insights on how the team can approach the design of the UI/UX.
-
-**The structure follows the project’s needs and proposes concrete UI components for each one, with references and example visuals.**
-
+The document presents research on user interfaces, dashboards, and interaction patterns for a system that analyzes high-frequency data from Numerical Control (NC) machines to generate actionable insights. It focuses on visual and interactive solutions that help operators and engineers understand machine performance, energy consumption, program timing, and alerts, including examples from various sources. Additionally, it aims to provide frontend developers with ideas and references for designing the UI/UX. The structure aligns with the project’s needs and proposes specific interface components with visual examples
 ---
 
 ## 1) Identification of operation periods
@@ -13,17 +10,6 @@ This document compiles a survey of user interfaces, dashboards, and interaction 
 - **RUN** → the machine is actively working (executing a program, cutting, milling, etc.).
 - **IDLE** → the machine is powered on but not performing productive work (waiting, setup, no command).
 - **DOWN** → the machine is stopped due to an error, maintenance, or shutdown
-
-**UI patterns & components**
-- **State timeline / band chart** (stacked color bands per machine state).
-- **Utilization trend + thresholds** (sparklines, line charts with shift markers).
-- **Gantt‑like run timeline per machine** (one row per machine; zoom & pan).
-- **Shift overlays** (background shading for shifts/breaks).
-- **Downtime reason overlay** (tooltips with coded reasons).
-
-**Why this pattern works**
-- Operators can instantly read *when* and *how long* a machine ran, idled, or stopped and correlate with shifts and programs.
-- Pairing the timeline with a **Pareto of downtime reasons** supports root‑cause analysis.
 
 **Examples & references**
 - **MachineMetrics – “Current Shift Dashboard”** (real‑time factory dashboards with color‑coded status and OEE context).  
@@ -49,9 +35,6 @@ A timeline visualization that displays each machine’s activity across time, us
 - Supports **zooming and panning** for detailed inspection of specific time windows.  
 - Optional **real-time refresh** to update ongoing operations.
 
-**Why it matters:**  
-This visualization makes it easy for operators and engineers to identify when and for how long the machine was running, idle, or down. It provides immediate situational awareness, helps correlate events with production schedules, and supports decision-making for efficiency improvements.
-
 ---
 
 #### **2. `DowntimePareto`**
@@ -65,9 +48,6 @@ A Pareto chart that highlights the most frequent or impactful causes of machine 
 - **Tooltips** showing cumulative percentages and occurrence counts.  
 - Can switch between **duration-based** and **frequency-based** ranking.  
 - Optional **export** or **drill-down** to view detailed event logs.
-
-**Why it matters:**  
-By visualizing which issues cause the most downtime, teams can prioritize corrective actions and maintenance planning. Connecting it with the timeline view helps users link root causes to specific time periods, making the analysis both quantitative and contextual.
 
 ---
 
@@ -83,21 +63,11 @@ A compact KPI component that summarizes machine utilization over a selected time
 - Can include **mini-trend sparkline** to show utilization evolution over time.  
 - Responsive layout suitable for dashboards, tablets, or mobile screens.
 
-**Why it matters:**  
-This card offers a concise snapshot of performance for quick daily or shift reviews. It supports supervisors and operators by providing an at-a-glance understanding of machine effectiveness, helping to identify deviations and confirm improvements after interventions.
 
 ---
 
 ## 2) User interfaces to facilitate interaction
 **Goal:** Make information accessible for different roles (operator vs. supervisor) and contexts (large screen, tablet, mobile).
-
-**Design guidance**
-- **Role‑based layouts**: concise KPIs for operators; comparative and historical views for supervisors.
-- **Consistent color semantics** (e.g., RUN=green, IDLE=yellow, ALARM=red, SETUP=blue). Add text labels for accessibility.
-- **Progressive disclosure**: overview → line → machine → program → cycle.
-- **Real‑time feedback** with low-latency widgets and non-blocking updates.
-- **Keyboard + touch affordances** (big hit targets, sticky headers, multi-select filters).
-- **Dark theme** option for shop‑floor glare; high‑contrast theme for accessibility.
 
 **Examples & references**
 - **Siemens MindSphere / Insights Hub – Dashboard Designer** (rich visualizations, queries, and OEE building blocks).  
@@ -123,8 +93,6 @@ A UI control that allows users to switch between different interface modes depen
 - Integrates with **user authentication** or permissions for secure access.  
 - Supports **visual cues** (icons, color headers) to indicate current mode.
 
-**Why it matters:**  
-Manufacturing environments have multiple user profiles with distinct needs. A `RoleSwitcher` ensures that each user sees the most relevant information without being overwhelmed. It enhances usability, reduces clutter, and supports efficient workflows.
 
 ---
 
@@ -140,9 +108,6 @@ A set of compact, easily accessible filters that allow users to narrow down data
 - Works seamlessly on **touch screens** and desktop interfaces.  
 - Optional **search or dropdown selector** for long lists of items.  
 
-**Why it matters:**  
-Quick, intuitive filtering is essential for operators and supervisors who need to analyze specific subsets of data (e.g., a single shift or machine). This component improves interaction speed and makes dashboards more adaptable in fast-paced environments.
-
 ---
 
 #### **3. `LayoutGrid`**
@@ -157,19 +122,12 @@ A flexible layout system that organizes multiple dashboard components (cards, ch
 - Adjustable **column and row spans** for different component priorities.  
 - **Consistent spacing, padding, and alignment** to maintain readability.  
 
-**Why it matters:**  
-Manufacturing dashboards are often viewed on diverse hardware (HMI panels, tablets, desktop PCs). A well-designed `LayoutGrid` ensures information is readable and accessible everywhere, maintaining usability and visual hierarchy regardless of the display.
 
 ---
 
 ## 3) Determination of when the machine is working (state/condition)
 **Goal:** Provide at-a-glance status and drill‑down into causes.
 
-**UI patterns & components**
-- **Status header** per machine (icon + state text + since duration).
-- **Andon indicator** (large, color-coded signal with sound/notification hooks).
-- **Tool/Spindle widget** (RPM, load, temperature, following error; sparklines).
-- **Job/Program panel** (program name, count, cycle time, remaining).
 
 **Examples & references**
 
@@ -192,8 +150,7 @@ A compact yet informative card showing the **current operational state** of a sp
 - Supports **hover details** with performance metrics and job info.  
 - Can integrate a **small trend sparkline** for cycle time or load.  
 
-**Why it matters:**  
-This component provides a quick, real-time snapshot of a machine’s activity and health. It helps operators monitor status at a glance and allows supervisors to see multiple machines’ conditions in a consistent visual format, improving situational awareness across the shop floor.
+
 
 ---
 
@@ -209,8 +166,6 @@ A focused panel displaying information about the **currently active CNC program 
 - Supports **rolling averages** for cycle-time performance tracking.  
 - Optional integration with **job scheduling or MES system** for context.  
 
-**Why it matters:**  
-Operators and engineers need to understand what the machine is doing at any moment. The `ProgramNow` panel makes it easier to monitor job progress, detect delays, and optimize cycle performance, directly connecting operational data with production targets.
 
 ---
 
@@ -226,8 +181,6 @@ A live feed showing the most recent **alarm or event notifications** related to 
 - Can auto-refresh in real-time and support **acknowledgment** by users.  
 - Optional **filter** by type (mechanical, electrical, program, safety).  
 
-**Why it matters:**  
-Quick visibility of recent alarms helps operators respond faster to critical issues and reduces downtime. The `AlarmMiniFeed` component integrates seamlessly with the dashboard, ensuring that alerts are visible without switching screens, supporting efficient problem resolution.
 
 
 ---
@@ -235,11 +188,6 @@ Quick visibility of recent alarms helps operators respond faster to critical iss
 ## 4) Calculation of timing and energy demands per program name
 **Goal:** Attribute cycle time and **energy consumption** to program/runs for cost and sustainability KPIs.
 
-**UI patterns & components**
-- **Energy-over-time with thresholds**, **stacked by machine** or **by program**.
-- **Per‑program summary**: avg cycle time, kWh/cycle, cost per unit.
-- **Daily/shift usage histograms** with anomaly flags.
-- **Correlation view**: energy vs. spindle load vs. feed rate.
 
 **Examples & references**
 - **Grafana – Energy Monitoring dashboards** (open templates; time series + KPIs + histograms).  
@@ -264,8 +212,6 @@ A compact widget displaying the key **energy-related performance indicators** fo
 - Optional **threshold indicators** (e.g., red if exceeding target consumption).  
 - Integrates with **sustainability KPIs** like CO₂ emissions per cycle.  
 
-**Why it matters:**  
-Energy usage is a significant cost driver in manufacturing. The `EnergyKPI` component makes consumption transparent, enabling teams to monitor efficiency and correlate energy peaks with machine activity. It also supports sustainability tracking by converting energy data into actionable cost and environmental metrics.
 
 ---
 
@@ -281,9 +227,6 @@ A data table summarizing **energy performance per program or job**, allowing com
 - Provides **trend indicators** showing improvements or regressions.  
 - Can include **export to CSV/XLSX** for reporting and analysis.  
 
-**Why it matters:**  
-Different CNC programs may have drastically different energy demands. The `ProgramEnergyTable` allows engineers to identify high-consumption programs, optimize machining parameters, and evaluate the cost-benefit of energy-saving measures. It bridges operational data with financial and sustainability perspectives.
-
 ---
 
 #### **3. `EnergyHistogram`**
@@ -298,19 +241,12 @@ A histogram visualization that displays **energy consumption distribution** over
 - Supports **anomaly markers** or alerts for abnormal energy spikes.  
 - Option to overlay **average and target lines** for performance comparison.  
 
-**Why it matters:**  
-Visualizing energy usage distribution helps detect irregularities, inefficiencies, and opportunities for savings. The `EnergyHistogram` component provides a clear overview of consumption trends, allowing teams to quickly identify when and where excessive energy is being used.
 
 ---
 
 ## 5) Determination of alerts and their context (type & location)
 **Goal:** Reduce response time by presenting **what**, **where**, and **who** should act.
 
-**UI patterns & components**
-- **Alert banner** with severity and affected scope (line/machine).
-- **Alarm panel** with filters (type, location, time, program).
-- **Context panel** that shows the related timeline window, last events, and playbook steps.
-- **Notification routing** (email/SMS/in-app) with acknowledgement flow.
 
 **Examples & references**
 - **Ignition (Inductive Automation) – customer projects with real-time alarming and mobile access.**  
@@ -334,8 +270,7 @@ A dynamic component that displays a live list of active and recent alarms across
 - Supports **real-time refresh** and sorting by priority, time, or machine.  
 - Optional **filter panel** for alarm type, location, or affected program.  
 
-**Why it matters:**  
-Timely visibility of alarms is essential for minimizing downtime and ensuring safety. The `AlarmFeed` component helps teams react quickly by combining alarm data with contextual information and providing direct access to the relevant time window or machine involved.
+
 
 ---
 
@@ -351,8 +286,7 @@ A contextual panel designed to explain *why* an alarm occurred by showing releva
 - **Highlight correlations** (e.g., high spindle load → tool wear).  
 - Option to **attach operator notes or photos** for future reference.  
 
-**Why it matters:**  
-Understanding the root cause of an alarm reduces repetitive failures and improves preventive maintenance. The `RootCausePanel` connects alarms to data-driven explanations and actionable steps, turning reactive troubleshooting into a proactive process.
+
 
 ---
 
@@ -368,18 +302,14 @@ An interactive breadcrumb-style navigation component that helps users locate the
 - Can include **mini-map or schematic view** for spatial context.  
 - Supports integration with **floor plan or layout diagrams**.  
 
-**Why it matters:**  
-When alarms occur, knowing *where* they happened is as important as knowing *what* happened. The `MapToCell` component provides spatial and organizational context, helping maintenance teams quickly locate equipment, coordinate responses, and avoid confusion in large facilities.
+
 
 ---
 
 ## 6) Documentation of approach & algorithms (UX for transparency)
 **Goal:** Make the system’s logic visible and trustworthy for operators and engineers.
 
-**UI patterns & components**
-- **“How it’s computed” drawers** on KPIs (Availability, Performance, Quality, OEE formula).
-- **Model status** (last data ingest, latency, missing sensors).
-- **Change log & data lineage** (source → transform → KPI).
+
 
 **Examples & references**
 - **MindSphere / Performance Insight**—end‑user dashboard creation and KPI building blocks.  
@@ -403,8 +333,7 @@ An interactive information popover attached to each KPI widget that explains **h
 - Provides **mini example** with sample input and output values.  
 - Optional link to **detailed documentation** or SOP.  
 
-**Why it matters:**  
-Transparency builds trust. When users can see *how* a KPI is computed, they’re more confident in the system’s accuracy. The `KPIInfoPopover` helps demystify analytics and supports training, auditing, and troubleshooting processes.
+
 
 ---
 
@@ -415,16 +344,15 @@ A small status indicator that shows the **quality or freshness of data** feeding
 
 **Features:**  
 - **Color-coded states:**  
-  - 🟢 **OK** – data updated within the expected window.  
-  - 🟡 **Delayed** – last update older than expected.  
-  - 🔴 **Missing** – data unavailable or invalid.  
+  -  **OK** – data updated within the expected window.  
+  -  **Delayed** – last update older than expected.  
+  -  **Missing** – data unavailable or invalid.  
 - Displays **timestamp of last successful update**.  
 - Tooltip showing **data source** and **expected frequency**.  
 - Integrates with system alerts when data quality drops.  
 - Can appear globally (for all data) or per widget.  
 
-**Why it matters:**  
-In industrial systems, decisions depend on reliable data. The `DataQualityBadge` increases user confidence and prevents misinterpretation of stale or incomplete metrics by making data health visible and explicit in the UI.
+
 
 ---
 
@@ -440,100 +368,7 @@ A component that logs and displays **changes made to system configurations or KP
 - Can include **diff view** to highlight what changed (old vs. new values).  
 - Integrates with role-based permissions for secure visibility.  
 
-**Why it matters:**  
-Traceability is critical in regulated and data-driven environments. The `AuditTrail` ensures accountability and enables teams to review and validate changes that affect KPIs or production analytics. It supports both governance and continuous improvement processes.
 
 
 ---
-
-## Additional sources (ecosystem context)
-- **Asseco Spain** – MES/MOM & dashboards in production control (Spanish article).  
-  <https://assecospaingroup.es/noticias/details/sistemas-mes-y-mom-de-control-digital-de-produccion-industrial-462/>
-
-- **Tulip (ES)** – manufacturing dashboards and typical data sources.  
-  <https://tulip.co/es/blog/6-manufacturing-dashboards-for-visualizing-production/>
-
----
-
-## Summary of recommended UI component library (for implementation)
-
-Below is a summary of the main UI components identified through research. Each component includes a link to a page where the team can view **visual examples, dashboards, or official documentation** showing similar designs or patterns.
-
----
-
-###  Global Navigation
-- **`AppShell`** — overall layout: header, sidebar, and breadcrumb navigation (Line → Cell → Machine).  
-  🔗 Example: Material UI App Bar & Drawer — [https://mui.com/material-ui/react-app-bar/](https://mui.com/material-ui/react-app-bar/)  
-  🔗 Breadcrumbs examples — [https://mui.com/material-ui/react-breadcrumbs/](https://mui.com/material-ui/react-breadcrumbs/)
-
----
-
-###  Overview Dashboard
-- **`KPIBar`** — top-level metrics such as OEE, Availability, Performance, and Quality.  
-  🔗 Grafana KPI Dashboard Template — [https://docs.cilium.io/en/v1.10/gettingstarted/grafana/](https://docs.cilium.io/en/v1.10/gettingstarted/grafana/)
-
-- **`FleetGrid`** — grid view of machine statuses (RUN/IDLE/DOWN).  
-  🔗 MachineMetrics “Current Shift Dashboard” — [https://www.machinemetrics.com/blog/current-shift-dashboard](https://www.machinemetrics.com/blog/current-shift-dashboard)
-
-- **`AlertTicker`** — scrolling ticker showing active alerts.  
-  🔗 Grafana Alert List visualization — [https://grafana.com/docs/grafana/latest/panels-visualizations/visualizations/alert-list/](https://grafana.com/docs/grafana/latest/panels-visualizations/visualizations/alert-list/)
-
----
-
-###  Machine Detail
-- **`MachineStatusCard`** — shows machine state, operator, job, and OEE mini metric.  
-  🔗 MachineMetrics Dashboard Example — [https://support.machinemetrics.com/hc/en-us/articles/360026591133-Current-Shift-Dashboard](https://support.machinemetrics.com/hc/en-us/articles/360026591133-Current-Shift-Dashboard)
-
-- **`MachineStateTimeline`** — visualizes RUN/IDLE/ALARM states over time.  
-  🔗 Highcharts Timeline / Gantt Chart Demos — [https://www.highcharts.com/demo/gantt](https://www.highcharts.com/demo/gantt)
-
-- **`ProgramNow`** — current program, cycle time, and progress overview.  
-  🔗 FANUC MT-LINKi brochure (example UI) — [https://www.fanucamerica.com/docs/default-source/cnc-files/brochures/mt-linki%28e%29-01.pdf](https://www.fanucamerica.com/docs/default-source/cnc-files/brochures/mt-linki%28e%29-01.pdf)
-
-- **`ToolSpindleWidget`** — shows spindle load, RPM, and temperature with sparklines.  
-  🔗 FANUC MT-LINKi product page — [https://www.fanucamerica.com/products/cnc/cnc-software/machine-tool-data-collection-software/cnc-machine-monitoring-software-mtlink-i](https://www.fanucamerica.com/products/cnc/cnc-software/machine-tool-data-collection-software/cnc-machine-monitoring-software-mtlink-i)
-
-- **`AlarmFeed`** — displays latest alarms with severity and filters.   
-  🔗 FANUC MT-LINKi Alarm Monitoring — same brochure as above.
-
----
-
-###  Energy & Cost
-- **`EnergyKPI`** — displays real-time power usage, kWh, and cost.  
-  🔗 Grafana “Energy Monitoring Dashboard” — [https://grafana.com/grafana/dashboards/12091-energy-monitoring/](https://grafana.com/grafana/dashboards/12091-energy-monitoring/)
-
-- **`EnergyOverTime`** — shows energy usage across time intervals.  
-  🔗 Grafana “Energy Overview” Dashboard — [https://grafana.com/grafana/dashboards/17181-energy/](https://grafana.com/grafana/dashboards/17181-energy/)
-
-- **`EnergyHistogram`** — histogram of energy consumption by shift/day.  
-  🔗 Grafana Histogram visualization guide — [https://grafana.com/docs/grafana/latest/panels-visualizations/visualizations/histogram/](https://grafana.com/docs/grafana/latest/panels-visualizations/visualizations/histogram/)
-
-- **`ProgramEnergyTable`** — table comparing program energy usage and cost.  
-  🔗 Grafana Table visualization — [https://grafana.com/docs/grafana/latest/panels-visualizations/visualizations/table/](https://grafana.com/docs/grafana/latest/panels-visualizations/visualizations/table/)
-
----
-
-###  Analysis
-- **`DowntimePareto`** — Pareto chart showing top downtime causes.  
-  🔗 Highcharts Pareto chart demo — [https://www.highcharts.com/demo/highcharts/pareto](https://www.highcharts.com/demo/highcharts/pareto)
-
-- **`DrilldownTabs`** — navigation tabs for Overview, Shift, Program, Alarms, and Energy.  
-  🔗 Material UI Tabs — [https://mui.com/material-ui/react-tabs/](https://mui.com/material-ui/react-tabs/)
-
----
-
-###  Transparency
-- **`KPIInfoPopover`** — shows formulas, data sources, and calculation windows.  
-  🔗 Tableau “Explain Data” feature overview — [https://help.tableau.com/current/pro/desktop/en-us/explain_data.htm](https://help.tableau.com/current/pro/desktop/en-us/explain_data.htm)
-
-- **`DataQualityBadge`** — indicates data freshness and reliability.  
-  🔗 Microsoft Power BI Lineage View& governance — [https://learn.microsoft.com/en-us/power-bi/collaborate-share/service-data-lineage](https://learn.microsoft.com/en-us/power-bi/collaborate-share/service-data-lineage)
-
-
-
----
-
-## Notes on licensing and usage of assets
-- All external screenshots are used for **research and comparative analysis**. Each image is linked to its public source (see captions/links above). Verify product licenses/permissions if reusing beyond internal research.
-- Product names and logos are trademarks of their respective owners.
 
