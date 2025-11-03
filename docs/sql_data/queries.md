@@ -203,7 +203,7 @@ FROM intervalos
 ORDER BY fecha, inicio_operacion;
 ```
 
-### PQ4 - Query to identify the stoppage times during the day and for how long the stoppage lasted (IMPORTANT: same consideration as in the query about the 10 minutes limit)
+### PQ4 - Query to identify the stoppage times during the day and for how long the stoppage lasted (IMPORTANT: same consideration as in PQ3 about the 10 minutes limit)
 
 ```sql
 WITH cambios AS (
