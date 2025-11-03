@@ -97,6 +97,7 @@ cambios_por_hora AS (
   GROUP BY date_trunc('hour', dt)
 )
 
+-- Resultado final simplificado
 SELECT
   h.hora,
   CASE EXTRACT(DOW FROM h.hora)
@@ -113,8 +114,6 @@ SELECT
   c.ultimo_cambio,
   CASE
     WHEN COALESCE(c.total_variables, 0) = 0 THEN 'Máquina parada'
-    WHEN COALESCE(c.total_variables, 0) < 30 THEN 'Parada probable'
-    WHEN COALESCE(c.total_variables, 0) BETWEEN 30 AND 80 THEN 'Actividad media'
     ELSE 'Máquina en operación'
   END AS estado_maquina
 FROM horas h
