@@ -1,98 +1,100 @@
 'use client'
 import { ResponsiveCalendar } from '@nivo/calendar'
+import { useRouter } from 'next/navigation';
+
 
 const data = [
     {
       "value": 398,
-      "day": "2018-03-08"
+      "day": "2021-01-07"
     },
     {
       "value": 101,
-      "day": "2017-10-29"
+      "day": "2021-02-15"
     },
     {
-      "value": 10,
-      "day": "2018-05-07"
+      "value": 310,
+      "day": "2021-03-22"
     },
     {
-      "value": 348,
-      "day": "2017-12-18"
+      "value": 248,
+      "day": "2021-04-18"
     },
     {
       "value": 380,
-      "day": "2018-01-29"
+      "day": "2021-05-29"
     },
     {
-      "value": 139,
-      "day": "2016-08-27"
+      "value": 239,
+      "day": "2021-06-27"
     },
     {
-      "value": 83,
-      "day": "2016-11-29"
+      "value": 283,
+      "day": "2021-07-29"
     },
     {
       "value": 308,
-      "day": "2017-03-13"
+      "day": "2021-08-13"
     },
     {
       "value": 193,
-      "day": "2017-07-26"
+      "day": "2021-09-26"
     },
     {
       "value": 304,
-      "day": "2015-12-10"
+      "day": "2021-10-10"
     },
     {
       "value": 352,
-      "day": "2017-11-09"
+      "day": "2021-11-09"
     },
     {
-      "value": 1,
-      "day": "2016-04-22"
+      "value": 291,
+      "day": "2021-12-22"
     },
     {
-      "value": 105,
-      "day": "2017-02-14"
+      "value": 405,
+      "day": "2022-01-14"
     },
     {
       "value": 207,
-      "day": "2015-06-17"
+      "day": "2022-02-17"
     },
     {
-      "value": 94,
-      "day": "2016-05-01"
+      "value": 294,
+      "day": "2022-03-01"
     },
     {
-      "value": 148,
-      "day": "2015-04-26"
+      "value": 248,
+      "day": "2022-04-26"
     },
     {
       "value": 353,
-      "day": "2018-01-08"
+      "day": "2022-05-08"
     },
     {
-      "value": 83,
-      "day": "2016-05-20"
+      "value": 283,
+      "day": "2022-06-20"
     },
     {
       "value": 365,
-      "day": "2016-06-02"
+      "day": "2022-07-02"
     },
     {
       "value": 272,
-      "day": "2018-04-25"
+      "day": "2022-08-25"
     },
     {
-      "value": 52,
-      "day": "2018-01-21"
+      "value": 252,
+      "day": "2022-09-21"
     },
     {
-      "value": 38,
-      "day": "2018-04-26"
+      "value": 338,
+      "day": "2022-10-26"
     },
     {
-      "value": 219,
-      "day": "2016-04-29"
+      "value": 319,
+      "day": "2022-11-29"
     },
     {
       "value": 272,
@@ -4200,17 +4202,25 @@ const data = [
     }
   ]
 
-const MyCalendar = ({ data } : { data:any[]}) => (
-    <ResponsiveCalendar /* or Calendar for fixed dimensions */
+
+
+const MyCalendar = ({ data } : { data:any[]}) => {
+    const router = useRouter();
+
+    return(
+    <ResponsiveCalendar
         data={data}
-        from="2015-03-01"
-        to="2016-07-12"
+        from="2021-01-07"
+        to="2022-12-31"
         emptyColor="#eeeeee"
         margin={{ top: 40, right: 40, bottom: 40, left: 40 }}
         yearSpacing={40}
         monthBorderColor="#ffffff"
         dayBorderWidth={2}
         dayBorderColor="#ffffff"
+        onClick = {(day) => {
+            router.push(`/dashboard/${day.day}`);
+        }}
         legends={[
             {
                 anchor: 'bottom-right',
@@ -4224,15 +4234,12 @@ const MyCalendar = ({ data } : { data:any[]}) => (
             }
         ]}
     />
-);
+)};
 
 export default function DashboardCalendar(){
     return(
         <div style={{width:'100%', height:'600px'}}>
-            <MyCalendar data={data}/>
-
+            <MyCalendar data={data} />
         </div>
     )
 }
-
-
