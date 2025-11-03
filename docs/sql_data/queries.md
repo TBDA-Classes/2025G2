@@ -123,6 +123,7 @@ ORDER BY h.hora;
 
 ### PQ3 - Query to count the working hours in every interval in which the machine is working (IMPORTANT: we consider that the machine stops if there are no new variable changes after 10 minutes)
 
+```sql
 WITH cambios AS (
   -- Unir logs de tipo FLOAT
   SELECT
@@ -200,10 +201,11 @@ SELECT
   horas_operacion
 FROM intervalos
 ORDER BY fecha, inicio_operacion;
-
+```
 
 ### PQ4 - Query to identify the stoppage times during the day and for how long the stoppage lasted (IMPORTANT: same consideration as in the query about the 10 minutes limit)
 
+```sql
 WITH cambios AS (
   -- Combinar los logs de float y string en una sola lista de timestamps
   SELECT to_timestamp(TRUNC(CAST(a.date AS bigint)/1000)) AS dt
@@ -254,7 +256,7 @@ SELECT
   ROUND(horas_parada, 2) AS horas_parada
 FROM paradas
 ORDER BY fecha, inicio_parada;
-
+```
 
 ### PQ5 - Query to count the average working hours per day, by days counted
 
