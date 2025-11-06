@@ -730,16 +730,38 @@ ORDER BY v.name;
 SELECT
   v.name AS variable,
   COUNT(*) AS total_registros,
-  COUNT(*) FILTER (WHERE a.value = 0) AS cantidad_ceros,
+
+  -- Valores iguales a 0
+  COUNT(*) FILTER (
+    WHERE a.value::text = '0' OR a.value::text = '0.0'
+  ) AS cantidad_ceros,
   ROUND(
-    100.0 * COUNT(*) FILTER (WHERE a.value = 0) / COUNT(*),
+    100.0 * COUNT(*) FILTER (
+      WHERE a.value::text = '0' OR a.value::text = '0.0'
+    ) / COUNT(*),
     2
-  ) AS porcentaje_ceros
+  ) AS porcentaje_ceros,
+
+  -- Valores que son NaN, inf, Infinity, -inf o NULL
+  COUNT(*) FILTER (
+    WHERE a.value::text ILIKE '%nan%'
+       OR a.value::text ILIKE '%inf%'
+       OR a.value IS NULL
+  ) AS cantidad_nan,
+  ROUND(
+    100.0 * COUNT(*) FILTER (
+      WHERE a.value::text ILIKE '%nan%'
+         OR a.value::text ILIKE '%inf%'
+         OR a.value IS NULL
+    ) / COUNT(*),
+    2
+  ) AS porcentaje_nan
+
 FROM variable_log_float a
 JOIN variable v ON a.id_var = v.id
 WHERE v.name ILIKE '%temp%'
 GROUP BY v.name
-ORDER BY porcentaje_ceros DESC;
+ORDER BY porcentaje_nan DESC, porcentaje_ceros DESC;
 ```
 
 ```{r setup, include=FALSE}
