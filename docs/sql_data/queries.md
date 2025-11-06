@@ -705,14 +705,15 @@ ORDER BY dt;
 
 ## UI/UX QUERIES ##
 
-### Query to know the ranges for the temperature variables
+### UQ1: Basic statistical data for the temperature variables
 
 ```sql
 SELECT
   v.name AS variable,
   ROUND(MIN(a.value)::numeric, 2) AS min_value,
   ROUND(AVG(a.value)::numeric, 2) AS avg_value,
-  ROUND(MAX(a.value)::numeric, 2) AS max_value
+  ROUND(MAX(a.value)::numeric, 2) AS max_value,
+  ROUND(STDDEV(a.value)::numeric, 2) AS stddev_value
 FROM variable_log_float a
 JOIN variable v ON a.id_var = v.id
 WHERE v.name ILIKE '%temp%'
@@ -723,7 +724,7 @@ GROUP BY v.name
 ORDER BY v.name;
 ```
 
-### Query to know the percentage of zeros that are stored in the temperature variables
+### UQ2: Query to know the percentage of zeros that are stored in the temperature variables
 
 ```sql
 SELECT
