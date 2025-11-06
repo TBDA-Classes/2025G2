@@ -703,8 +703,43 @@ WHERE to_timestamp(ROUND((TRUNC(CAST(a.date as bigint)/1000) / 30))*30) >= '2021
 ORDER BY dt;
 ```
 
+## UI/UX QUERIES ##
 
+### Query to know the ranges for the temperature variables
 
+```sql
+SELECT
+  v.name AS variable,
+  ROUND(MIN(a.value)::numeric, 2) AS min_value,
+  ROUND(AVG(a.value)::numeric, 2) AS avg_value,
+  ROUND(MAX(a.value)::numeric, 2) AS max_value
+FROM variable_log_float a
+JOIN variable v ON a.id_var = v.id
+WHERE v.name ILIKE '%temp%'
+  AND a.value IS NOT NULL
+  AND a.value != 'NaN'
+  AND a.value NOT IN ('Infinity', '-Infinity')
+GROUP BY v.name
+ORDER BY v.name;
+```
+
+### Query to know the percentage of zeros that are stored in the temperature variables
+
+```sql
+SELECT
+  v.name AS variable,
+  COUNT(*) AS total_registros,
+  COUNT(*) FILTER (WHERE a.value = 0) AS cantidad_ceros,
+  ROUND(
+    100.0 * COUNT(*) FILTER (WHERE a.value = 0) / COUNT(*),
+    2
+  ) AS porcentaje_ceros
+FROM variable_log_float a
+JOIN variable v ON a.id_var = v.id
+WHERE v.name ILIKE '%temp%'
+GROUP BY v.name
+ORDER BY porcentaje_ceros DESC;
+```
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
