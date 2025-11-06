@@ -762,11 +762,11 @@ JOIN variable v ON a.id_var = v.id
 WHERE v.name ILIKE '%temp%'
 GROUP BY v.name
 ORDER BY porcentaje_nan DESC, porcentaje_ceros DESC;
-```
 
 <img width="539" height="291" alt="image" src="https://github.com/user-attachments/assets/f9059ed7-4bb4-4373-92d9-ebc8788e1097" />
 
 ###### Thanks to the UQ2 we know that these variables seem to be useless for determining the temperatures to measure the performance of the machine
+```
 
 
 
