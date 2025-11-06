@@ -763,12 +763,32 @@ WHERE v.name ILIKE '%temp%'
 GROUP BY v.name
 ORDER BY porcentaje_nan DESC, porcentaje_ceros DESC;
 ```
-
+```
 <img width="539" height="291" alt="image" src="https://github.com/user-attachments/assets/f9059ed7-4bb4-4373-92d9-ebc8788e1097" />
 
 ###### Thanks to the UQ2 we know that these variables seem to be useless for determining the temperatures to measure the performance of the machine, and the variables to use would be the following ones:
 
 <img width="538" height="241" alt="image" src="https://github.com/user-attachments/assets/5ddefb77-8f1d-46e5-aff0-44147dd9473e" />
+
+TEMPERATURE_MOTOR_8
+TEMPERATURE_MOTOR_5
+TEMPERATURE_HEAD
+TEMPERATURE_RAM_2
+TEMPERATURE_RAM
+TEMPERATURE_BASE
+SPINDLE_1_TEMPERATURE
+TEMPERATURE_MOTOR_Z
+TEMPERATURE_MOTOR_Y
+TEMPERATURA_MOTOR_8
+TEMPERATURE_MOTOR_X
+TEMPERATURE_SPINDLE_1
+TEMPERATURA_MOTOR_5
+SPINDLE_TEMP
+TEMPERATURA_BASE
+TEMPERATURA_CABEZAL
+TEMPERATURA_CARNERO
+TEMPERATURA_CARNERO_2
+```
 
 
 
