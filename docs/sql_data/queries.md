@@ -802,7 +802,7 @@ SELECT
 FROM "public"."variable_log_float" a
 JOIN variable b ON a.id_var = b.id
 WHERE 
-  -- 1. Filtro de fecha y hora (ahora con precisión de segundos)
+  -- 1. Filtro de fecha y hora
   to_timestamp(CAST(a.date AS bigint) / 1000) >= '2021-01-04 13:39:30+01'
   AND to_timestamp(CAST(a.date AS bigint) / 1000) < '2021-01-05 22:00:00+01'
   
