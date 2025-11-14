@@ -44,3 +44,4 @@ lib64/
 
 # Documentation (exclude from repo)
 backend/DASHBOARD_QUERIES_GUIDE.md
+GITHUB.md
