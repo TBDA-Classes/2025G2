@@ -47,7 +47,7 @@ export async function getDateState(date: string){
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        return data as DateState;
+        return data[0] as DateState;
     } catch(error){
         console.error("Error fetching date state:", error);
         throw new Error(`Failed to fetch date state: ${error instanceof Error ? error.message : 'Unknown error'}`);

@@ -9,7 +9,7 @@ output: html_document
 
 ## PERIOD IDENTIFYING QUERIES ##
 
-### Query to identify the hours in which changes in variables are registered, based on the working day (in order to know possible start and end times for the machine)
+### PQ1 - Query to identify the hours in which changes in variables are registered, based on the working day (in order to know possible start and end times for the machine)
 
 ```sql
 WITH horas AS (  
@@ -45,7 +45,7 @@ LEFT JOIN cambios_por_hora c ON h.dt = c.dt
 ORDER BY h.dt;
 ```
 
-### Query for detecting the exact timestamps in which variable changes are detected (also includes the days of the week)
+### PQ2 - Query for detecting the exact timestamps in which variable changes are detected (also includes the days of the week)
 
 ``` sql
 WITH horas AS (
@@ -97,6 +97,7 @@ cambios_por_hora AS (
   GROUP BY date_trunc('hour', dt)
 )
 
+-- Resultado final simplificado
 SELECT
   h.hora,
   CASE EXTRACT(DOW FROM h.hora)
@@ -113,8 +114,6 @@ SELECT
   c.ultimo_cambio,
   CASE
     WHEN COALESCE(c.total_variables, 0) = 0 THEN 'Máquina parada'
-    WHEN COALESCE(c.total_variables, 0) < 30 THEN 'Parada probable'
-    WHEN COALESCE(c.total_variables, 0) BETWEEN 30 AND 80 THEN 'Actividad media'
     ELSE 'Máquina en operación'
   END AS estado_maquina
 FROM horas h
@@ -122,8 +121,144 @@ LEFT JOIN cambios_por_hora c ON h.hora = c.hora
 ORDER BY h.hora;
 ```
 
+### PQ3 - Query to count the working hours in every interval in which the machine is working (IMPORTANT: we consider that the machine stops if there are no new variable changes after 10 minutes)
 
-### Query to count the average working hours per day, by days counted
+```sql
+WITH cambios AS (
+  -- Unir logs de tipo FLOAT
+  SELECT
+    to_timestamp(TRUNC(CAST(a.date AS bigint)/1000)) AS dt
+  FROM variable_log_float a
+  WHERE to_timestamp(TRUNC(CAST(a.date AS bigint)/1000))
+        BETWEEN '2021-01-07 00:00:00' AND '2021-03-15 23:59:59'
+
+  UNION ALL
+
+  -- Unir logs de tipo STRING
+  SELECT
+    to_timestamp(TRUNC(CAST(a.date AS bigint)/1000)) AS dt
+  FROM variable_log_string a
+  WHERE to_timestamp(TRUNC(CAST(a.date AS bigint)/1000))
+        BETWEEN '2021-01-07 00:00:00' AND '2021-03-15 23:59:59'
+),
+
+ordenado AS (
+  SELECT
+    dt,
+    date(dt) AS fecha,
+    LAG(dt) OVER (PARTITION BY date(dt) ORDER BY dt) AS dt_anterior
+  FROM cambios
+),
+
+-- Detectar paradas: diferencia mayor a 10 minutos entre eventos
+marcado AS (
+  SELECT
+    fecha,
+    dt,
+    dt_anterior,
+    CASE
+      WHEN dt_anterior IS NULL THEN 1
+      WHEN EXTRACT(EPOCH FROM (dt - dt_anterior)) > 600 THEN 1  -- 600 segundos = 10 minutos
+      ELSE 0
+    END AS nueva_sesion
+  FROM ordenado
+),
+
+-- Asignar un número de bloque de operación continuo
+bloques AS (
+  SELECT
+    fecha,
+    dt,
+    SUM(nueva_sesion) OVER (PARTITION BY fecha ORDER BY dt) AS bloque_id
+  FROM marcado
+),
+
+-- Determinar inicio, fin y duración de cada bloque
+intervalos AS (
+  SELECT
+    fecha,
+    MIN(dt) AS inicio_operacion,
+    MAX(dt) AS fin_operacion,
+    ROUND(EXTRACT(EPOCH FROM (MAX(dt) - MIN(dt)))/3600.0, 2) AS horas_operacion
+  FROM bloques
+  GROUP BY fecha, bloque_id
+)
+
+-- Resultado final ordenado
+SELECT
+  fecha,
+  CASE EXTRACT(DOW FROM fecha)
+    WHEN 0 THEN 'Domingo'
+    WHEN 1 THEN 'Lunes'
+    WHEN 2 THEN 'Martes'
+    WHEN 3 THEN 'Miércoles'
+    WHEN 4 THEN 'Jueves'
+    WHEN 5 THEN 'Viernes'
+    WHEN 6 THEN 'Sábado'
+  END AS dia_semana,
+  inicio_operacion,
+  fin_operacion,
+  horas_operacion
+FROM intervalos
+ORDER BY fecha, inicio_operacion;
+```
+
+### PQ4 - Query to identify the stoppage times during the day and for how long the stoppage lasted (IMPORTANT: same consideration as in PQ3 about the 10 minutes limit)
+
+```sql
+WITH cambios AS (
+  -- Combinar los logs de float y string en una sola lista de timestamps
+  SELECT to_timestamp(TRUNC(CAST(a.date AS bigint)/1000)) AS dt
+  FROM variable_log_float a
+  WHERE to_timestamp(TRUNC(CAST(a.date AS bigint)/1000))
+        BETWEEN '2021-01-07 00:00:00' AND '2021-03-15 23:59:59'
+
+  UNION ALL
+
+  SELECT to_timestamp(TRUNC(CAST(a.date AS bigint)/1000)) AS dt
+  FROM variable_log_string a
+  WHERE to_timestamp(TRUNC(CAST(a.date AS bigint)/1000))
+        BETWEEN '2021-01-07 00:00:00' AND '2021-03-15 23:59:59'
+),
+
+ordenado AS (
+  SELECT
+    dt,
+    date(dt) AS fecha,
+    LEAD(dt) OVER (PARTITION BY date(dt) ORDER BY dt) AS siguiente_dt
+  FROM cambios
+),
+
+paradas AS (
+  SELECT
+    fecha,
+    dt AS inicio_parada,
+    siguiente_dt AS fin_parada,
+    EXTRACT(EPOCH FROM (siguiente_dt - dt))/3600.0 AS horas_parada
+  FROM ordenado
+  WHERE siguiente_dt IS NOT NULL
+    AND EXTRACT(EPOCH FROM (siguiente_dt - dt)) > 600  -- Umbral de 10 minutos
+)
+
+SELECT
+  fecha,
+  CASE EXTRACT(DOW FROM fecha)
+    WHEN 0 THEN 'Domingo'
+    WHEN 1 THEN 'Lunes'
+    WHEN 2 THEN 'Martes'
+    WHEN 3 THEN 'Miércoles'
+    WHEN 4 THEN 'Jueves'
+    WHEN 5 THEN 'Viernes'
+    WHEN 6 THEN 'Sábado'
+  END AS dia_semana,
+  inicio_parada,
+  fin_parada,
+  ROUND(horas_parada, 2) AS horas_parada
+FROM paradas
+ORDER BY fecha, inicio_parada;
+```
+
+### PQ5 - Query to count the average working hours per day, by days counted
 
 ```sql
 WITH cambios_float AS (
@@ -187,7 +322,7 @@ ORDER BY num_dia_semana;
 ```
 
 
-### Query to know the average working hours of the entire database (note: for saturday and sunday the result means that, if the machine operates in these days, the average time of operation is the one shown in the result
+### PQ6 - Query to know the average working hours of the entire database (note: for saturday and sunday the result means that, if the machine operates in these days, the average time of operation is the one shown in the result
 
 ```sql
 WITH cambios_float AS (
@@ -245,7 +380,7 @@ horas_por_dia AS (
       WHEN 5 THEN 'Viernes'
       WHEN 6 THEN 'Sábado'
     END AS dia_semana,
-    COUNT(*) FILTER (WHERE estado IN ('Máquina en operación', 'Actividad media')) AS horas_trabajadas
+    COUNT(*) FILTER (WHERE estado IN ('Máquina en operación', 'Actividad media', 'Parada probable')) AS horas_trabajadas
   FROM estado_por_hora
   GROUP BY DATE(hora), EXTRACT(DOW FROM hora)
 )
@@ -259,55 +394,66 @@ GROUP BY dia_semana, num_dia_semana
 ORDER BY num_dia_semana;
 ```
 
-### Query to count the working hours each day, and the time the machine started and ended working
+### PQ7 - Query to count the working hours each day and the number of times the machine stopped working during the day
 
 ```sql
 WITH cambios AS (
-  -- Combinar logs de tipo FLOAT
+  -- Unimos logs de tipo FLOAT y STRING
   SELECT
-    to_timestamp(TRUNC(CAST(a.date AS bigint)/1000)) AS dt,
-    b.name AS variable
+    to_timestamp(TRUNC(CAST(a.date AS bigint)/1000)) AS dt
   FROM variable_log_float a
-  JOIN variable b ON a.id_var = b.id
   WHERE to_timestamp(TRUNC(CAST(a.date AS bigint)/1000))
-        BETWEEN '2021-01-07 00:00:00' AND '2021-01-15 23:59:59'
+        BETWEEN '2021-01-07 00:00:00' AND '2021-03-15 23:59:59'
 
   UNION ALL
 
-  -- Combinar logs de tipo STRING
   SELECT
-    to_timestamp(TRUNC(CAST(a.date AS bigint)/1000)) AS dt,
-    b.name AS variable
+    to_timestamp(TRUNC(CAST(a.date AS bigint)/1000)) AS dt
   FROM variable_log_string a
-  JOIN variable b ON a.id_var = b.id
   WHERE to_timestamp(TRUNC(CAST(a.date AS bigint)/1000))
-        BETWEEN '2021-01-07 00:00:00' AND '2021-01-15 23:59:59'
+        BETWEEN '2021-01-07 00:00:00' AND '2021-03-15 23:59:59'
 ),
 
---  Agrupar por segundo para reducir carga y definir actividad
-cambios_por_segundo AS (
+ordenado AS (
   SELECT
-    date_trunc('second', dt) AS segundo,
-    COUNT(DISTINCT variable) AS total_variables
+    dt,
+    date(dt) AS fecha,
+    LAG(dt) OVER (PARTITION BY date(dt) ORDER BY dt) AS dt_anterior
   FROM cambios
-  GROUP BY 1
 ),
 
---  Detectar inicios y fines de actividad por día
-actividad_diaria AS (
+-- Detectar pausas entre registros
+intervalos AS (
   SELECT
-    date(segundo) AS fecha,
-    MIN(segundo) AS inicio,
-    MAX(segundo) AS fin,
-    ROUND(EXTRACT(EPOCH FROM (MAX(segundo) - MIN(segundo)))/3600.0, 2) AS horas_operacion
-  FROM cambios_por_segundo
-  GROUP BY date(segundo)
+    fecha,
+    dt_anterior,
+    dt,
+    EXTRACT(EPOCH FROM (dt - dt_anterior)) / 60 AS minutos_diff,
+    CASE
+      WHEN dt_anterior IS NULL THEN 0
+      WHEN EXTRACT(EPOCH FROM (dt - dt_anterior)) / 60 > 10 THEN 1
+      ELSE 0
+    END AS es_parada
+  FROM ordenado
+),
+
+-- Agrupar intervalos continuos de actividad
+bloques AS (
+  SELECT
+    fecha,
+    MIN(dt_anterior) FILTER (WHERE es_parada = 0) AS inicio_bloque,
+    MAX(dt) FILTER (WHERE es_parada = 0) AS fin_bloque,
+    SUM(
+      CASE WHEN es_parada = 0 THEN EXTRACT(EPOCH FROM (dt - dt_anterior)) ELSE 0 END
+    ) / 3600.0 AS horas_operacion,
+    SUM(es_parada) AS paradas
+  FROM intervalos
+  GROUP BY fecha
 )
 
---  Resultado final
 SELECT
-  a.fecha,
-  CASE EXTRACT(DOW FROM a.fecha)
+  b.fecha,
+  CASE EXTRACT(DOW FROM b.fecha)
     WHEN 0 THEN 'Domingo'
     WHEN 1 THEN 'Lunes'
     WHEN 2 THEN 'Martes'
@@ -316,15 +462,15 @@ SELECT
     WHEN 5 THEN 'Viernes'
     WHEN 6 THEN 'Sábado'
   END AS dia_semana,
-  a.inicio,
-  a.fin,
-  a.horas_operacion
-FROM actividad_diaria a
-ORDER BY a.fecha;
+  ROUND(SUM(b.horas_operacion), 2) AS horas_operacion,
+  SUM(b.paradas) AS numero_paradas
+FROM bloques b
+GROUP BY b.fecha
+ORDER BY b.fecha;
 ```
 
 
-### Query to count the working hours each day
+### PQ8 - Query to count the working hours each day
 
 ```sql
 WITH cambios_float AS (
@@ -377,7 +523,7 @@ GROUP BY dia
 ORDER BY dia;
 ```
 
-### Query for identifying NaNs in time intervals
+### PQ9 - Query for identifying NaNs in time intervals
 
 ```sql
 WITH base_data AS (
@@ -412,7 +558,7 @@ FROM downtime_periods_raw
 ORDER BY start_time;
 ```
 
-### Query for identifying the variables that have registered NaNs
+### PQ10 - Query for identifying the variables that have registered NaNs
 
 ```sql
 WITH base_data AS (
@@ -473,7 +619,7 @@ ORDER BY vpp.start_time;
 
 ## ALARM IDENTIFYING QUERIES ##
 
-### Query to identify the different types of alarms
+### AQ1 - Query to identify the different types of alarms
 
 ```sql
 SELECT DISTINCT
@@ -490,7 +636,7 @@ ORDER BY descripcion_alarma;
 
 ## QUERIES TO EXTRACT DATA ##
 
-### Query to unite float and string data
+### QE1 - Query to unite float and string data
 
 ```sql
 SELECT 
@@ -523,7 +669,7 @@ ORDER BY dt, name;
 ```
 
 
-### Query to count the amount of variables that change during a time period (in this case, every hour)
+### QE2 - Query to count the amount of variables that change during a time period (in this case, every hour)
 
 ```sql
 SELECT count(distinct(id_var)) ,to_timestamp(ROUND((TRUNC(CAST(date as bigint)/1000) / 3600))*3600) 
@@ -533,7 +679,7 @@ and to_timestamp(TRUNC(CAST(date as bigint)/1000)) < '2021-01-10 06:00:00+01'
 group by dt
 ```
 
-### Query to identify the minimum and maximum date present in the database
+### QE3 - Query to identify the minimum and maximum date present in the database
 
 ```sql
 SELECT to_timestamp(cast(min(date) as bigint)/ 1000) AS min_date, 
@@ -541,7 +687,7 @@ to_timestamp(cast(max(date) as bigint)/ 1000) AS max_date
 FROM "public"."variable_log_string";
 ```
 
-### Query for details of the values captured for every variable in a given timeframe (for string or float data)
+### QE4 - Query for details of the values captured for every variable in a given timeframe (for string or float data)
 
 ```sql
 SELECT 
@@ -557,6 +703,93 @@ WHERE to_timestamp(ROUND((TRUNC(CAST(a.date as bigint)/1000) / 30))*30) >= '2021
 ORDER BY dt;
 ```
 
+## UI/UX QUERIES ##
+
+### UQ1: Basic statistical data for the temperature variables
+
+```sql
+SELECT
+  v.name AS variable,
+  ROUND(MIN(a.value)::numeric, 2) AS min_value,
+  ROUND(AVG(a.value)::numeric, 2) AS avg_value,
+  ROUND(MAX(a.value)::numeric, 2) AS max_value,
+  ROUND(STDDEV(a.value)::numeric, 2) AS stddev_value
+FROM variable_log_float a
+JOIN variable v ON a.id_var = v.id
+WHERE v.name ILIKE '%temp%'
+  AND a.value IS NOT NULL
+  AND a.value != 'NaN'
+  AND a.value NOT IN ('Infinity', '-Infinity')
+GROUP BY v.name
+ORDER BY v.name;
+```
+
+### UQ2: Query to know the percentage of zeros that are stored in the temperature variables
+
+```sql
+SELECT
+  v.name AS variable,
+  COUNT(*) AS total_registros,
+
+  -- Valores iguales a 0
+  COUNT(*) FILTER (
+    WHERE a.value::text = '0' OR a.value::text = '0.0'
+  ) AS cantidad_ceros,
+  ROUND(
+    100.0 * COUNT(*) FILTER (
+      WHERE a.value::text = '0' OR a.value::text = '0.0'
+    ) / COUNT(*),
+    2
+  ) AS porcentaje_ceros,
+
+  -- Valores que son NaN, inf, Infinity, -inf o NULL
+  COUNT(*) FILTER (
+    WHERE a.value::text ILIKE '%nan%'
+       OR a.value::text ILIKE '%inf%'
+       OR a.value IS NULL
+  ) AS cantidad_nan,
+  ROUND(
+    100.0 * COUNT(*) FILTER (
+      WHERE a.value::text ILIKE '%nan%'
+         OR a.value::text ILIKE '%inf%'
+         OR a.value IS NULL
+    ) / COUNT(*),
+    2
+  ) AS porcentaje_nan
+
+FROM variable_log_float a
+JOIN variable v ON a.id_var = v.id
+WHERE v.name ILIKE '%temp%'
+GROUP BY v.name
+ORDER BY porcentaje_nan DESC, porcentaje_ceros DESC;
+```
+
+<img width="539" height="291" alt="image" src="https://github.com/user-attachments/assets/f9059ed7-4bb4-4373-92d9-ebc8788e1097" />
+
+###### Thanks to the UQ2 we know that these variables seem to be useless for determining the temperatures to measure the performance of the machine, and the variables to use would be the following ones:
+
+<img width="538" height="241" alt="image" src="https://github.com/user-attachments/assets/5ddefb77-8f1d-46e5-aff0-44147dd9473e" />
+
+```
+TEMPERATURE_MOTOR_8
+TEMPERATURE_MOTOR_5
+TEMPERATURE_HEAD
+TEMPERATURE_RAM_2
+TEMPERATURE_RAM
+TEMPERATURE_BASE
+SPINDLE_1_TEMPERATURE
+TEMPERATURE_MOTOR_Z
+TEMPERATURE_MOTOR_Y
+TEMPERATURA_MOTOR_8
+TEMPERATURE_MOTOR_X
+TEMPERATURE_SPINDLE_1
+TEMPERATURA_MOTOR_5
+SPINDLE_TEMP
+TEMPERATURA_BASE
+TEMPERATURA_CABEZAL
+TEMPERATURA_CARNERO
+TEMPERATURA_CARNERO_2
+```
 
 
 

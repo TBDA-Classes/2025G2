@@ -18,6 +18,14 @@ db_port = os.getenv("DB_PORT")
 DATABASE_URL = f'postgresql+psycopg://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}'
 engine = create_engine(DATABASE_URL)
 
+engine = create_engine(
+    DATABASE_URL,
+    pool_size=10,          # Number of persistent connections in the pool
+    max_overflow=20,       # Additional temporary connections allowed
+    pool_pre_ping=True,    # Check connections before use
+    pool_recycle=1800      # Recycle connections every 30 minutes
+)
+
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 
