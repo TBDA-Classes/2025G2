@@ -15,16 +15,9 @@ const data = [
 export default async function Dashboard() {
   try {
     return (
-      <div>
-        {/* Sticky Date Selector */}
-        <div className="bg-white">
-        <div className="sticky top-0 z-10 bg-white rounded-lg shadow-sm p-4 mb-6">
-          <p className="text-slate-800 font-medium">
-            Saturday, February 19, 2022
-          </p>
-        </div>
-        </div>
-
+      
+      <div className="p-8"> {/* Must be used for all children containers*/}
+      
         {/* Main Content */}
         <div className="space-y-6">
 
@@ -65,6 +58,79 @@ export default async function Dashboard() {
           <div className="h-[400px]">
             <TimelineChart data={data} />
           </div>
+        </div>
+
+        <div className="flex flex-row gap-10 ">
+          <div className="bg-white rounded-lg shadow-sm p-6 w-1/2">
+            <h2 className="text-2xl font-semibold text-slate-900 mb-4">
+            Temperature History (24 Hours)
+            </h2>
+            <div className="h-[400px]">
+            <TimelineChart data={data} />
+          </div>
+          </div>
+          <div className="bg-white rounded-lg shadow-sm p-6 w-1/2">
+            <h2 className="text-2xl font-semibold text-slate-900 mb-4">
+            Program History (24 Hours)
+            </h2>
+            <div className="h-[400px]">
+            <TimelineChart data={data} />
+          </div>
+          </div>
+        </div>
+
+        {/* Machine Utilization Section */}
+        <div className="bg-white rounded-lg shadow-sm p-6">
+          <h2 className="text-2xl font-semibold text-slate-900 mb-2">
+            Machine Utilization
+          </h2>
+          <p className="text-slate-600 mb-6">
+            Machine Status Distribution (24h)
+          </p>
+
+          {/* Status Cards */}
+          <div className="grid grid-cols-3 gap-6 mb-4">
+            {/* Running Time Card */}
+            <div className="bg-green-50 rounded-lg p-6">
+              <div className="flex justify-between items-baseline mb-3">
+                <span className="text-slate-700 font-medium">Running Time</span>
+                <span className="text-3xl font-bold text-green-600">84.4%</span>
+              </div>
+              <div className="w-full bg-green-200 rounded-full h-2 mb-2">
+                <div className="bg-green-600 h-2 rounded-full" style={{ width: '84.4%' }}></div>
+              </div>
+              <p className="text-slate-600 text-sm">1215 min / 1440 min</p>
+            </div>
+
+            {/* Idle Time Card */}
+            <div className="bg-yellow-50 rounded-lg p-6">
+              <div className="flex justify-between items-baseline mb-3">
+                <span className="text-slate-700 font-medium">Idle Time</span>
+                <span className="text-3xl font-bold text-yellow-600">10.4%</span>
+              </div>
+              <div className="w-full bg-yellow-200 rounded-full h-2 mb-2">
+                <div className="bg-yellow-600 h-2 rounded-full" style={{ width: '10.4%' }}></div>
+              </div>
+              <p className="text-slate-600 text-sm">150 min / 1440 min</p>
+            </div>
+
+            {/* Down Time Card */}
+            <div className="bg-red-50 rounded-lg p-6">
+              <div className="flex justify-between items-baseline mb-3">
+                <span className="text-slate-700 font-medium">Down Time</span>
+                <span className="text-3xl font-bold text-red-600">5.2%</span>
+              </div>
+              <div className="w-full bg-red-200 rounded-full h-2 mb-2">
+                <div className="bg-red-600 h-2 rounded-full" style={{ width: '5.2%' }}></div>
+              </div>
+              <p className="text-slate-600 text-sm">75 min / 1440 min</p>
+            </div>
+          </div>
+
+          {/* Total */}
+          <p className="text-center text-slate-500 text-sm">
+            Total: 1440 min (100.0%)
+          </p>
         </div>
         </div>
       </div>
