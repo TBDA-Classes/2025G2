@@ -53,6 +53,8 @@ This file is used by all team members to record their working hours and activiti
 | Jovan Bajcetic | UI/UX + Scrum master | UI/UX prototype | Actualization of first figma protype and edition | 2025-11-02 | 1.5 |
 | Clemence Tardivel | UI/UX | UI/UX prototype | Edition of the figma protype | 2025-11-02 | 1.5  |
 | Atle Sund | Frontend/Backend | Frontend | Created a production worthy structure for the fronetend dividing the dashboard folder into dashboard-index, alerts and energy. Created a sidebar navigation. Started on the layout for the main Dashbaord, now waiting for confirmation that the data used by the plots are plausible from the data analysis team.   | 2025-11-14 | 3.5 |
+| Atle Sund | Frontend/Backend | Frontend | Finalized the "homepage" and made navigation possible  | 2025-11-19 | 1 |
+| Atle Sund | Frontend/Backend | Backend | First doing data analysis to understand better the data and possibilities, also had meeting with Javier to discuss which information we need and how we can retrieve them  | 2025-11-20 | 2 |
 ---
 
  *Tip:*  
