@@ -44,4 +44,6 @@ lib64/
 
 # Documentation (exclude from repo)
 backend/DASHBOARD_QUERIES_GUIDE.md
+backend/scripts/create_agg_database.sql
+backend/scripts/etl_machine_activity.py
 GITHUB.md

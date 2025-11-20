@@ -159,4 +159,18 @@ The FastAPI application includes a status endpoint at `/api/status` that tests t
 }
 ```
 
+## Data Aggregation Strategy
+
+The production database contains 321M+ rows of sensor data, making direct queries extremely slow (10-30 seconds per request). To solve this, we use a **dual-database architecture** with an ETL process:
+
+### Architecture
+
+```
+Production DB (Read-Only)  →  ETL Script  →  Aggregation DB  →  FastAPI
+   321M rows                                  Pre-computed       10-50ms
+```
+
+- **Production Database**: Read-only access to raw sensor data
+- **Aggregation Database**: Separate PostgreSQL database we control, stores pre-computed aggregations
+- **ETL Script** (`backend/scripts/etl_machine_activity.py`): Extracts data from production, transforms via aggregation queries, and loads results into our database.
 
