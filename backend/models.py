@@ -1,3 +1,4 @@
+from datetime import date, datetime
 from sqlalchemy.orm import DeclarativeBase, Mapped, MappedCollection, mapped_column, relationship
 from sqlalchemy import ForeignKey
 from typing import Optional
@@ -56,3 +57,65 @@ class VariableLogString(Base):
     value: Mapped[Optional[str]]
 
     variable: Mapped["Variable"] = relationship(back_populates="variable_log_strings")
+
+
+
+########################################################################################
+############################ MODELS FROM AGGREGATED DB #################################
+########################################################################################
+
+# See table descriptions in backend/scripts/create_agg_database.sql
+
+class AggMachineActivityDaily(Base):
+    """
+    Example row:
+    record_date=2021-01-15, state_planned_down=0, state_running=8, state_unplanned_down=0
+    """
+    __tablename__ = "agg_machine_activity_daily"
+
+    # PostgreSQL DATE type → Python date
+    # Mapped 'record_date' to SQL column 'date' to avoid name collision
+    record_date: Mapped[date] = mapped_column("date", primary_key=True)
+    state_planned_down: Mapped[int] 
+    state_running: Mapped[int] 
+    state_unplanned_down: Mapped[int] 
+    last_updated_at: Mapped[Optional[datetime]]
+
+
+class AggSensorStats(Base):
+    """
+    Example row:
+    sensor_name='TEMPERATURA_BASE', dt='2021-01-15 14:00:00', 
+    min_value=20.5, avg_value=25.3, max_value=30.1, readings_count=3600
+    """
+    __tablename__ = "agg_sensor_stats"
+
+    # Composite primary key: sensor_name + dt
+    sensor_name: Mapped[str] = mapped_column(primary_key=True)
+    # Mapped 'dt' to SQL column 'datetime' to avoid name collision
+    dt: Mapped[datetime] = mapped_column("datetime", primary_key=True)
+    
+    min_value: Mapped[Optional[float]]
+    avg_value: Mapped[Optional[float]]
+    max_value: Mapped[Optional[float]]
+    readings_count: Mapped[Optional[int]]
+    last_updated_at: Mapped[Optional[datetime]]
+
+
+class DataStatus(Base):
+    """
+    Example row:
+    table_name='agg_machine_activity_daily', first_date=2020-12-01,
+    last_date=2022-02-28, total_records=450, last_updated=2025-11-21 14:23:45
+    """
+    __tablename__ = "v_data_status"
+    
+    # Views don't have real primary keys, but SQLAlchemy requires one
+    table_name: Mapped[str] = mapped_column(primary_key=True)
+    first_date: Mapped[Optional[date]]
+    last_date: Mapped[Optional[date]]
+    total_records: Mapped[Optional[int]]
+    last_updated: Mapped[Optional[datetime]]
+
+
+

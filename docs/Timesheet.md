@@ -55,6 +55,7 @@ This file is used by all team members to record their working hours and activiti
 | Atle Sund | Frontend/Backend | Frontend | Created a production worthy structure for the fronetend dividing the dashboard folder into dashboard-index, alerts and energy. Created a sidebar navigation. Started on the layout for the main Dashbaord, now waiting for confirmation that the data used by the plots are plausible from the data analysis team.   | 2025-11-14 | 3.5 |
 | Atle Sund | Frontend/Backend | Frontend | Finalized the "homepage" and made navigation possible  | 2025-11-19 | 1 |
 | Atle Sund | Frontend/Backend | Backend | First doing data analysis to understand better the data and possibilities, also had meeting with Javier to discuss which information we need and how we can retrieve them  | 2025-11-20 | 2 |
+| Atle Sund | Frontend/Backend | Backend | Created an aggregation database for better performance. This required setup for an additional DB connection, as well as new models found in models.py. Since our aggregation DB will be simple, SQLAlchemy will be used  | 2025-11-21 | 2 |
 ---
 
  *Tip:*  
