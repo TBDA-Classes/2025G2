@@ -27,6 +27,8 @@ python3 -m venv venv
 **On Mac/Linux:**
 ```bash
 source venv/bin/activate
+**On Windows:**
+venv\Scripts\activate
 ```
 
 #### 3. Install the required packages
