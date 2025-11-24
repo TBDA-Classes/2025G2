@@ -78,6 +78,7 @@ LEFT JOIN LATERAL (
 LEFT JOIN ConteoCambios cc ON re.segundo_evento = cc.segundo_evento
 ORDER BY re.segundo_evento;
 ```
+<img width="287" height="172" alt="image" src="https://github.com/user-attachments/assets/3cd72209-4367-4cf0-bf5a-68e1a7bfefea" />
 
 
 ## PERIOD IDENTIFYING QUERIES ##
