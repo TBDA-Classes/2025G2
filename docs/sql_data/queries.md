@@ -4,7 +4,80 @@ author: "Data analysis team"
 output: html_document
 ---
 
-# Clarification: The dates used for the queries can be changed depending on the needs,these are just reference dates to have usable queries
+# Clarification: The dates used for the queries can be changed depending on the needs,these are just reference dates to have usable queries (limited to 200 rows)
+
+## COMPARISON ##
+
+### CQ1: Query using the variable machine_in_operation vs. query to identify variable changes, to see if the data gathered by the two queries is the same.
+
+```sql
+WITH RangoEventos AS (
+    -- 1. Capturar los primeros 200 segundos únicos con cualquier evento
+    SELECT date_trunc('second', to_timestamp(a.date/1000)) AS segundo_evento
+    FROM variable_log_float a
+    WHERE to_timestamp(a.date/1000) BETWEEN '2021-01-07 00:00:00' AND '2021-01-15 23:59:59'
+    UNION
+    SELECT date_trunc('second', to_timestamp(a.date/1000)) AS segundo_evento
+    FROM variable_log_string a
+    WHERE to_timestamp(a.date/1000) BETWEEN '2021-01-07 00:00:00' AND '2021-01-15 23:59:59'
+    ORDER BY segundo_evento
+    LIMIT 200 -- Limita el número de segundos a analizar
+),
+-- 2. Conteo de Cambios (La métrica alternativa, optimizada)
+ConteoCambios AS (
+    SELECT
+        date_trunc('second', dt) AS segundo_evento,
+        COUNT(*) AS total_cambios
+    FROM (
+        SELECT to_timestamp(a.date/1000) AS dt
+        FROM variable_log_float a
+        JOIN variable b ON a.id_var = b.id
+        WHERE b.name <> 'MACHINE_IN_OPERATION'
+              AND to_timestamp(a.date/1000) BETWEEN '2021-01-07 00:00:00' AND '2021-01-15 23:59:59'
+        UNION ALL
+        SELECT to_timestamp(a.date/1000) AS dt
+        FROM variable_log_string a
+        WHERE to_timestamp(a.date/1000) BETWEEN '2021-01-07 00:00:00' AND '2021-01-15 23:59:59'
+    ) AS TodosLosCambios
+    GROUP BY 1
+)
+
+-- 3. COMPARACIÓN FINAL con LATERAL JOIN
+SELECT
+    re.segundo_evento,
+    -- Estado Real (basado en MACHINE_IN_OPERATION)
+    CASE
+        WHEN estado_actual.value IS NULL THEN 'Estado Desconocido'
+        WHEN estado_actual.value > 0 THEN 'Operación (Real)'
+        ELSE 'Parada (Real)'
+    END AS estado_real,
+    
+    -- Estado por Conteo de Cambios
+    CASE
+        WHEN cc.total_cambios IS NULL OR cc.total_cambios = 0 THEN 'Parada (Conteo)'
+        ELSE 'Operación (Conteo)'
+    END AS estado_conteo,
+    
+    -- Coincidencia
+    CASE
+        WHEN (estado_actual.value > 0) AND (cc.total_cambios IS NULL OR cc.total_cambios = 0) THEN 'NO COINCIDEN (Real ON, Conteo OFF)'
+        WHEN (estado_actual.value IS NULL OR estado_actual.value <= 0) AND (cc.total_cambios IS NOT NULL AND cc.total_cambios > 0) THEN 'NO COINCIDEN (Real OFF, Conteo ON)'
+        ELSE 'COINCIDEN'
+    END AS coincidencia
+FROM RangoEventos re
+-- LATERAL JOIN optimizado para buscar el estado vigente en ese segundo
+LEFT JOIN LATERAL (
+    SELECT a.value
+    FROM variable_log_float a
+    JOIN variable b ON a.id_var = b.id
+    WHERE b.name = 'MACHINE_IN_OPERATION'
+      AND to_timestamp(a.date/1000) <= re.segundo_evento
+    ORDER BY to_timestamp(a.date/1000) DESC
+    LIMIT 1
+) AS estado_actual ON TRUE
+LEFT JOIN ConteoCambios cc ON re.segundo_evento = cc.segundo_evento
+ORDER BY re.segundo_evento;
+```
 
 
 ## PERIOD IDENTIFYING QUERIES ##
