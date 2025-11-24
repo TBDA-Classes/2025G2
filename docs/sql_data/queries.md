@@ -131,6 +131,97 @@ ORDER BY
 LIMIT 10;
 ```
 
+### CQ3: Continuation to CQ2, adding the variables in which the machine is classified as in "standby" and also as in "emergency"
+
+```sql
+WITH RegistrosEstado AS (
+    -- 1. Obtener todos los registros de la variable 'MACHINE_IN_OPERATION' ordenados por tiempo
+    SELECT
+        TO_TIMESTAMP(vf.date/1000) AS fecha_hora,
+        vf.value -- Valor exacto (ej. 1.0 o 0.0)
+    FROM
+        variable_log_float vf
+    LEFT JOIN
+        variable v ON vf.id_var = v.id
+    WHERE
+        v.name = 'MACHINE_IN_OPERATION'
+    ORDER BY
+        vf.date
+),
+CambiosDetectados AS (
+    -- 2. CTE para calcular el estado anterior y marcar el cambio
+    SELECT
+        fecha_hora,
+        value AS current_m_op_value,
+        LAG(value) OVER (ORDER BY fecha_hora) AS previous_m_op_value
+    FROM
+        RegistrosEstado
+),
+CambiosMIO AS (
+    -- 3. Filtrar solo los eventos donde el estado de MACHINE_IN_OPERATION cambió
+    SELECT
+        fecha_hora,
+        current_m_op_value,
+        previous_m_op_value
+    FROM
+        CambiosDetectados cd
+    WHERE
+        cd.current_m_op_value IS DISTINCT FROM cd.previous_m_op_value
+)
+-- 4. SELECT FINAL: Cruce con los estados de STANDBY y EMERGENCY
+SELECT
+    m.fecha_hora,
+    -- Estado de MACHINE_IN_OPERATION (MIO)
+    CASE
+        WHEN m.current_m_op_value > 0 THEN 'Operación'
+        ELSE 'Parada'
+    END AS estado_mio_actual,
+    CASE
+        WHEN m.previous_m_op_value > 0 THEN 'Operación'
+        WHEN m.previous_m_op_value IS NULL THEN 'Inicio'
+        ELSE 'Parada'
+    END AS estado_mio_anterior,
+
+    -- Estado OP_MODE_STANDBY (Correlacionado)
+    CASE
+        WHEN standby.value > 0 THEN 'Activado'
+        WHEN standby.value <= 0 THEN 'Desactivado'
+        ELSE 'Desconocido'
+    END AS estado_standby,
+
+    -- Estado MACHINE_EMERGENCY (Correlacionado)
+    CASE
+        WHEN emergency.value > 0 THEN 'Activado'
+        WHEN emergency.value <= 0 THEN 'Desactivado'
+        ELSE 'Desconocido'
+    END AS estado_emergency
+FROM
+    CambiosMIO m
+-- LATERAL JOIN 1: Obtener el estado de STANDBY más reciente al momento del cambio de MIO
+LEFT JOIN LATERAL (
+    SELECT a.value
+    FROM variable_log_float a
+    JOIN variable b ON a.id_var = b.id
+    WHERE b.name = 'OP_MODE_STANDBY'
+      AND TO_TIMESTAMP(a.date/1000) <= m.fecha_hora -- Busca registros en o antes de la transición
+    ORDER BY TO_TIMESTAMP(a.date/1000) DESC
+    LIMIT 1
+) AS standby ON TRUE
+-- LATERAL JOIN 2: Obtener el estado de EMERGENCY más reciente al momento del cambio de MIO
+LEFT JOIN LATERAL (
+    SELECT a.value
+    FROM variable_log_float a
+    JOIN variable b ON a.id_var = b.id
+    WHERE b.name = 'MACHINE_EMERGENCY'
+      AND TO_TIMESTAMP(a.date/1000) <= m.fecha_hora -- Busca registros en o antes de la transición
+    ORDER BY TO_TIMESTAMP(a.date/1000) DESC
+    LIMIT 1
+) AS emergency ON TRUE
+ORDER BY
+    m.fecha_hora
+LIMIT 10;
+```
+
 
 ## PERIOD IDENTIFYING QUERIES ##
 
