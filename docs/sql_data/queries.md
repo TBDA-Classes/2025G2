@@ -81,6 +81,56 @@ ORDER BY re.segundo_evento;
 <img width="287" height="172" alt="image" src="https://github.com/user-attachments/assets/3cd72209-4367-4cf0-bf5a-68e1a7bfefea" />
 <img width="402" height="202" alt="image" src="https://github.com/user-attachments/assets/56fca6f8-aa09-4a75-836e-b94ccaeacbce" />
 
+### CQ2: Query to know when the status of the machine changes and which state is in (operating or stopped)
+
+```sql
+WITH RegistrosEstado AS (
+    -- 1. Obtener todos los registros de la variable 'MACHINE_IN_OPERATION' ordenados por tiempo
+    SELECT
+        TO_TIMESTAMP(vf.date/1000) AS fecha_hora,
+        vf.value -- Valor exacto (ej. 1.0 o 0.0)
+    FROM
+        variable_log_float vf
+    LEFT JOIN
+        variable v ON vf.id_var = v.id
+    WHERE
+        v.name = 'MACHINE_IN_OPERATION'
+    ORDER BY
+        vf.date
+),
+CambiosDetectados AS (
+    -- 2. CTE para calcular el estado anterior y marcar el cambio
+    SELECT
+        fecha_hora,
+        value,
+        -- Usar LAG para obtener el valor anterior
+        LAG(value) OVER (ORDER BY fecha_hora) AS valor_anterior
+    FROM
+        RegistrosEstado
+)
+SELECT
+    cd.fecha_hora,
+    -- Estado de la máquina en el momento exacto (actual)
+    CASE
+        WHEN cd.value > 0 THEN 'Operación'
+        ELSE 'Parada'
+    END AS estado_actual,
+    -- Estado de la máquina en el registro anterior (LAG)
+    CASE
+        WHEN cd.valor_anterior > 0 THEN 'Operación'
+        WHEN cd.valor_anterior IS NULL THEN 'Inicio' -- Primer registro
+        ELSE 'Parada'
+    END AS estado_anterior
+FROM
+    CambiosDetectados cd
+WHERE
+    -- 3. Aplicar el filtro de cambio de estado (excluye registros donde no hay cambio)
+    cd.value IS DISTINCT FROM cd.valor_anterior
+ORDER BY
+    cd.fecha_hora
+LIMIT 10;
+```
+
 
 ## PERIOD IDENTIFYING QUERIES ##
 
