@@ -2,7 +2,7 @@
 from typing import List, Optional 
 from fastapi import FastAPI, HTTPException, Depends   
 from fastapi.middleware.cors import CORSMiddleware 
-from database import engine, get_db
+from database import prod_engine, agg_engine, get_prod_db, get_agg_db
 from pydantic import BaseModel
 from models import Period
 from sqlalchemy.orm import Session
@@ -44,7 +44,7 @@ def home():
 @app.get("/api/status")
 def status():
     try:
-        with engine.connect() as connection:
+        with prod_engine.connect() as connection:
             # Simply gives us the version information of POSTgreSQL
             result = connection.execute(text("SELECT version()"))
             version = result.fetchone()
@@ -53,9 +53,9 @@ def status():
         return {"status": "API is running", "database": f"Connection failed: {str(e)}"}
 
 
-# Our first realistic endpoint (for testing purposes)
+
 @app.get("/api/v1/periods", response_model=List[PeriodOut])
-def get_period(db: Session = Depends(get_db)):
+def get_period(db: Session = Depends(get_prod_db)):
     """
     Get all periods from the database using ORM
 
@@ -72,11 +72,23 @@ def get_period(db: Session = Depends(get_db)):
     return [PeriodOut(id=p.id, name=p.name) for p in periods]
 
 
+# Will not work yet, need to set up aggregated db first
+@app.get("/api/v1/data_availability")
+def get_data_availability(db: Session = Depends(get_agg_db)):
+    result = db.execute(text("SELECT * FROM v_data_status")).fetchone()
+    return {
+        "first_date": str(result.first_date),
+        "last_date": str(result.last_date),
+        "total_days": result.total_records,
+        "last_updated": str(result.last_updated)
+    }
+
+
 
 @app.get("/api/v1/machine_activity", response_model=List[MachineActivityOut])
 def get_machine_activity(
     target_date: DateType,
-    db: Session = Depends(get_db)
+    db: Session = Depends(get_prod_db)
     ):
     """
     Get the number of hours of which machine was in each state on the given date.
