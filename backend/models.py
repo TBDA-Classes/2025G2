@@ -82,6 +82,7 @@ class AggMachineActivityDaily(Base):
     last_updated_at: Mapped[Optional[datetime]]
 
 
+# Class that matches our table structure in the aggregated DB.
 class AggSensorStats(Base):
     """
     Example row:
@@ -100,6 +101,8 @@ class AggSensorStats(Base):
     max_value: Mapped[Optional[float]]
     readings_count: Mapped[Optional[int]]
     last_updated_at: Mapped[Optional[datetime]]
+
+
 
 
 class DataStatus(Base):

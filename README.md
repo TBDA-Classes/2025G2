@@ -1,7 +1,7 @@
 # 2025G2
 
 ## Project Overview
-This project focuses on analyzing data collected from **Numerical Control (NC) machines** (milling, lathe, planner, etc.) to transform high-frequency data into human-understandable insights.
+This project focuses on analyzing data collected from **Numerical Control (NC) machines** to transform high-frequency data into human-understandable insights.
 
 The aim is to support operators and engineers by providing information on machine operation, energy usage, and alerts in a structured and accessible way.
 
@@ -15,8 +15,8 @@ The aim is to support operators and engineers by providing information on machin
 | Javier Pajares Camacho | Data Analysis|
 | Mayssa El Jamil | Data Analysis|
 | Atle Sund | Frontend / Backend|
-| Basile David | Frontend / Backend|
-| Erik Alexander Standal | Frontend / Backend|
+| Basile David | Backend|
+| Erik Alexander Standal | Frontend|
 | Chorouk El Bouch | UI / UX|
 | Clemence Tardivel | UI / UX|
 | Jovan Bajcetic Maquieira | UI / UX, Scrum Master|
