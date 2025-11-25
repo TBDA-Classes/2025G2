@@ -222,6 +222,95 @@ ORDER BY
 LIMIT 10;
 ```
 
+### CQ4: Query for identifying states of operation, standby and emergency
+
+```sql
+WITH CombinedVariables AS (
+    -- 1. Obtener todos los registros de las 3 variables clave
+    SELECT
+        TO_TIMESTAMP(vf.date/1000) AS fecha_evento,
+        v.name AS variable_name,
+        vf.value
+    FROM
+        variable_log_float vf
+    JOIN
+        variable v ON vf.id_var = v.id
+    WHERE
+        v.name IN ('MACHINE_IN_OPERATION', 'OP_MODE_STANDBY', 'MACHINE_EMERGENCY')
+    ORDER BY
+        vf.date
+),
+ChangesDetected AS (
+    -- 2. Detectar cambios de estado en CADA variable de forma independiente
+    SELECT
+        fecha_evento,
+        variable_name,
+        value,
+        -- Marcar la fila si el valor actual es diferente del valor anterior (detecta cambios)
+        value IS DISTINCT FROM LAG(value) OVER (PARTITION BY variable_name ORDER BY fecha_evento) AS is_state_change
+    FROM
+        CombinedVariables
+),
+TimelineBase AS (
+    -- 3. Crear una línea de tiempo con todos los segundos donde *alguna* de las variables cambió
+    SELECT DISTINCT
+        fecha_evento
+    FROM
+        ChangesDetected
+    WHERE
+        is_state_change = TRUE
+)
+-- 4. SELECT FINAL: Correlacionar el estado de las 3 variables en cada punto de cambio 
+SELECT
+    tb.fecha_evento,
+    
+    -- MIO (MACHINE_IN_OPERATION)
+    CASE WHEN mio.value > 0 THEN 'Operación' ELSE 'Parada' END AS estado_mio,
+    
+    -- STANDBY (OP_MODE_STANDBY)
+    CASE WHEN standby.value > 0 THEN 'Standby Activo' ELSE 'Standby Desactivado' END AS estado_standby,
+    
+    -- EMERGENCY (MACHINE_EMERGENCY)
+    CASE WHEN emergency.value > 0 THEN 'Emergencia Activa' ELSE 'Emergencia Desactivada' END AS estado_emergency
+    
+FROM
+    TimelineBase tb
+-- LATERAL JOIN 1: Último estado de MACHINE_IN_OPERATION
+LEFT JOIN LATERAL (
+    SELECT value
+    FROM CombinedVariables
+    WHERE variable_name = 'MACHINE_IN_OPERATION'
+      AND fecha_evento <= tb.fecha_evento
+    ORDER BY fecha_evento DESC
+    LIMIT 1
+) AS mio ON TRUE
+-- LATERAL JOIN 2: Último estado de OP_MODE_STANDBY
+LEFT JOIN LATERAL (
+    SELECT value
+    FROM CombinedVariables
+    WHERE variable_name = 'OP_MODE_STANDBY'
+      AND fecha_evento <= tb.fecha_evento
+    ORDER BY fecha_evento DESC
+    LIMIT 1
+) AS standby ON TRUE
+-- LATERAL JOIN 3: Último estado de MACHINE_EMERGENCY
+LEFT JOIN LATERAL (
+    SELECT value
+    FROM CombinedVariables
+    WHERE variable_name = 'MACHINE_EMERGENCY'
+      AND fecha_evento <= tb.fecha_evento
+    ORDER BY fecha_evento DESC
+    LIMIT 1
+) AS emergency ON TRUE
+ORDER BY
+    tb.fecha_evento
+LIMIT 200;
+```
+
+<img width="316" height="339" alt="image" src="https://github.com/user-attachments/assets/d5a69ba5-a123-4687-a1a1-3bfc7d8dccad" />
+
+On this screenshot you can see that there are some inconsistencies in the data registered because you can see that the machine is in operation state and at the same time it registers itself as in standby and also in emergency mode.
+
 
 ## PERIOD IDENTIFYING QUERIES ##
 
