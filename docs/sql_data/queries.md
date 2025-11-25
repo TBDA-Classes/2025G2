@@ -309,7 +309,7 @@ LIMIT 200;
 
 <img width="316" height="339" alt="image" src="https://github.com/user-attachments/assets/d5a69ba5-a123-4687-a1a1-3bfc7d8dccad" />
 
-On this screenshot you can see that there are some inconsistencies in the data registered because you can see that the machine is in operation state and at the same time it registers itself as in standby and also in emergency mode.
+In this screenshot you can see that there are some inconsistencies in the data registered because you can see that the machine is in operation state and at the same time it registers itself as in standby and also in emergency mode.
 
 
 ## PERIOD IDENTIFYING QUERIES ##
