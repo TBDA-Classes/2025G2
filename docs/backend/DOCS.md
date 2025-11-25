@@ -53,7 +53,13 @@ Production DB (Read-Only)  →  ETL Script  →  Aggregation DB  →  FastAPI
 
 ### Features for better performance
 
-We will use B-Tree indexes for dates since the `SELECT` statements comming from the backend will almost all the time contain a `WHERE date = ` clause. A B-Tree index is a separate structure that creates some sorting algorithm. This way, the lookup is logarithmic instead of linear.
+#### B-Tree indexing
+
+We will use B-Tree indexes for dates since the `SELECT` statements comming from the backend will almost all the time contain a `WHERE date = . AND sensor_name = .` clause. A B-Tree index is a separate structure that creates some sorting algorithm. This way, the lookup is logarithmic instead of linear. Note: If you use `EXPLAIN ANALYZE` as the first row in a SQL statement, it will say "Index Scan ..." if the index was utilized, if not it will say "Seq Scan".
+
+#### Views for up to date status on data in aggregation DB
+
+We have created a view which gives useful insights in agg_sensor_stats, such as the first and last date of entries. This is crucial since we want to restrict the options for the user to the dates we actually have data for.
 
 ---
 
