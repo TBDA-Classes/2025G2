@@ -8,7 +8,7 @@ output: html_document
 
 ## OPERATING MODES ##
 
-### OQ1: Query to know the duration of each operating mode
+### OQ1: Query to know the duration of each operating mode (not counted per day, units: seconds)
 
 ```sql
 WITH RegistrosOrdenados AS (
@@ -65,6 +65,71 @@ WHERE
     fecha_fin_segmento IS NOT NULL
 ORDER BY
     fecha_inicio_segmento;
+```
+
+### OQ2: Count of the working hours of each operating mode (units: seconds)
+
+```sql
+WITH RegistrosOrdenados AS (
+    -- 1. Obtener todos los registros de OPERATING_MODE dentro del rango
+    SELECT
+        TO_TIMESTAMP(vf.date/1000) AS fecha_evento,
+        vf.value AS operating_mode_value
+    FROM
+        variable_log_float vf
+    LEFT JOIN
+        variable v ON vf.id_var = v.id
+    WHERE
+        v.name = 'OPERATING_MODE'
+        -- CONDICIONES DE RANGO DE FECHAS PERSONALIZABLES
+        AND TO_TIMESTAMP(vf.date/1000) >= ':fecha_inicio'::timestamp
+        AND TO_TIMESTAMP(vf.date/1000) < ':fecha_fin'::timestamp
+        -- Excluir valores de máquina apagada
+        AND vf.value IS NOT NULL
+        AND CAST(vf.value AS TEXT) <> 'NaN'
+    ORDER BY
+        vf.date
+),
+CambiosDetectados AS (
+    -- 2. CTE Intermedia: Usar LAG para detectar el cambio
+    SELECT
+        fecha_evento,
+        operating_mode_value,
+        -- Marcar si el estado cambió
+        operating_mode_value IS DISTINCT FROM LAG(operating_mode_value) OVER (ORDER BY fecha_evento) AS estado_cambio
+    FROM
+        RegistrosOrdenados
+),
+SegmentosTemporales AS (
+    -- 3. Filtrar solo los puntos de cambio (donde estado_cambio = TRUE) y definir el FIN del segmento
+    SELECT
+        fecha_evento AS fecha_inicio_segmento,
+        operating_mode_value,
+        -- Usar LEAD para obtener la fecha de FIN del segmento actual
+        LEAD(fecha_evento, 1) OVER (ORDER BY fecha_evento) AS fecha_fin_segmento
+    FROM
+        CambiosDetectados
+    WHERE
+        estado_cambio = TRUE
+)
+-- 4. SELECT FINAL: Agrupar por día y sumar las duraciones
+SELECT
+    -- Agrupar por el día de inicio del segmento
+    DATE(fecha_inicio_segmento) AS dia_calendario,
+    
+    -- El valor numérico del modo operativo
+    s.operating_mode_value,
+    
+    -- Sumar las duraciones de todos los segmentos para ese modo/día
+    SUM(EXTRACT(EPOCH FROM (s.fecha_fin_segmento - s.fecha_inicio_segmento))) AS duracion_total_segundos
+FROM
+    SegmentosTemporales s
+WHERE
+    s.fecha_fin_segmento IS NOT NULL
+GROUP BY
+    1, 2
+ORDER BY
+    dia_calendario, duracion_total_segundos DESC;
 ```
 
 ## COMPARISON ##
