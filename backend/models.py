@@ -94,7 +94,7 @@ class AggSensorStats(Base):
     # Composite primary key: sensor_name + dt
     sensor_name: Mapped[str] = mapped_column(primary_key=True)
     # Mapped 'dt' to SQL column 'datetime' to avoid name collision
-    dt: Mapped[datetime] = mapped_column("datetime", primary_key=True)
+    dt: Mapped[datetime] = mapped_column(primary_key=True)
     
     min_value: Mapped[Optional[float]]
     avg_value: Mapped[Optional[float]]

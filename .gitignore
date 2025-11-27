@@ -44,5 +44,3 @@ lib64/
 
 # Documentation (exclude from repo)
 backend/DASHBOARD_QUERIES_GUIDE.md
-backend/scripts/etl_machine_activity.py
-GITHUB.md
