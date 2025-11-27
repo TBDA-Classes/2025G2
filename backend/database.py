@@ -38,13 +38,13 @@ def get_prod_db():
         db.close()
 
 
-# AGGREGATION DATABASE (Local) - Stores pre-computed results
+# AGGREGATION DATABASE - Stores pre-computed results
 
-agg_db_user = os.getenv("AGG_DB_USER", "postgres")  # Default to 'postgres'
-agg_db_password = os.getenv("AGG_DB_PASSWORD", "") 
-agg_db_host = os.getenv("AGG_DB_HOST", "localhost")
-agg_db_name = os.getenv("AGG_DB_NAME", "machine_monitoring_agg")
-agg_db_port = os.getenv("AGG_DB_PORT", "5432")
+agg_db_user = os.getenv("DB_USER") # Add second parameter for defaults
+agg_db_password = os.getenv("DB_PASSWORD") 
+agg_db_host = os.getenv("DB_HOST")
+agg_db_name = os.getenv("AGG_DB_NAME")
+agg_db_port = os.getenv("DB_PORT")
 
 AGG_DATABASE_URL = f'postgresql+psycopg://{agg_db_user}:{agg_db_password}@{agg_db_host}:{agg_db_port}/{agg_db_name}'
 

@@ -1,19 +1,32 @@
 '''
 ETL (Extract, Transform and Load) script for tracking of TEMPERATURA BASE
+Use the Arguments to filter on date. If one data from one date is desired, use only one argument.
+If data between an interval of two dates is desired, use two arguments, respectively start_date and end_date.
+
+Tip: When running the script, run it as a module, this way our imports are properly handled (sys.path):
+    
+    EXAMPLE BELOW:
+    (venv) (base) atlesund@Atles-MacBook-Pro 2025G2 % python -m backend.scripts.etl_temperature 2021-01-07
+    INFO:__main__:Started ETL script for only 2021-01-07
+    INFO:__main__:Parameters start_date = True and end_date = False
+    INFO:__main__:Extracted raw data consisting of 33410 records
+    INFO:__main__:Transformed into 13 hourly records.
+    INFO:__main__:Succesfully loaded data.
+
+Args:
+    start_date : None by default. 
+    end_date   : None by default
 '''
 
 # IMPORTS
 
-from tracemalloc import start
-from typing import Any
+
 import logging
 import sys
 
-from fastapi import HTTPException
-from pydantic import BaseModel
 from backend.database import prod_engine, agg_engine
 from backend.models import AggSensorStats
-from sqlalchemy import ExceptionContext, text
+from sqlalchemy import text
 from sqlalchemy.orm import Session
 from datetime import datetime
 from collections import defaultdict
@@ -36,18 +49,31 @@ def extract_data(start_date, end_date):
             FROM variable_log_float vlf
                 LEFT JOIN variable v ON vlf.id_var = v.id
                 WHERE v.name = :sensor_name
-            {f"AND ts >= :start_date AND ts <= :start_date" 
-            if start_date and end_date == None 
-            else f"AND ts > :start_date AND ts < :end_date"}
-            ORDER BY ts DESC;
             '''
 
-            params = {'sensor_name' : SENSOR_OF_CHOICE, 'start_date' : start_date, 'end_date': end_date}
+            params = {'sensor_name' : SENSOR_OF_CHOICE}
+
+            if start_date is not None:
+                
+                if end_date is None:
+                    logger.info(f"Parameters start_date = True and end_date = False")
+                    query += " AND TO_TIMESTAMP(vlf.date/1000)::date = :start_date" 
+                    params = {'sensor_name' : SENSOR_OF_CHOICE, 'start_date' : start_date}
+                else:
+                    logger.info(f"Parameters start_date = True and end_date = True")
+                    #Can't use alias "ts" in WHERE clause
+                    query += " AND TO_TIMESTAMP(vlf.date/1000)::date >= :start_date" 
+                    query += " AND TO_TIMESTAMP(vlf.date/1000)::date <= :end_date"
+                    params = {'sensor_name' : SENSOR_OF_CHOICE, 'start_date' : start_date, 'end_date': end_date}
+
+            query += " ORDER BY ts DESC;"
+            
             result = conn.execute(text(query), params)
             # Each row is an object with accessible column names
             rows = result.fetchall()
             if not rows:
-                raise HTTPException(status_code=404, detail="Temperatures not found")
+                logger.warning(f"Result is nonexisting")
+                return []
             
             # Returning a list of dicts, gives more freedom under transformation step
             
@@ -58,13 +84,14 @@ def extract_data(start_date, end_date):
                 } 
                 for row in rows
             ]
-
+            
     except Exception as e:
-        return {"Exception error " + f"Connection failed {str(e)}"}
+        logger.error(f"Connection failed when extracting data: + {str(e)}")
+        raise
 
 
 
-    return raw_data
+    
 
 # TRANSFORM FUNCTION
 def transform_data(raw_data):
@@ -86,6 +113,12 @@ def transform_data(raw_data):
     hourly_data = defaultdict(list)
     
     for record in raw_data:
+        value = record['value']
+
+        # Skip invalid values
+        if value is None or value == 0 or not isinstance(value, (int, float)):
+            continue
+
         # Appends all values to the appropriate hour
         hour = record['ts'].replace(minute=0, second=0, microsecond=0)
         hourly_data[hour].append(record['value'])
@@ -107,6 +140,7 @@ def transform_data(raw_data):
 def load_data(transformed_data):
     '''Store in destination DB'''
 
+    # The session represents a "holding zone"
     session = Session(agg_engine)
     try:
         for record in transformed_data:
@@ -127,22 +161,34 @@ def load_data(transformed_data):
 
             
     except Exception as e:
-        return {f"Conection failed with error message: {str(e)}"}
+        # Undo everything if something went wrong
+        session.rollback()
+        logger.error(f"Load of data failed: {str(e)}")
+        
+    finally:
+        session.close()
+
+
  
 
 # ORCHESTRATION
 def run_etl(start_date=None, end_date=None):
     '''main function which combines all steps'''
 
-    # Parametrized Execution
-
-    # simple ternary
-    logger.info(f"Started ETL script for {'full backfill' if (start_date==None and end_date == None) else f"for {start_date} -> {end_date}."} ")
+    # TernaDetermine date range description
+    if start_date is None and end_date is None:
+        date_desc = "full backfill"
+    elif end_date is not None:
+        date_desc = f"from {start_date} to {end_date}"
+    else:
+        date_desc = f"only {start_date}"
+    
+    logger.info(f"Started ETL script for {date_desc}")
     
     try :
         raw_data = extract_data(start_date, end_date)
         if not raw_data:
-            logger.warning(f"Could not find raw data {'.' if (start_date==None and end_date == None) else f"for {start_date} -> {end_date}."} ")
+            logger.warning(f"Could not find raw data.")
             return
 
         logger.info(f"Extracted raw data consisting of {len(raw_data)} records")
@@ -153,12 +199,13 @@ def run_etl(start_date=None, end_date=None):
         load_data(transformed_data)
         logger.info(f"Succesfully loaded data.")
     except Exception as e:
-        logger.error(f"Couldn't find data {'.' if (start_date==None and end_date == None) else f"for {start_date} -> {end_date}."} Received error: {str(e)}")
+        logger.error(f"Couldn't find data Received error: {str(e)}")
         raise # Ensures that the failure is not being swallowed silently. The caller can detect it and act accordingly
 
 
 
 # When run directly from CLI, __name__ = "__main__"
+# Parametrized execution
 if __name__ == "__main__":
 
     # Logging - Tracks what happens at every step
