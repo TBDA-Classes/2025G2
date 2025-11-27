@@ -67,7 +67,7 @@ ORDER BY
     fecha_inicio_segmento;
 ```
 
-### OQ2: Count of the working hours of each operating mode (units: seconds)
+### OQ2: Count of the working hours of each operating mode (units: hours) (Note: For mode number 7, since it only operates for a few seconds the query registers the hours worked by this number as practically zero)
 
 ```sql
 WITH RegistrosOrdenados AS (
@@ -82,8 +82,8 @@ WITH RegistrosOrdenados AS (
     WHERE
         v.name = 'OPERATING_MODE'
         -- CONDICIONES DE RANGO DE FECHAS PERSONALIZABLES
-        AND TO_TIMESTAMP(vf.date/1000) >= ':fecha_inicio'::timestamp
-        AND TO_TIMESTAMP(vf.date/1000) < ':fecha_fin'::timestamp
+        AND TO_TIMESTAMP(vf.date/1000) >= '2021-01-07 00:00:00'::timestamp
+        AND TO_TIMESTAMP(vf.date/1000) < '2021-01-16 00:00:00'::timestamp
         -- Excluir valores de máquina apagada
         AND vf.value IS NOT NULL
         AND CAST(vf.value AS TEXT) <> 'NaN'
@@ -112,7 +112,7 @@ SegmentosTemporales AS (
     WHERE
         estado_cambio = TRUE
 )
--- 4. SELECT FINAL: Agrupar por día y sumar las duraciones
+-- 4. SELECT FINAL: Agrupar por día y sumar las duraciones, convirtiendo a HORAS y REDONDEANDO
 SELECT
     -- Agrupar por el día de inicio del segmento
     DATE(fecha_inicio_segmento) AS dia_calendario,
@@ -120,8 +120,8 @@ SELECT
     -- El valor numérico del modo operativo
     s.operating_mode_value,
     
-    -- Sumar las duraciones de todos los segmentos para ese modo/día
-    SUM(EXTRACT(EPOCH FROM (s.fecha_fin_segmento - s.fecha_inicio_segmento))) AS duracion_total_segundos
+    -- Redondeamos la suma total de horas a 2 decimales
+    ROUND(SUM(EXTRACT(EPOCH FROM (s.fecha_fin_segmento - s.fecha_inicio_segmento))) / 3600.0, 2) AS duracion_total_horas
 FROM
     SegmentosTemporales s
 WHERE
@@ -129,7 +129,7 @@ WHERE
 GROUP BY
     1, 2
 ORDER BY
-    dia_calendario, duracion_total_segundos DESC;
+    dia_calendario, duracion_total_horas DESC;
 ```
 
 ## COMPARISON ##
