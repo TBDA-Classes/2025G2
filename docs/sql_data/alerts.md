@@ -1,5 +1,6 @@
-# Count per category (Emergency, Error, Alert)
+### 1. Count per category (Emergency, Error, Alert)
 
+```sql
 WITH alarm_data AS (
     SELECT
         a.date,
@@ -39,10 +40,11 @@ SELECT
     SUM(CASE WHEN category = 'Error' THEN 1 ELSE 0 END) as error_count,
     SUM(CASE WHEN category = 'Alert' THEN 1 ELSE 0 END) as alert_count
 FROM categorized
-
+```
 
 ### COUNT BY SHIFT (06–14, 14–22, 22–06) AND CATEGORY
 
+```sql
 WITH alarm_data AS (
     SELECT
         a.date,
@@ -97,10 +99,11 @@ ORDER BY
         WHEN 'Shift 2 (14:00-22:00)' THEN 2
         ELSE 3
     END;
-
+```
 
 ### Full list of alerts
 
+```sql
 WITH alarm_data AS (
     SELECT
         a.date,
@@ -143,10 +146,11 @@ SELECT
 FROM categorized
 WHERE category != 'Other'
 ORDER BY timestamp DESC;
-
+```
 
 #### 3.1 Queries to filter by shift and category 
 
+```sql
 WITH alarm_data AS (
     SELECT
         a.date,
@@ -196,10 +200,11 @@ WHERE category != 'Other'
   AND (category = ANY('{Emergency,Error,Alert}'))  -- Replace array with selected categories
   AND (shift = ANY('{Shift 1,Shift 2,Shift 3}'))   -- Replace array with selected shifts
 ORDER BY timestamp DESC;
- 
+ ```sql
 
 ### 4. Detail for single alarm code
 
+```sql
 WITH alarm_data AS (
     SELECT
         a.date,
@@ -239,6 +244,6 @@ SELECT
     alarm_description
 FROM alarm_data
 WHERE alarm_code = ? AND date = ?  -- Replace with specific criteria
+```
 
-WHERE category != 'Other';
 
