@@ -9,7 +9,7 @@ SQL Queries for Figma Dashboard / Author: "Data analysis team"
 ```sql
 SELECT
   b.name AS variable,
-  -- Convertimos el timestamp de milisegundos a segundos
+  -- Timestamp conversion from miliseconds to seconds
   TO_TIMESTAMP(CAST(a.date AS BIGINT) / 1000) AS dt,
   a.value
 FROM
@@ -17,18 +17,18 @@ FROM
 JOIN
   variable b ON a.id_var = b.id
 WHERE
-  -- 1. Filtro de fecha y hora (Rango original)
+  -- 1. Date and hour filter (Custom date)
   TO_TIMESTAMP(CAST(a.date AS BIGINT) / 1000) >= '2021-01-04 13:39:30+01'
   AND TO_TIMESTAMP(CAST(a.date AS BIGINT) / 1000) < '2021-01-05 22:00:00+01'
 
-  -- 2. Filtro de los nombres de variable (solo las tres solicitadas)
+  -- 2. Variables used to classify program history
   AND b.name IN (
     'OPERATING_MODE',
     'PROG_LINE',
     'PROG_STATUS'
   )
   
-  -- 3. EXCLUSIÓN DE VALORES NULOS/NaN (Condiciones Agregadas)
+  -- 3. NaN/NULL values excluded
   AND a.value IS NOT NULL
   AND CAST(a.value AS TEXT) <> 'NaN'
   
