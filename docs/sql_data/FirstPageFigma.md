@@ -4,7 +4,7 @@ SQL Queries for Figma Dashboard / Author: "Data analysis team"
 ---
 
 
-### Program History Graph
+### Program History Graph (Note: 3 variables detected that could be related to program history (Operating_mode and Prog_Status are enumeral, Prog_Line is a number and is dcscribed as the program block number)
 
 ```sql
 SELECT
