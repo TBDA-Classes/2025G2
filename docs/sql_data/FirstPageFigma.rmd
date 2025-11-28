@@ -39,3 +39,10 @@ ORDER BY
   variable,
   dt;
 ```
+
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+library(DBI)
+library(RPostgres)
