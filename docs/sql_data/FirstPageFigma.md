@@ -1,10 +1,8 @@
 
 ---
-
 title: "SQL Queries for Figma Dashboard" 
 author: "Data analysis team"
 output: html_document
-
 ---
 
 
