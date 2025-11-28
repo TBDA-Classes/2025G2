@@ -110,6 +110,8 @@ FROM (
 ORDER BY fecha, hora_inicio;
 ```
 
+### Temperature History (24 Hours)
+
 
 
 ### Program History Graph 
