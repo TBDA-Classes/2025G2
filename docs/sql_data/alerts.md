@@ -42,7 +42,7 @@ SELECT
 FROM categorized
 ```
 
-### COUNT BY SHIFT (06–14, 14–22, 22–06) AND CATEGORY
+### 2. COUNT BY SHIFT (06–14, 14–22, 22–06) AND CATEGORY
 
 ```sql
 WITH alarm_data AS (
@@ -101,7 +101,7 @@ ORDER BY
     END;
 ```
 
-### Full list of alerts
+### 3. Full list of alerts
 
 ```sql
 WITH alarm_data AS (
@@ -200,7 +200,7 @@ WHERE category != 'Other'
   AND (category = ANY('{Emergency,Error,Alert}'))  -- Replace array with selected categories
   AND (shift = ANY('{Shift 1,Shift 2,Shift 3}'))   -- Replace array with selected shifts
 ORDER BY timestamp DESC;
- ```sql
+```
 
 ### 4. Detail for single alarm code
 
