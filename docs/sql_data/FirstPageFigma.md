@@ -3,7 +3,7 @@
 SQL Queries for Figma Dashboard / Author: "Data analysis team"
 ---
 
-### Clarification: Since the teacher still hasn't confirmed if we can use the variable "Machine_in_Operation" and any variable that could be similar to this (such as op_standby and op_emergency), we are calculating the working hours based on the amount of variables that change every 10 minutes. This means that the machine only has two modes: Run and down, no Idle mode given that the variable related to this status (op_standby) hasn't been confirmed to be usable by the teacher.
+#### Clarification: Since the teacher still hasn't confirmed if we can use the variable "Machine_in_Operation" and any variable that could be similar to this (such as op_standby and op_emergency), we are calculating the working hours based on the amount of variables that change every 10 minutes. This means that the machine only has two modes: Run and down, no Idle mode given that the variable related to this status (op_standby) hasn't been confirmed to be usable by the teacher.
 
 ### Machine Status Timeline (24 Hours)
 
