@@ -9,7 +9,7 @@ SQL Queries for Figma Dashboard / Author: "Data analysis team"
 
 ```sql
 WITH cambios AS (
-  -- 1. BASE DE DATOS COMÚN: Unimos logs de FLOAT y STRING
+  -- 1. Common database (Float and string union)
   SELECT
     to_timestamp(TRUNC(CAST(a.date AS bigint)/1000)) AS dt
   FROM variable_log_float a
@@ -26,19 +26,19 @@ WITH cambios AS (
 ),
 
 ordenado AS (
-  -- 2. ORDENAMIENTO PREVIO: Necesario para ambas lógicas
+  -- 2. Sorting
   SELECT
     dt,
     date(dt) AS fecha,
-    -- LAG para detectar inicio de operaciones (mirar atrás)
+    -- LAG to detect start of operation
     LAG(dt) OVER (PARTITION BY date(dt) ORDER BY dt) AS dt_anterior,
-    -- LEAD para detectar huecos de paradas (mirar adelante)
+    -- LEAD to detect gaps and possible stops
     LEAD(dt) OVER (PARTITION BY date(dt) ORDER BY dt) AS dt_siguiente
   FROM cambios
 ),
 
 -- ==========================================
--- LOGICA 1: CÁLCULO DE OPERACIONES (BLOQUES)
+-- Calculations for Operations
 -- ==========================================
 marcado_ops AS (
   SELECT
@@ -72,22 +72,22 @@ final_operaciones AS (
 ),
 
 -- ==========================================
--- LOGICA 2: CÁLCULO DE PARADAS (HUECOS)
+-- Calculations for Stops
 -- ==========================================
 final_paradas AS (
   SELECT
     'PARADA' AS tipo_evento,
     fecha,
-    dt AS inicio, -- La parada empieza en el registro actual
-    dt_siguiente AS fin, -- y termina en el siguiente
+    dt AS inicio, -- Stop starts in current register
+    dt_siguiente AS fin, -- and ends in the next one
     ROUND(EXTRACT(EPOCH FROM (dt_siguiente - dt))/3600.0, 2) AS horas
   FROM ordenado
   WHERE dt_siguiente IS NOT NULL
-    AND EXTRACT(EPOCH FROM (dt_siguiente - dt)) > 600 -- Solo huecos > 10 min
+    AND EXTRACT(EPOCH FROM (dt_siguiente - dt)) > 600 -- Only > 10 min gaps
 )
 
 -- ==========================================
--- UNIÓN Y FORMATO FINAL
+-- Union and final format
 -- ==========================================
 SELECT
   tipo_evento,
@@ -117,17 +117,17 @@ ORDER BY fecha, hora_inicio;
 ```sql
 SELECT 
   b.name AS variable,
-  -- Convertimos el timestamp de milisegundos a segundos
+  -- Miliseconds to seconds
   to_timestamp(CAST(a.date AS bigint) / 1000) AS dt,
   a.value
 FROM "public"."variable_log_float" a
 JOIN variable b ON a.id_var = b.id
 WHERE 
-  -- 1. Filtro de fecha y hora
+  -- 1. Date and hour filter
   to_timestamp(CAST(a.date AS bigint) / 1000) >= '2021-01-04 13:39:30+01'
   AND to_timestamp(CAST(a.date AS bigint) / 1000) < '2021-01-05 22:00:00+01'
   
-  -- 2. Filtro de los nombres de variable
+  -- 2. Variable names filter
   AND b.name IN (
     'TEMPERATURE_MOTOR_8', 'TEMPERATURE_MOTOR_5', 'TEMPERATURE_HEAD', 
     'TEMPERATURE_RAM_2', 'TEMPERATURE_RAM', 'TEMPERATURE_BASE', 
@@ -183,7 +183,7 @@ ORDER BY
 
 ```sql
 WITH cambios AS (
-    -- 1. BASE DE DATOS COMÚN: Unimos logs de FLOAT y STRING
+    -- 1. Common database: Float and string union
     SELECT
         to_timestamp(TRUNC(CAST(a.date AS bigint)/1000)) AS dt
     FROM variable_log_float a
@@ -200,7 +200,7 @@ WITH cambios AS (
 ),
 
 ordenado AS (
-    -- 2. ORDENAMIENTO PREVIO
+    -- 2. Sorting
     SELECT
         dt,
         date(dt) AS fecha,
@@ -208,7 +208,7 @@ ordenado AS (
     FROM cambios
 ),
 
--- LOGICA 1: CÁLCULO DE OPERACIONES (RUNNING TIME)
+-- Calculation of operations (running time)
 marcado_ops AS (
     SELECT fecha, dt, CASE WHEN dt_anterior IS NULL OR EXTRACT(EPOCH FROM (dt - dt_anterior)) > 600 THEN 1 ELSE 0 END AS nueva_sesion
     FROM ordenado
@@ -229,25 +229,25 @@ Tiempo_Running AS (
 )
 
 -- ==========================================
--- FORMATO FINAL Y CÁLCULO DE PORCENTAJES (Basado en 24 horas = 86400 s)
+-- Final format and percentages (24 hours = 86400 s)
 -- ==========================================
 SELECT
     r.fecha AS dia,
     
-    -- Conversión a HORAS (Running)
+    -- Conversion to hours (Running)
     ROUND( (COALESCE(r.running_segundos, 0) / 3600.0), 2) AS running_horas,
     
-    -- Conversión a HORAS (Down)
+    -- Conversion to hours (Down)
     ROUND( ((86400.0 - COALESCE(r.running_segundos, 0)) / 3600.0), 2) AS down_horas,
     
-    -- Porcentaje de Running Time (Basado en 24h)
+    -- Running Time Percentage (Based in 24 h)
     ROUND( (COALESCE(r.running_segundos, 0) / 86400.0) * 100, 1) AS running_porcentaje,
     
-    -- Porcentaje de Down Time (Basado en 24h)
+    -- Down Time Percentage (Based in 24h)
     ROUND( ((86400.0 - COALESCE(r.running_segundos, 0)) / 86400.0) * 100, 1) AS down_porcentaje
 
 FROM (
-    -- Obtener todas las fechas con logs para asegurar la cobertura
+    -- Select all dates with logs for coverage assurement
     SELECT DISTINCT fecha 
     FROM ordenado
 ) AS All_Dates
