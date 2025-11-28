@@ -4,7 +4,7 @@
 
 ### Program History Graph
 
-
+```sql
 SELECT
   b.name AS variable,
   -- Convertimos el timestamp de milisegundos a segundos
@@ -33,3 +33,4 @@ WHERE
 ORDER BY
   variable,
   dt;
+```
