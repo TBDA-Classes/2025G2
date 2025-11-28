@@ -40,6 +40,8 @@ SELECT
     SUM(CASE WHEN category = 'Error' THEN 1 ELSE 0 END) as error_count,
     SUM(CASE WHEN category = 'Alert' THEN 1 ELSE 0 END) as alert_count
 FROM categorized
+WHERE category != 'Other';
+
 ```
 
 ### 2. COUNT BY SHIFT (06–14, 14–22, 22–06) AND CATEGORY
