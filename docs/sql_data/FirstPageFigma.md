@@ -112,8 +112,6 @@ ORDER BY fecha, hora_inicio;
 
 ### Temperature History (24 Hours)
 
-### UQ3: Values for the relevant temperature variables
-
 ```sql
 SELECT 
   b.name AS variable,
