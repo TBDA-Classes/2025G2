@@ -3,6 +3,8 @@
 SQL Queries for Figma Dashboard / Author: "Data analysis team"
 ---
 
+### Clarification: Since the teacher still hasn't confirmed if we can use the variable "Machine_in_Operation" and any variable that could be similar to this (such as op_standby and op_emergency), we are calculating the working hours based on the amount of variables that change every 10 minutes. This means that the machine only has two modes: Run and down (no Idle mode given that the variable related to this status hasn't been confirmed to be usable by the teacher)
+
 ### Machine Status Timeline (24 Hours)
 
 ```sql
@@ -173,6 +175,89 @@ ORDER BY
   variable,
   dt;
 ```
+
+
+
+### Machine Utilization (24 Hours)
+
+
+```sql
+WITH cambios AS (
+    -- 1. BASE DE DATOS COMÚN: Unimos logs de FLOAT y STRING
+    SELECT
+        to_timestamp(TRUNC(CAST(a.date AS bigint)/1000)) AS dt
+    FROM variable_log_float a
+    WHERE to_timestamp(TRUNC(CAST(a.date AS bigint)/1000))
+          BETWEEN '2021-01-07 00:00:00' AND '2021-01-15 23:59:59'
+
+    UNION ALL
+
+    SELECT
+        to_timestamp(TRUNC(CAST(a.date AS bigint)/1000)) AS dt
+    FROM variable_log_string a
+    WHERE to_timestamp(TRUNC(CAST(a.date AS bigint)/1000))
+          BETWEEN '2021-01-07 00:00:00' AND '2021-01-15 23:59:59'
+),
+
+ordenado AS (
+    -- 2. ORDENAMIENTO PREVIO
+    SELECT
+        dt,
+        date(dt) AS fecha,
+        LAG(dt) OVER (PARTITION BY date(dt) ORDER BY dt) AS dt_anterior
+    FROM cambios
+),
+
+-- LOGICA 1: CÁLCULO DE OPERACIONES (RUNNING TIME)
+marcado_ops AS (
+    SELECT fecha, dt, CASE WHEN dt_anterior IS NULL OR EXTRACT(EPOCH FROM (dt - dt_anterior)) > 600 THEN 1 ELSE 0 END AS nueva_sesion
+    FROM ordenado
+),
+bloques_ops AS (
+    SELECT fecha, dt, SUM(nueva_sesion) OVER (PARTITION BY fecha ORDER BY dt) AS bloque_id
+    FROM marcado_ops
+),
+Duracion_Operacion AS (
+    SELECT fecha, EXTRACT(EPOCH FROM (MAX(dt) - MIN(dt))) AS duracion_segundos
+    FROM bloques_ops
+    GROUP BY fecha, bloque_id
+),
+Tiempo_Running AS (
+    SELECT fecha, COALESCE(SUM(duracion_segundos), 0) AS running_segundos
+    FROM Duracion_Operacion
+    GROUP BY fecha
+)
+
+-- ==========================================
+-- FORMATO FINAL Y CÁLCULO DE PORCENTAJES (Basado en 24 horas = 86400 s)
+-- ==========================================
+SELECT
+    r.fecha AS dia,
+    
+    -- Conversión a HORAS (Running)
+    ROUND( (COALESCE(r.running_segundos, 0) / 3600.0), 2) AS running_horas,
+    
+    -- Conversión a HORAS (Down)
+    ROUND( ((86400.0 - COALESCE(r.running_segundos, 0)) / 3600.0), 2) AS down_horas,
+    
+    -- Porcentaje de Running Time (Basado en 24h)
+    ROUND( (COALESCE(r.running_segundos, 0) / 86400.0) * 100, 1) AS running_porcentaje,
+    
+    -- Porcentaje de Down Time (Basado en 24h)
+    ROUND( ((86400.0 - COALESCE(r.running_segundos, 0)) / 86400.0) * 100, 1) AS down_porcentaje
+
+FROM (
+    -- Obtener todas las fechas con logs para asegurar la cobertura
+    SELECT DISTINCT fecha 
+    FROM ordenado
+) AS All_Dates
+LEFT JOIN Tiempo_Running r ON All_Dates.fecha = r.fecha
+
+ORDER BY dia;
+```
+
+
+
 
 
 
