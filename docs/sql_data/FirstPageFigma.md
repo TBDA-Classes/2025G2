@@ -1,7 +1,6 @@
-# Queries for the first the page 
 
 ---
-title: "Queries for the first page of the Figma Dashboard"
+title: "SQL Queries for Figma Dashboard"
 author: "Data analysis team"
 output: html_document
 ---
