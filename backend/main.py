@@ -33,6 +33,13 @@ class MachineActivityOut(BaseModel):
     state_active: int
     state_running: int
 
+class SensorStatsOut(BaseModel):
+    dt: str
+    min_value: Optional[float]
+    avg_value: Optional[float]
+    max_value: Optional[float]
+    readings_count: Optional[int]
+
 
 # When you visit http://localhost:8000/ you'll see this message
 @app.get("/")
@@ -168,4 +175,57 @@ def get_machine_activity(
     except HTTPException: # Catch the 404 and re-raise
         raise
     except Exception as e: # Catches (almost) any other error
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+    
+
+@app.get("/api/v1/temperature", response_model=List[SensorStatsOut])
+def get_temperature_stats(
+    target_date: DateType,
+    sensor_name: str = "TEMPERATURA_BASE",
+    db: Session = Depends(get_agg_db)
+):
+    """
+    Returns aggregated temperature statistics (min/avg/max/count) for a given sensor
+    on a specific date. Uses the agg_sensor_stats materialized table.
+    """
+
+    query = text("""
+        SELECT 
+            dt,
+            min_value,
+            avg_value,
+            max_value,
+            readings_count
+        FROM agg_sensor_stats a
+        WHERE a.dt::date = :target_date
+        AND a.sensor_name = :sensor_name
+        ORDER BY dt ASC
+    """)
+
+    try:
+        rows = db.execute(query, {
+            "target_date": str(target_date),
+            "sensor_name": sensor_name
+        }).fetchall()
+
+        if not rows:
+            raise HTTPException(
+                status_code=404,
+                detail=f"No temperature data found for {sensor_name} on {target_date}"
+            )
+
+        return [
+            SensorStatsOut(
+                dt=str(r.dt),
+                min_value=r.min_value,
+                avg_value=r.avg_value,
+                max_value=r.max_value,
+                readings_count=r.readings_count
+            )
+            for r in rows
+        ]
+
+    except HTTPException:
+        raise
+    except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
