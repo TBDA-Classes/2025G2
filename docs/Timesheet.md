@@ -40,8 +40,8 @@ This file is used by all team members to record their working hours and activiti
 | Atle Sund | Frontend/Backend | Setup Backend | Successfully connected to the PostgreSQL DB and created an endpoint for the frontend to access | 2025-10-12 | 1 |
 | Atle Sund | Frontend/Backend | Setup Frontend and connect to Backend | Created a frontend project in Next.js and connected to an existing GET endpoint in the backend. The data was retrieved successfully and shown in localhost | 2025-10-12 | 1.5 |
 | Atle Sund | Frontend/Backend | Backend | Generated ER diagrams (using DBeaver, found at docs/ER_diagrams) of tables 1245 and 2207 which are useful for us in the backend when creating models (see backend/models.py). | 2025-10-12 | 0.5 |
-| Erik Alexander Standal | Frontend / Backend | Study and evaluate project technologies | Read documentation and watched some videos on the project tech | 2025-10-17 | 1 |
-| Erik Alexander Standal | Frontend / Backend | GitHub cleanup | Made a documentation folder and updated the README.md file | 2025-10-20 | 0.5 |
+| Erik Alexander Standal | Frontend | Study and evaluate project technologies | Read documentation and watched some videos on the project tech | 2025-10-17 | 1 |
+| Erik Alexander Standal | Frontend | GitHub cleanup | Made a documentation folder and updated the README.md file | 2025-10-20 | 0.5 |
 | Clemence Tardivel | UI/UX | UI/UX prototype | First version of the figma protype | 2025-10-22 | 1.5  |
 | Jovan Bajcetic | UI/UX + Scrum master | UI/UX research doc | Creation and elaboration of the ui_ux_research.md document with the research done | 2025-10-23 | 1 |
 | Jovan Bajcetic | UI/UX + Scrum master | UI/UX research doc | Revision of some points and links on the doc + restructuration of the file | 2025-10-24 | 0.5 |
@@ -52,6 +52,12 @@ This file is used by all team members to record their working hours and activiti
 | Erik Alexander Standal | Frontend | Connect to backend endpoint | Used the endpoint created by the backend developers to make the bar plot dynamic. It works, but the query seems to be very slow, and I will wait with the calendar view because it is more comprehensive, and not possible with the current query time | 2025-11-03 | 4 |
 | Jovan Bajcetic | UI/UX + Scrum master | UI/UX prototype | Actualization of first figma protype and edition | 2025-11-02 | 1.5 |
 | Clemence Tardivel | UI/UX | UI/UX prototype | Edition of the figma protype | 2025-11-02 | 1.5  |
+| Atle Sund | Frontend/Backend | Frontend | Created a production worthy structure for the fronetend dividing the dashboard folder into dashboard-index, alerts and energy. Created a sidebar navigation. Started on the layout for the main Dashbaord, now waiting for confirmation that the data used by the plots are plausible from the data analysis team.   | 2025-11-14 | 3.5 |
+| Atle Sund | Frontend/Backend | Frontend | Finalized the "homepage" and made navigation possible  | 2025-11-19 | 1 |
+| Atle Sund | Frontend/Backend | Backend | First doing data analysis to understand better the data and possibilities, also had meeting with Javier to discuss which information we need and how we can retrieve them  | 2025-11-20 | 2 |
+| Atle Sund | Frontend/Backend | Backend | Created an aggregation database for better performance. This required setup for an additional DB connection, as well as new models found in models.py. Since our aggregation DB will be simple, SQLAlchemy will be used  | 2025-11-21 | 2 |
+| Atle Sund | Frontend/Backend | Backend | Worked on the ETL script to facilitate date inputs, this way it will be easier to test. Will also add sensor type as an argument.  | 2025-11-25 | 1.5 |
+| Atle Sund | Frontend/Backend | Backend | Created connection to the aggregation DB using the credentials given by the professor. Created the DB and loaded data. | 2025-11-27 | 2 |
 ---
 
  *Tip:*  

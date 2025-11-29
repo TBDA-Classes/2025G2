@@ -1,0 +1,22 @@
+// app/dashboard/layout.tsx
+import type { ReactNode } from "react";
+import SideBar from "../components/Sidebar";
+
+export default function DashboardLayout({ children }: { children: ReactNode }) {
+  return (
+    <div className="flex h-screen bg-slate-200 text-slate-100">
+      <SideBar />
+      <main className="flex-1 overflow-y-auto">
+        {/* Sticky Date Selector */}
+        <div className="bg-white sticky top-0 z-10">
+          <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
+            <p className="text-slate-800 font-medium">
+              Wednesday, November 19, 2025
+            </p>
+          </div>
+        </div>
+        {children}
+      </main>
+    </div>
+  );
+}

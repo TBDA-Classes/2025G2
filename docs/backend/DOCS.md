@@ -1,7 +1,7 @@
 # Backend Documentation
 
 **2025G2**  
-**October 2025**
+**November 2025**
 
 ## Introduction
 
@@ -33,6 +33,41 @@ DB_PASSWORD=secretpassword
 DB_HOST=localhost
 DB_NAME=mydatabase
 ```
+
+
+## Data Aggregation Strategy
+
+The production database contains 321M+ rows of sensor data, making direct queries extremely slow (from several seconds to minutes to request). Since we want to follow industry standards, which says that the user should not wait more than 10 seconds without getting the results, and no more than 3 seconds before they see some animation, we use a **dual-database architecture** with an ETL process:
+
+### Architecture
+
+```
+Production DB (Read-Only)  →  ETL Script  →  Aggregation DB  →  FastAPI
+   321M rows                                  Pre-computed       10-50ms
+```
+
+- **Production Database**: Read-only access to raw sensor data
+- **Aggregation Database**: Separate PostgreSQL database we control, stores pre-computed aggregations
+- **ETL Script** (`backend/scripts/...`): Will contain scripts that extracts data from production, transforms via aggregation queries, and loads results into our database.
+
+
+### Features for better performance
+
+#### B-Tree indexing
+
+We will use B-Tree indexes for dates since the `SELECT` statements comming from the backend will almost all the time contain a `WHERE date = . AND sensor_name = .` clause. A B-Tree index is a separate structure that creates some sorting algorithm. This way, the lookup is logarithmic instead of linear. Note: If you use `EXPLAIN ANALYZE` as the first row in a SQL statement, it will say "Index Scan ..." if the index was utilized, if not it will say "Seq Scan".
+
+#### Views for up to date status on data in aggregation DB
+
+We have created a view which gives useful insights in agg_sensor_stats, such as the first and last date of entries. This is crucial since we want to restrict the options for the user to the dates we actually have data for.
+
+---
+
+# Reference Guide
+
+*The following sections contain setup instructions and useful commands we have encountered during the project which is continously updated.*
+
+---
 
 ## Database Connection Setup
 
@@ -86,6 +121,7 @@ Once connected to the database (indicated by the `database_name=>` prompt), the 
 |---------|-------------|
 | `\l` | List all databases on the server |
 | `\dt` | List all tables (relations) in the current database |
+| `\dv` | List all views (relations) in the current database |
 | `\d <table_name>` | Describe the structure of a specific table |
 | `\du` | List all users/roles |
 | `\conninfo` | Display current connection information |
@@ -158,5 +194,3 @@ The FastAPI application includes a status endpoint at `/api/status` that tests t
   "version": "('PostgreSQL 14.17...',)"
 }
 ```
-
-
