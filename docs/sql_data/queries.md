@@ -4,7 +4,438 @@ author: "Data analysis team"
 output: html_document
 ---
 
-# Clarification: The dates used for the queries can be changed depending on the needs,these are just reference dates to have usable queries
+# Clarification: The dates used for the queries can be changed depending on the needs,these are just reference dates to have usable queries (limited to 200 rows)
+
+## OPERATING MODES ##
+
+### OQ1: Query to know the duration of each operating mode (not counted per day, units: seconds)
+
+```sql
+WITH RegistrosOrdenados AS (
+    -- 1. Obtener todos los registros de OPERATING_MODE y ordenarlos por tiempo
+    SELECT
+        TO_TIMESTAMP(vf.date/1000) AS fecha_evento,
+        vf.value AS operating_mode_value
+    FROM
+        variable_log_float vf
+    LEFT JOIN
+        variable v ON vf.id_var = v.id
+    WHERE
+        v.name = 'OPERATING_MODE'
+        -- CONDICIONES DE RANGO DE FECHAS PERSONALIZABLES ⬇️
+        AND TO_TIMESTAMP(vf.date/1000) >= '2021-01-07 00:00:00'::timestamp
+        AND TO_TIMESTAMP(vf.date/1000) < '2021-01-15 23:59:59'::timestamp
+        -- CONDICIONES DE RANGO DE FECHAS PERSONALIZABLES ⬆️
+        AND vf.value IS NOT NULL
+        AND CAST(vf.value AS TEXT) <> 'NaN'
+    ORDER BY
+        vf.date
+),
+CambiosDetectados AS (
+    -- 2. CTE Intermedia: Usar LAG para detectar el cambio y exponerlo
+    SELECT
+        fecha_evento,
+        operating_mode_value,
+        -- Marcar si el estado cambió
+        operating_mode_value IS DISTINCT FROM LAG(operating_mode_value) OVER (ORDER BY fecha_evento) AS estado_cambio
+    FROM
+        RegistrosOrdenados
+),
+SegmentosTemporales AS (
+    -- 3. CTE Final: Filtrar solo los puntos de cambio (donde estado_cambio = TRUE)
+    SELECT
+        fecha_evento AS fecha_inicio_segmento,
+        operating_mode_value,
+        -- Usar LEAD para encontrar la fecha de INICIO del siguiente segmento, que es nuestro FIN
+        LEAD(fecha_evento, 1) OVER (ORDER BY fecha_evento) AS fecha_fin_segmento
+    FROM
+        CambiosDetectados
+    WHERE
+        estado_cambio = TRUE
+)
+-- 4. SELECT FINAL
+SELECT
+    fecha_inicio_segmento,
+    fecha_fin_segmento,
+    operating_mode_value,
+    EXTRACT(EPOCH FROM (fecha_fin_segmento - fecha_inicio_segmento)) AS duracion_segundos
+FROM
+    SegmentosTemporales
+WHERE
+    fecha_fin_segmento IS NOT NULL
+ORDER BY
+    fecha_inicio_segmento;
+```
+
+### OQ2: Count of the working hours of each operating mode (units: hours) (Note: For mode number 7, since it only operates for a few seconds the query registers the hours worked by this number as practically zero)
+
+```sql
+WITH RegistrosOrdenados AS (
+    -- 1. Obtener todos los registros de OPERATING_MODE dentro del rango
+    SELECT
+        TO_TIMESTAMP(vf.date/1000) AS fecha_evento,
+        vf.value AS operating_mode_value
+    FROM
+        variable_log_float vf
+    LEFT JOIN
+        variable v ON vf.id_var = v.id
+    WHERE
+        v.name = 'OPERATING_MODE'
+        -- CONDICIONES DE RANGO DE FECHAS PERSONALIZABLES
+        AND TO_TIMESTAMP(vf.date/1000) >= '2021-01-07 00:00:00'::timestamp
+        AND TO_TIMESTAMP(vf.date/1000) < '2021-01-16 00:00:00'::timestamp
+        -- Excluir valores de máquina apagada
+        AND vf.value IS NOT NULL
+        AND CAST(vf.value AS TEXT) <> 'NaN'
+    ORDER BY
+        vf.date
+),
+CambiosDetectados AS (
+    -- 2. CTE Intermedia: Usar LAG para detectar el cambio
+    SELECT
+        fecha_evento,
+        operating_mode_value,
+        -- Marcar si el estado cambió
+        operating_mode_value IS DISTINCT FROM LAG(operating_mode_value) OVER (ORDER BY fecha_evento) AS estado_cambio
+    FROM
+        RegistrosOrdenados
+),
+SegmentosTemporales AS (
+    -- 3. Filtrar solo los puntos de cambio (donde estado_cambio = TRUE) y definir el FIN del segmento
+    SELECT
+        fecha_evento AS fecha_inicio_segmento,
+        operating_mode_value,
+        -- Usar LEAD para obtener la fecha de FIN del segmento actual
+        LEAD(fecha_evento, 1) OVER (ORDER BY fecha_evento) AS fecha_fin_segmento
+    FROM
+        CambiosDetectados
+    WHERE
+        estado_cambio = TRUE
+)
+-- 4. SELECT FINAL: Agrupar por día y sumar las duraciones, convirtiendo a HORAS y REDONDEANDO
+SELECT
+    -- Agrupar por el día de inicio del segmento
+    DATE(fecha_inicio_segmento) AS dia_calendario,
+    
+    -- El valor numérico del modo operativo
+    s.operating_mode_value,
+    
+    -- Redondeamos la suma total de horas a 2 decimales
+    ROUND(SUM(EXTRACT(EPOCH FROM (s.fecha_fin_segmento - s.fecha_inicio_segmento))) / 3600.0, 2) AS duracion_total_horas
+FROM
+    SegmentosTemporales s
+WHERE
+    s.fecha_fin_segmento IS NOT NULL
+GROUP BY
+    1, 2
+ORDER BY
+    dia_calendario, duracion_total_horas DESC;
+```
+
+## COMPARISON ##
+
+### CQ1: Query using the variable machine_in_operation vs. query to identify variable changes, to see if the data gathered by the two queries is the same.
+
+```sql
+WITH RangoEventos AS (
+    -- 1. Capturar los primeros 200 segundos únicos con cualquier evento
+    SELECT date_trunc('second', to_timestamp(a.date/1000)) AS segundo_evento
+    FROM variable_log_float a
+    WHERE to_timestamp(a.date/1000) BETWEEN '2021-01-07 00:00:00' AND '2021-01-15 23:59:59'
+    UNION
+    SELECT date_trunc('second', to_timestamp(a.date/1000)) AS segundo_evento
+    FROM variable_log_string a
+    WHERE to_timestamp(a.date/1000) BETWEEN '2021-01-07 00:00:00' AND '2021-01-15 23:59:59'
+    ORDER BY segundo_evento
+    LIMIT 200 -- Limita el número de segundos a analizar
+),
+-- 2. Conteo de Cambios (La métrica alternativa, optimizada)
+ConteoCambios AS (
+    SELECT
+        date_trunc('second', dt) AS segundo_evento,
+        COUNT(*) AS total_cambios
+    FROM (
+        SELECT to_timestamp(a.date/1000) AS dt
+        FROM variable_log_float a
+        JOIN variable b ON a.id_var = b.id
+        WHERE b.name <> 'MACHINE_IN_OPERATION'
+              AND to_timestamp(a.date/1000) BETWEEN '2021-01-07 00:00:00' AND '2021-01-15 23:59:59'
+        UNION ALL
+        SELECT to_timestamp(a.date/1000) AS dt
+        FROM variable_log_string a
+        WHERE to_timestamp(a.date/1000) BETWEEN '2021-01-07 00:00:00' AND '2021-01-15 23:59:59'
+    ) AS TodosLosCambios
+    GROUP BY 1
+)
+
+-- 3. COMPARACIÓN FINAL con LATERAL JOIN
+SELECT
+    re.segundo_evento,
+    -- Estado Real (basado en MACHINE_IN_OPERATION)
+    CASE
+        WHEN estado_actual.value IS NULL THEN 'Estado Desconocido'
+        WHEN estado_actual.value > 0 THEN 'Operación (Real)'
+        ELSE 'Parada (Real)'
+    END AS estado_real,
+    
+    -- Estado por Conteo de Cambios
+    CASE
+        WHEN cc.total_cambios IS NULL OR cc.total_cambios = 0 THEN 'Parada (Conteo)'
+        ELSE 'Operación (Conteo)'
+    END AS estado_conteo,
+    
+    -- Coincidencia
+    CASE
+        WHEN (estado_actual.value > 0) AND (cc.total_cambios IS NULL OR cc.total_cambios = 0) THEN 'NO COINCIDEN (Real ON, Conteo OFF)'
+        WHEN (estado_actual.value IS NULL OR estado_actual.value <= 0) AND (cc.total_cambios IS NOT NULL AND cc.total_cambios > 0) THEN 'NO COINCIDEN (Real OFF, Conteo ON)'
+        ELSE 'COINCIDEN'
+    END AS coincidencia
+FROM RangoEventos re
+-- LATERAL JOIN optimizado para buscar el estado vigente en ese segundo
+LEFT JOIN LATERAL (
+    SELECT a.value
+    FROM variable_log_float a
+    JOIN variable b ON a.id_var = b.id
+    WHERE b.name = 'MACHINE_IN_OPERATION'
+      AND to_timestamp(a.date/1000) <= re.segundo_evento
+    ORDER BY to_timestamp(a.date/1000) DESC
+    LIMIT 1
+) AS estado_actual ON TRUE
+LEFT JOIN ConteoCambios cc ON re.segundo_evento = cc.segundo_evento
+ORDER BY re.segundo_evento;
+```
+<img width="287" height="172" alt="image" src="https://github.com/user-attachments/assets/3cd72209-4367-4cf0-bf5a-68e1a7bfefea" />
+<img width="402" height="202" alt="image" src="https://github.com/user-attachments/assets/56fca6f8-aa09-4a75-836e-b94ccaeacbce" />
+
+### CQ2: Query to know when the status of the machine changes and which state is in (operating or stopped)
+
+```sql
+WITH RegistrosEstado AS (
+    -- 1. Obtener todos los registros de la variable 'MACHINE_IN_OPERATION' ordenados por tiempo
+    SELECT
+        TO_TIMESTAMP(vf.date/1000) AS fecha_hora,
+        vf.value -- Valor exacto (ej. 1.0 o 0.0)
+    FROM
+        variable_log_float vf
+    LEFT JOIN
+        variable v ON vf.id_var = v.id
+    WHERE
+        v.name = 'MACHINE_IN_OPERATION'
+    ORDER BY
+        vf.date
+),
+CambiosDetectados AS (
+    -- 2. CTE para calcular el estado anterior y marcar el cambio
+    SELECT
+        fecha_hora,
+        value,
+        -- Usar LAG para obtener el valor anterior
+        LAG(value) OVER (ORDER BY fecha_hora) AS valor_anterior
+    FROM
+        RegistrosEstado
+)
+SELECT
+    cd.fecha_hora,
+    -- Estado de la máquina en el momento exacto (actual)
+    CASE
+        WHEN cd.value > 0 THEN 'Operación'
+        ELSE 'Parada'
+    END AS estado_actual,
+    -- Estado de la máquina en el registro anterior (LAG)
+    CASE
+        WHEN cd.valor_anterior > 0 THEN 'Operación'
+        WHEN cd.valor_anterior IS NULL THEN 'Inicio' -- Primer registro
+        ELSE 'Parada'
+    END AS estado_anterior
+FROM
+    CambiosDetectados cd
+WHERE
+    -- 3. Aplicar el filtro de cambio de estado (excluye registros donde no hay cambio)
+    cd.value IS DISTINCT FROM cd.valor_anterior
+ORDER BY
+    cd.fecha_hora
+LIMIT 10;
+```
+
+### CQ3: Continuation to CQ2, adding the variables in which the machine is classified as in "standby" and also as in "emergency"
+
+```sql
+WITH RegistrosEstado AS (
+    -- 1. Obtener todos los registros de la variable 'MACHINE_IN_OPERATION' ordenados por tiempo
+    SELECT
+        TO_TIMESTAMP(vf.date/1000) AS fecha_hora,
+        vf.value -- Valor exacto (ej. 1.0 o 0.0)
+    FROM
+        variable_log_float vf
+    LEFT JOIN
+        variable v ON vf.id_var = v.id
+    WHERE
+        v.name = 'MACHINE_IN_OPERATION'
+    ORDER BY
+        vf.date
+),
+CambiosDetectados AS (
+    -- 2. CTE para calcular el estado anterior y marcar el cambio
+    SELECT
+        fecha_hora,
+        value AS current_m_op_value,
+        LAG(value) OVER (ORDER BY fecha_hora) AS previous_m_op_value
+    FROM
+        RegistrosEstado
+),
+CambiosMIO AS (
+    -- 3. Filtrar solo los eventos donde el estado de MACHINE_IN_OPERATION cambió
+    SELECT
+        fecha_hora,
+        current_m_op_value,
+        previous_m_op_value
+    FROM
+        CambiosDetectados cd
+    WHERE
+        cd.current_m_op_value IS DISTINCT FROM cd.previous_m_op_value
+)
+-- 4. SELECT FINAL: Cruce con los estados de STANDBY y EMERGENCY
+SELECT
+    m.fecha_hora,
+    -- Estado de MACHINE_IN_OPERATION (MIO)
+    CASE
+        WHEN m.current_m_op_value > 0 THEN 'Operación'
+        ELSE 'Parada'
+    END AS estado_mio_actual,
+    CASE
+        WHEN m.previous_m_op_value > 0 THEN 'Operación'
+        WHEN m.previous_m_op_value IS NULL THEN 'Inicio'
+        ELSE 'Parada'
+    END AS estado_mio_anterior,
+
+    -- Estado OP_MODE_STANDBY (Correlacionado)
+    CASE
+        WHEN standby.value > 0 THEN 'Activado'
+        WHEN standby.value <= 0 THEN 'Desactivado'
+        ELSE 'Desconocido'
+    END AS estado_standby,
+
+    -- Estado MACHINE_EMERGENCY (Correlacionado)
+    CASE
+        WHEN emergency.value > 0 THEN 'Activado'
+        WHEN emergency.value <= 0 THEN 'Desactivado'
+        ELSE 'Desconocido'
+    END AS estado_emergency
+FROM
+    CambiosMIO m
+-- LATERAL JOIN 1: Obtener el estado de STANDBY más reciente al momento del cambio de MIO
+LEFT JOIN LATERAL (
+    SELECT a.value
+    FROM variable_log_float a
+    JOIN variable b ON a.id_var = b.id
+    WHERE b.name = 'OP_MODE_STANDBY'
+      AND TO_TIMESTAMP(a.date/1000) <= m.fecha_hora -- Busca registros en o antes de la transición
+    ORDER BY TO_TIMESTAMP(a.date/1000) DESC
+    LIMIT 1
+) AS standby ON TRUE
+-- LATERAL JOIN 2: Obtener el estado de EMERGENCY más reciente al momento del cambio de MIO
+LEFT JOIN LATERAL (
+    SELECT a.value
+    FROM variable_log_float a
+    JOIN variable b ON a.id_var = b.id
+    WHERE b.name = 'MACHINE_EMERGENCY'
+      AND TO_TIMESTAMP(a.date/1000) <= m.fecha_hora -- Busca registros en o antes de la transición
+    ORDER BY TO_TIMESTAMP(a.date/1000) DESC
+    LIMIT 1
+) AS emergency ON TRUE
+ORDER BY
+    m.fecha_hora
+LIMIT 10;
+```
+
+### CQ4: Query for identifying states of operation, standby and emergency
+
+```sql
+WITH CombinedVariables AS (
+    -- 1. Obtener todos los registros de las 3 variables clave
+    SELECT
+        TO_TIMESTAMP(vf.date/1000) AS fecha_evento,
+        v.name AS variable_name,
+        vf.value
+    FROM
+        variable_log_float vf
+    JOIN
+        variable v ON vf.id_var = v.id
+    WHERE
+        v.name IN ('MACHINE_IN_OPERATION', 'OP_MODE_STANDBY', 'MACHINE_EMERGENCY')
+    ORDER BY
+        vf.date
+),
+ChangesDetected AS (
+    -- 2. Detectar cambios de estado en CADA variable de forma independiente
+    SELECT
+        fecha_evento,
+        variable_name,
+        value,
+        -- Marcar la fila si el valor actual es diferente del valor anterior (detecta cambios)
+        value IS DISTINCT FROM LAG(value) OVER (PARTITION BY variable_name ORDER BY fecha_evento) AS is_state_change
+    FROM
+        CombinedVariables
+),
+TimelineBase AS (
+    -- 3. Crear una línea de tiempo con todos los segundos donde *alguna* de las variables cambió
+    SELECT DISTINCT
+        fecha_evento
+    FROM
+        ChangesDetected
+    WHERE
+        is_state_change = TRUE
+)
+-- 4. SELECT FINAL: Correlacionar el estado de las 3 variables en cada punto de cambio 
+SELECT
+    tb.fecha_evento,
+    
+    -- MIO (MACHINE_IN_OPERATION)
+    CASE WHEN mio.value > 0 THEN 'Operación' ELSE 'Parada' END AS estado_mio,
+    
+    -- STANDBY (OP_MODE_STANDBY)
+    CASE WHEN standby.value > 0 THEN 'Standby Activo' ELSE 'Standby Desactivado' END AS estado_standby,
+    
+    -- EMERGENCY (MACHINE_EMERGENCY)
+    CASE WHEN emergency.value > 0 THEN 'Emergencia Activa' ELSE 'Emergencia Desactivada' END AS estado_emergency
+    
+FROM
+    TimelineBase tb
+-- LATERAL JOIN 1: Último estado de MACHINE_IN_OPERATION
+LEFT JOIN LATERAL (
+    SELECT value
+    FROM CombinedVariables
+    WHERE variable_name = 'MACHINE_IN_OPERATION'
+      AND fecha_evento <= tb.fecha_evento
+    ORDER BY fecha_evento DESC
+    LIMIT 1
+) AS mio ON TRUE
+-- LATERAL JOIN 2: Último estado de OP_MODE_STANDBY
+LEFT JOIN LATERAL (
+    SELECT value
+    FROM CombinedVariables
+    WHERE variable_name = 'OP_MODE_STANDBY'
+      AND fecha_evento <= tb.fecha_evento
+    ORDER BY fecha_evento DESC
+    LIMIT 1
+) AS standby ON TRUE
+-- LATERAL JOIN 3: Último estado de MACHINE_EMERGENCY
+LEFT JOIN LATERAL (
+    SELECT value
+    FROM CombinedVariables
+    WHERE variable_name = 'MACHINE_EMERGENCY'
+      AND fecha_evento <= tb.fecha_evento
+    ORDER BY fecha_evento DESC
+    LIMIT 1
+) AS emergency ON TRUE
+ORDER BY
+    tb.fecha_evento
+LIMIT 200;
+```
+
+<img width="316" height="339" alt="image" src="https://github.com/user-attachments/assets/d5a69ba5-a123-4687-a1a1-3bfc7d8dccad" />
+
+In this screenshot you can see that there are some inconsistencies in the data registered because you can see that the machine is in operation state and at the same time it registers itself as in standby and also in emergency mode.
 
 
 ## PERIOD IDENTIFYING QUERIES ##
@@ -790,6 +1221,35 @@ TEMPERATURA_CABEZAL
 TEMPERATURA_CARNERO
 TEMPERATURA_CARNERO_2
 ```
+
+### UQ3: Values for the relevant temperature variables
+
+```sql
+SELECT 
+  b.name AS variable,
+  -- Convertimos el timestamp de milisegundos a segundos
+  to_timestamp(CAST(a.date AS bigint) / 1000) AS dt,
+  a.value
+FROM "public"."variable_log_float" a
+JOIN variable b ON a.id_var = b.id
+WHERE 
+  -- 1. Filtro de fecha y hora
+  to_timestamp(CAST(a.date AS bigint) / 1000) >= '2021-01-04 13:39:30+01'
+  AND to_timestamp(CAST(a.date AS bigint) / 1000) < '2021-01-05 22:00:00+01'
+  
+  -- 2. Filtro de los nombres de variable
+  AND b.name IN (
+    'TEMPERATURE_MOTOR_8', 'TEMPERATURE_MOTOR_5', 'TEMPERATURE_HEAD', 
+    'TEMPERATURE_RAM_2', 'TEMPERATURE_RAM', 'TEMPERATURE_BASE', 
+    'SPINDLE_1_TEMPERATURE', 'TEMPERATURE_MOTOR_Z', 'TEMPERATURE_MOTOR_Y', 
+    'TEMPERATURA_MOTOR_8', 'TEMPERATURE_MOTOR_X', 'TEMPERATURE_SPINDLE_1', 
+    'TEMPERATURA_MOTOR_5', 'SPINDLE_TEMP', 'TEMPERATURA_BASE', 
+    'TEMPERATURA_CABEZAL', 'TEMPERATURA_CARNERO', 'TEMPERATURA_CARNERO_2'
+  )
+ORDER BY 
+  variable, dt;
+```
+
 
 
 
