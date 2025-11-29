@@ -23,7 +23,7 @@ cd frontend
 All dependencies are listed in `package.json`. Just run:
 ```bash
 npm install
-```
+```n
 
 This will install:
 - **Next.js** - React framework
