@@ -16,7 +16,6 @@ CREATE TABLE IF NOT EXISTS agg_machine_activity_daily (
 );
 
 
-
 -- Table: agg_sensor_stats
 -- Purpose: Stores hourly aggregated sensor readings (temperature, pressure, etc.)
 -- Example: For TEMPERATURE_BASE, we average all readings within each hour
@@ -42,6 +41,20 @@ CREATE TABLE IF NOT EXISTS alerts(
         CHECK(alert_type in ('emergency', 'error', 'warning')),
     description VARCHAR(500) NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS machine_utilization(
+    id SERIAL PRIMARY KEY,
+    
+    machine_state VARCHAR(20) NOT NULL
+        CHECK(machine_state in ('down', 'running')),
+    state_start_time TIMESTAMP NOT NULL,
+    state_end_time TIMESTAMP NOT NULL,
+    
+    dt DATE GENERATED ALWAYS AS (state_start_time::DATE) STORED,
+
+    duration INTERVAL
+        GENERATED ALWAYS AS (state_end_time - state_start_time) STORED
+)
 
 -- =============================================================================
 -- INDEXES
