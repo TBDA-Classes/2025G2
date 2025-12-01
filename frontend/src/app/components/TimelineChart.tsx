@@ -1,6 +1,7 @@
 "use client";
 import { ResponsiveBar } from '@nivo/bar'
 
+
 const TimelineChart = ({ data }: { data: any[] }) => (
     <ResponsiveBar
         data={data}

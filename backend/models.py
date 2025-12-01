@@ -105,6 +105,24 @@ class AggSensorStats(Base):
 
 
 
+class MachineUtilization(Base):
+    """
+    Machine utilization tracking - stores operation and downtime periods
+    Example row:
+    id=1, machine_state='running', state_start_time='2021-01-15 08:00:00',
+    state_end_time='2021-01-15 17:00:00'
+    Note: dt and duration are auto-generated columns
+    """
+    __tablename__ = "machine_utilization"
+    
+    id: Mapped[int] = mapped_column(primary_key=True)
+    machine_state: Mapped[str]
+    state_start_time: Mapped[datetime]
+    state_end_time: Mapped[datetime]
+    # Note: dt and duration are generated columns in the database, 
+    # so we don't need to define them here for inserts
+
+
 class DataStatus(Base):
     """
     Example row:

@@ -1,5 +1,7 @@
 
+import { getTemperatures } from "@/lib/api";
 import TimelineChart from "../components/TimelineChart";
+import BoxPlot from "../components/BoxPlot";
 const data = [
   {
     "country": "AD",
@@ -14,6 +16,14 @@ const data = [
 
 export default async function Dashboard() {
   try {
+
+    const temperature_data = await getTemperatures('2022-02-23');
+
+    if(!temperature_data){
+      throw new Error("No data for this date.");
+    }
+
+
     return (
       
       <div className="p-8"> {/* Must be used for all children containers*/}
@@ -66,7 +76,7 @@ export default async function Dashboard() {
             Temperature History (24 Hours)
             </h2>
             <div className="h-[400px]">
-            <TimelineChart data={data} />
+            <BoxPlot data={temperature_data} />
           </div>
           </div>
           <div className="bg-white rounded-lg shadow-sm p-6 w-1/2">

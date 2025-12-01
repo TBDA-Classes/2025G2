@@ -14,7 +14,7 @@ db_user = os.getenv("DB_USER")
 db_password = os.getenv("DB_PASSWORD")
 db_host = os.getenv("DB_HOST")
 db_name = os.getenv("DB_NAME")
-db_port = os.getenv("DB_PORT")
+db_port = os.getenv("DB_PORT", "2345")
 
 PROD_DATABASE_URL = f'postgresql+psycopg://{db_user}:{db_password}@{db_host}:{db_port}/{db_name}'
 
@@ -44,7 +44,7 @@ agg_db_user = os.getenv("DB_USER") # Add second parameter for defaults
 agg_db_password = os.getenv("DB_PASSWORD") 
 agg_db_host = os.getenv("DB_HOST")
 agg_db_name = os.getenv("AGG_DB_NAME")
-agg_db_port = os.getenv("DB_PORT")
+agg_db_port = os.getenv("DB_PORT", "2345")
 
 AGG_DATABASE_URL = f'postgresql+psycopg://{agg_db_user}:{agg_db_password}@{agg_db_host}:{agg_db_port}/{agg_db_name}'
 
