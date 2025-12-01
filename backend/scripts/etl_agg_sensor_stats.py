@@ -23,6 +23,7 @@ Args:
 
 import logging
 import sys
+import math
 
 from backend.database import prod_engine, agg_engine
 from backend.models import AggSensorStats
@@ -32,6 +33,8 @@ from datetime import datetime
 from collections import defaultdict
 
 SENSOR_OF_CHOICE = 'TEMPERATURA_BASE'
+
+
 
 # EXTRACT FUNCTION
 def extract_data(start_date, end_date):
@@ -116,12 +119,12 @@ def transform_data(raw_data):
         value = record['value']
 
         # Skip invalid values
-        if value is None or value == 0 or not isinstance(value, (int, float)):
+        if value is None or value == 0 or not math.isfinite(value):
             continue
 
         # Appends all values to the appropriate hour
         hour = record['ts'].replace(minute=0, second=0, microsecond=0)
-        hourly_data[hour].append(record['value'])
+        hourly_data[hour].append(record['value']/100) # Divide by 100 to get the real value 
 
     transformed_data = []
 
@@ -130,7 +133,7 @@ def transform_data(raw_data):
             'dt': hour,
             'min_value': min(values),
             'max_value': max(values),
-            'avg_value': sum(values) / len(values),
+            'avg_value': round(sum(values) / len(values),2),
             'readings_count': len(values)
         })
 

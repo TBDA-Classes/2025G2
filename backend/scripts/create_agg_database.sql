@@ -54,7 +54,7 @@ CREATE TABLE IF NOT EXISTS machine_utilization(
 
     duration INTERVAL
         GENERATED ALWAYS AS (state_end_time - state_start_time) STORED
-)
+);
 
 -- =============================================================================
 -- INDEXES
