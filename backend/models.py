@@ -99,6 +99,7 @@ class AggSensorStats(Base):
     min_value: Mapped[Optional[float]]
     avg_value: Mapped[Optional[float]]
     max_value: Mapped[Optional[float]]
+    std_dev  : Mapped[Optional[float]]
     readings_count: Mapped[Optional[int]]
     last_updated_at: Mapped[Optional[datetime]]
 

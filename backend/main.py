@@ -38,6 +38,7 @@ class SensorStatsOut(BaseModel):
     min_value: Optional[float]
     avg_value: Optional[float]
     max_value: Optional[float]
+    std_dev:   Optional[float]
     readings_count: Optional[int]
 
 
@@ -195,6 +196,7 @@ def get_temperature_stats(
             min_value,
             avg_value,
             max_value,
+            std_dev,
             readings_count
         FROM agg_sensor_stats a
         WHERE a.dt::date = :target_date
@@ -220,6 +222,7 @@ def get_temperature_stats(
                 min_value=r.min_value,
                 avg_value=r.avg_value,
                 max_value=r.max_value,
+                std_dev  =r.std_dev,
                 readings_count=r.readings_count
             )
             for r in rows

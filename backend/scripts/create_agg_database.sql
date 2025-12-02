@@ -21,11 +21,12 @@ CREATE TABLE IF NOT EXISTS agg_machine_activity_daily (
 -- Example: For TEMPERATURE_BASE, we average all readings within each hour
 
 CREATE TABLE IF NOT EXISTS agg_sensor_stats (
-    sensor_name VARCHAR(100),                -- Sensor identifier (e.g., 'TEMPERATURE_BASE')
-    dt TIMESTAMP,                            -- Date of the reading
+    sensor_name VARCHAR(100),                
+    dt TIMESTAMP,                            
     min_value FLOAT,                         -- Minimum value during the hour
     avg_value FLOAT,                         -- Average value during the hour
     max_value FLOAT,                         -- Maximum value during the hour
+    std_dev   FLOAT,                         -- Needed for the Nivo BoxPlot
     readings_count INT,                      -- Number of raw readings aggregated
     last_updated_at TIMESTAMP DEFAULT NOW(), -- Timestamp of last aggregation
     PRIMARY KEY (sensor_name, dt)

@@ -1,8 +1,14 @@
 // app/dashboard/layout.tsx
 import type { ReactNode } from "react";
+import { useState } from "react";
 import SideBar from "../components/Sidebar";
+import BasicDatePicker from "../components/Datepicker";
+
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
+
+  const [date, setDate] = useState('2022-02-22');
+
   return (
     <div className="flex h-screen bg-slate-200 text-slate-100">
       <SideBar />
@@ -13,6 +19,11 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
             <p className="text-slate-800 font-medium">
               Wednesday, November 19, 2025
             </p>
+            <BasicDatePicker 
+            value={date} 
+            onChange={() => setDate(date)}>
+              
+            </BasicDatePicker>
           </div>
         </div>
         {children}
