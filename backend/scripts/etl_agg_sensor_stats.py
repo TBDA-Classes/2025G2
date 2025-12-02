@@ -22,6 +22,7 @@ Args:
 
 
 import logging
+import statistics
 import sys
 import math
 
@@ -134,6 +135,7 @@ def transform_data(raw_data):
             'min_value': min(values),
             'max_value': max(values),
             'avg_value': round(sum(values) / len(values),2),
+            'std_dev'  : round(statistics.stdev(values), 2),
             'readings_count': len(values)
         })
 
@@ -154,6 +156,7 @@ def load_data(transformed_data):
                 min_value = record['min_value'],
                 avg_value = record['avg_value'],
                 max_value = record['max_value'],
+                std_dev = record['std_dev'],
                 readings_count = record['readings_count'],
                 last_updated_at = datetime.now()
             )
