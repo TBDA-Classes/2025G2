@@ -7,7 +7,8 @@ import BasicDatePicker from "../components/Datepicker";
 
 export default function DashboardLayout({ children }: { children: ReactNode }) {
 
-  const [date, setDate] = useState<Dayjs | null>(dayjs('2022-04-17'));
+  // Lifting state up to the layout, this is passed down to children for R & U.
+  const [date, setDate] = useState<Dayjs>(dayjs('2022-04-17'));
 
   return (
     <div className="flex h-screen bg-slate-200 text-slate-100">
@@ -20,8 +21,8 @@ export default function DashboardLayout({ children }: { children: ReactNode }) {
               Wednesday, November 19, 2025
             </p>
             <BasicDatePicker 
-            value={date} 
-            onChange={() => setDate(date)}>
+            date={date} 
+            setDate={() => setDate(date)}>
               
             </BasicDatePicker>
           </div>

@@ -5,7 +5,8 @@ import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { useState } from 'react';
 import dayjs from 'dayjs';
 
-export default function BasicDatePicker(date: dayjs.Dayjs | null, setDate: any) {
+// Important fix: JSX components needs their attributes passed as a single props object {}.
+export default function BasicDatePicker({date, setDate} : {date: dayjs.Dayjs, setDate: any}) {
 
     
     return (
@@ -14,7 +15,7 @@ export default function BasicDatePicker(date: dayjs.Dayjs | null, setDate: any) 
         <DatePicker
         label="Controlled picker"
         value={date}
-        onChange={(newValue) => setDate(newValue)}
+        onChange={(newValue) => setDate(newValue)} // Call parents setter
         />
         </DemoContainer>
     </LocalizationProvider>
