@@ -1,13 +1,13 @@
 // app/dashboard/layout.tsx
 import type { ReactNode } from "react";
 import { useState } from "react";
+import dayjs, { Dayjs } from 'dayjs';
 import SideBar from "../components/Sidebar";
 import BasicDatePicker from "../components/Datepicker";
 
-
 export default function DashboardLayout({ children }: { children: ReactNode }) {
 
-  const [date, setDate] = useState('2022-02-22');
+  const [date, setDate] = useState<Dayjs | null>(dayjs('2022-04-17'));
 
   return (
     <div className="flex h-screen bg-slate-200 text-slate-100">
