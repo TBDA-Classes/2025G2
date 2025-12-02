@@ -1,5 +1,6 @@
-import { Period } from "@/types/Period";
+
 import { DateState } from "@/types/DateState";
+import { Period } from "@/types/period";
 import { METHODS } from "http";
 import { Temperature } from "@/types/Temperature";
 

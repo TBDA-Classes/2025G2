@@ -6,7 +6,7 @@ import { useState } from 'react';
 import dayjs from 'dayjs';
 
 // Important fix: JSX components needs their attributes passed as a single props object {}.
-export default function BasicDatePicker({date, setDate} : {date: dayjs.Dayjs, setDate: any}) {
+export default function BasicDatePicker({date, setDate} : {date: dayjs.Dayjs | null, setDate: (newDate: dayjs.Dayjs | null) => void}) {
 
     
     return (

@@ -146,6 +146,7 @@ export default async function Dashboard() {
       </div>
     );
   } catch (error) {
+    console.log(error);
     return (
       <div className="bg-red-50 border border-red-200 rounded-lg p-6">
         <h1 className="text-2xl font-bold text-red-800 mb-2">Error</h1>
