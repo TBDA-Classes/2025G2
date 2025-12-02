@@ -14,14 +14,14 @@ const data = [
   }
 ];
 
-export default async function Dashboard() {
+export default async function Dashboard({params}: {params: {date: string}}) {
   try {
 
-    const temperature_data = await getTemperatures('2022-02-22');
-
-    if(!temperature_data){
+    if(!params.date){
       throw new Error("No data for this date.");
     }
+
+    const temperature_data = await getTemperatures(params.date);
 
 
     return (
