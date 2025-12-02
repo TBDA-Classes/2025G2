@@ -14,14 +14,14 @@ const data = [
   }
 ];
 
-export default async function Dashboard({params}: {params: {date: string}}) {
+export default async function Dashboard({searchParams}: {searchParams: {date: string}}) {
   try {
-
-    if(!params.date){
-      throw new Error("No data for this date.");
+    if (!searchParams.date) {
+      console.log("No date provided in query parameters, defaulting to 2022-04-17");
     }
 
-    const temperature_data = await getTemperatures(params.date);
+    const date = searchParams.date || "2022-04-17";
+    const temperature_data = await getTemperatures(date);
 
 
     return (
