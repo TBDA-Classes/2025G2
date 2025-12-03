@@ -1,7 +1,7 @@
-
 import { getTemperatures } from "@/lib/api";
 import TimelineChart from "../components/TimelineChart";
 import BoxPlot from "../components/BoxPlot";
+
 const data = [
   {
     "country": "AD",
@@ -15,17 +15,14 @@ const data = [
 ];
 
 export default async function Dashboard({
-  searchParams
-}: {
-  searchParams: Promise<{date: string}>}) {
+  searchParams // page components automatically receive these props
+} : {
+  searchParams: Promise<{date?: string}>
+}) {
+
   try {
     const params = await searchParams;
-    console.log("Dashboard received date param:", params.date);
-    
-    if (!params.date) {
-      console.log("No date provided in query parameters, defaulting to 2022-04-17");
-    }
-
+    console.log("Dashboard received date param:", params);
     const date = params.date || "2022-02-23";
     const temperature_data = await getTemperatures(date);
 
@@ -82,7 +79,13 @@ export default async function Dashboard({
             Temperature History (24 Hours)
             </h2>
             <div className="h-[400px]">
-            <BoxPlot data={temperature_data} />
+              {temperature_data.length > 0 ? (
+              <BoxPlot data={temperature_data} />
+              ):(
+              <p className="text-red-600">
+              No temperature data available for {date}</p>
+              )}
+            
           </div>
           </div>
           <div className="bg-white rounded-lg shadow-sm p-6 w-1/2">

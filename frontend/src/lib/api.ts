@@ -66,15 +66,21 @@ export async function getTemperatures(date:string){
         throw new Error('Date parameter is required');
     }
     try{ 
-        const url = `${BASE_URL}/temperature?target_date=${date}`;
+        const url =  `${BASE_URL}/temperature?target_date=${date}`;
+        
         const response = await fetch(url, {
             method: "GET",
             headers: {
                 "Content-Type": "application/json",
             },
         })
+        // No data exists for the date
+        if (response.status === 404){
+            return [];
+        }
 
         if(!response.ok){
+            console.log(response);
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();

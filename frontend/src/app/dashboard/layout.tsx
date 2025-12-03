@@ -1,21 +1,21 @@
-// app/dashboard/layout.tsx
-"use client"
+// Keeping the interactive parts in client component
+'use client';
 import type { ReactNode } from "react";
-import { useState } from "react";
-import dayjs, { Dayjs } from 'dayjs';
 import SideBar from "../components/Sidebar";
 import BasicDatePicker from "../components/Datepicker";
+import { useSearchParams, useRouter, usePathname } from "next/navigation";
 
 
-export default function DashboardLayout({
-   children, 
-   params 
-  }: { 
-    children: ReactNode;
-    params: { date?: string };
-  }) {
+export default function DashboardLayout({children}: { children: ReactNode; }) {
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const pathname = usePathname();
 
-  const currentDate = params.date || "2022-04-17";
+  const date = searchParams.get('date') || "2022-02-23";
+
+  const handleDateChange = (newDate: string) => {
+    router.push(`${pathname}?date=${newDate}`);
+  }
   
 
   return (
@@ -25,7 +25,7 @@ export default function DashboardLayout({
         {/* Sticky Date Selector */}
         <div className="bg-white sticky top-0 z-10">
           <div className="bg-white rounded-lg shadow-sm p-4 mb-6">
-            <BasicDatePicker currentDate={currentDate}></BasicDatePicker>
+            <BasicDatePicker date={date} setDate={handleDateChange}></BasicDatePicker>
           </div>
         </div>
         {children}

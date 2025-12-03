@@ -9,7 +9,7 @@ import dayjs from 'dayjs';
 
 
 // Important fix: JSX components needs their attributes passed as a single props object {}.
-export default function BasicDatePicker({currentDate} : {currentDate: string}) {
+export default function BasicDatePicker({date, setDate} : {date: string, setDate : any}) {
     const router = useRouter();
 
     
@@ -17,11 +17,9 @@ export default function BasicDatePicker({currentDate} : {currentDate: string}) {
         <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DatePicker
             label="Select date"
-            value={dayjs(currentDate)}
+            value={dayjs(date)}
             onChange={(newValue) => {
-                if (newValue) {
-                    router.push(`/dashboard?date=${newValue.format('YYYY-MM-DD')}`);
-                }
+                setDate(newValue?.format('YYYY-MM-DD') || '')
             }}
             />
         </LocalizationProvider>
