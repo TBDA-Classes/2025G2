@@ -358,7 +358,7 @@ ORDER BY ts;
     FROM variable_log_float vf
     LEFT JOIN variable v ON vf.id_var = v.id
     LEFT JOIN units   ON units.name = v.name
-    WHERE TO_TIMESTAMP(vf.date/1000)::date = DATE '2022-02-23'
+    WHERE TO_TIMESTAMP(vf.date/1000)::date = DATE '2021-10-14'
       AND v.name = 'TEMPERATURA_BASE'
 )
 SELECT value, ts, name, datatype, prettyname

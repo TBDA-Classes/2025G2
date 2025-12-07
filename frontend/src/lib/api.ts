@@ -1,8 +1,9 @@
 
 import { DateState } from "@/types/DateState";
-import { Period } from "@/types/period";
+import { Period } from "@/types/Period";
 import { METHODS } from "http";
 import { Temperature } from "@/types/Temperature";
+import { Utilization } from "@/types/Utilization";
 
 // Create a base URL constant
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -90,5 +91,40 @@ export async function getTemperatures(date:string){
     }catch(error){
         console.error("Error fetching temperatures:", error);
         throw new Error(`Failed to fetch temperatures: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+}
+
+export async function getMachineUtilization(date:string){
+    if (!BASE_URL) {
+        throw new Error('API URL is not configured. Please check your environment variables.');
+    }
+    if (!date) {
+        throw new Error('Date parameter is required');
+    }
+    try{ 
+        const url =  `${BASE_URL}/machine_util?target_date=${date}`;
+        
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        })
+        // No data exists for the date
+        if (response.status === 404){
+            return null;
+        }
+
+        if(!response.ok){
+            console.log(response);
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        const data = await response.json();
+        
+        console.log('DATA[0]:', data[0])
+        return data[0] as Utilization;
+    }catch(error){
+        console.error("Error fetching utilization data:", error);
+        throw new Error(`Failed to fetch utilization data: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
 }

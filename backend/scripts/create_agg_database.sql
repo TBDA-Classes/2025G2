@@ -9,9 +9,17 @@
 
 CREATE TABLE IF NOT EXISTS agg_machine_activity_daily (
     dt DATE PRIMARY KEY,
-    state_planned_down INT NOT NULL DEFAULT 0,
-    state_running INT NOT NULL DEFAULT 0,
-    state_unplanned_down INT NOT NULL DEFAULT 0,
+    state_planned_down NUMERIC DEFAULT 0,
+    state_running NUMERIC DEFAULT 0,
+    state_unplanned_down NUMERIC DEFAULT 0,
+    running_percentage NUMERIC
+        GENERATED ALWAYS AS (
+            ROUND((state_running / 24) * 100, 2)
+        ) STORED,
+    down_percentage NUMERIC
+        GENERATED ALWAYS AS (
+            ROUND((state_planned_down / 24) * 100, 2)
+        ) STORED,     
     last_updated_at TIMESTAMP DEFAULT NOW()
 );
 

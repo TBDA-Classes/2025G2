@@ -1,4 +1,5 @@
-import { getTemperatures } from "@/lib/api";
+import { getTemperatures, getMachineUtilization } from "@/lib/api";
+
 import TimelineChart from "../components/TimelineChart";
 import BoxPlot from "../components/BoxPlot";
 
@@ -25,6 +26,7 @@ export default async function Dashboard({
     console.log("Dashboard received date param:", params);
     const date = params.date || "2022-02-23";
     const temperature_data = await getTemperatures(date);
+    const machine_util_data = await getMachineUtilization(date);
 
 
     return (
@@ -113,36 +115,36 @@ export default async function Dashboard({
             <div className="bg-green-50 rounded-lg p-6">
               <div className="flex justify-between items-baseline mb-3">
                 <span className="text-slate-700 font-medium">Running Time</span>
-                <span className="text-3xl font-bold text-green-600">84.4%</span>
+                <span className="text-3xl font-bold text-green-600">{machine_util_data?.running_percentage ?? 'N/A'}%</span>
               </div>
               <div className="w-full bg-green-200 rounded-full h-2 mb-2">
                 <div className="bg-green-600 h-2 rounded-full" style={{ width: '84.4%' }}></div>
               </div>
-              <p className="text-slate-600 text-sm">1215 min / 1440 min</p>
+              <p className="text-slate-600 text-sm"> {machine_util_data?.state_running ?? 'N/A'} / 24 hours</p>
             </div>
 
             {/* Idle Time Card */}
             <div className="bg-yellow-50 rounded-lg p-6">
               <div className="flex justify-between items-baseline mb-3">
                 <span className="text-slate-700 font-medium">Idle Time</span>
-                <span className="text-3xl font-bold text-yellow-600">10.4%</span>
+                <span className="text-3xl font-bold text-yellow-600">N/A</span>
               </div>
               <div className="w-full bg-yellow-200 rounded-full h-2 mb-2">
-                <div className="bg-yellow-600 h-2 rounded-full" style={{ width: '10.4%' }}></div>
+                <div className="bg-yellow-600 h-2 rounded-full" style={{ width: '0%' }}></div>
               </div>
-              <p className="text-slate-600 text-sm">150 min / 1440 min</p>
+              <p className="text-slate-600 text-sm">N/A</p>
             </div>
 
             {/* Down Time Card */}
             <div className="bg-red-50 rounded-lg p-6">
               <div className="flex justify-between items-baseline mb-3">
                 <span className="text-slate-700 font-medium">Down Time</span>
-                <span className="text-3xl font-bold text-red-600">5.2%</span>
+                <span className="text-3xl font-bold text-red-600">{machine_util_data?.down_percentage ?? 'N/A'}%</span>
               </div>
               <div className="w-full bg-red-200 rounded-full h-2 mb-2">
                 <div className="bg-red-600 h-2 rounded-full" style={{ width: '5.2%' }}></div>
               </div>
-              <p className="text-slate-600 text-sm">75 min / 1440 min</p>
+              <p className="text-slate-600 text-sm"> {machine_util_data?.state_planned_down ?? 'N/A'} / 24 hours</p>
             </div>
           </div>
 

@@ -41,6 +41,12 @@ class SensorStatsOut(BaseModel):
     std_dev:   Optional[float]
     readings_count: Optional[int]
 
+class MachineUtilOut(BaseModel):
+    dt: str
+    state_running: Optional[float]
+    state_planned_down: Optional[float]
+    running_percentage: Optional[float]
+    down_percentage : Optional[float]
 
 # When you visit http://localhost:8000/ you'll see this message
 @app.get("/")
@@ -182,7 +188,7 @@ def get_machine_activity(
 @app.get("/api/v1/temperature", response_model=List[SensorStatsOut])
 def get_temperature_stats(
     target_date: DateType,
-    sensor_name: str = "TEMPERATURA_BASE",
+    sensor_name: str = "",
     db: Session = Depends(get_agg_db)
 ):
     """
@@ -226,6 +232,54 @@ def get_temperature_stats(
                 readings_count=r.readings_count
             )
             for r in rows
+        ]
+
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+
+
+@app.get('/api/v1/machine_util', response_model=List[MachineUtilOut])
+def get_machine_util(
+    target_date: DateType,
+    db: Session = Depends(get_agg_db)
+    ):
+
+    params = {
+        'target_date': target_date
+        }
+    query = text('''SELECT
+    dt,
+    state_planned_down,
+    state_running,
+    running_percentage,
+    down_percentage
+    FROM agg_machine_activity_daily
+    WHERE dt = :target_date
+    ORDER BY dt ASC;
+
+    ''')
+
+    try:
+        
+        rows = db.execute(query, params).fetchall()
+
+        if not rows:
+            raise HTTPException(
+                status_code=404,
+                detail=f"No temperature data found for machine utilization {target_date}"
+            )
+        return [
+            MachineUtilOut(
+            dt= str(row.dt),
+            state_running = row.state_running,
+            state_planned_down = row.state_planned_down,
+            running_percentage = row.running_percentage,
+            down_percentage = row.down_percentage,
+
+            ) for row in rows
         ]
 
     except HTTPException:
