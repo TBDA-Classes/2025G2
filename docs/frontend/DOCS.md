@@ -16,3 +16,22 @@ Each route folder can include a consistent set of standard files:
 | `error.tsx` | UI displayed when an error occurs | Catches component or route errors |
 | `not-found.tsx` | Custom 404 page | Used when route does not exist |
 
+## Throwing and Re-throwing Errors in React
+
+```typescript
+try {
+  const data = await someFunction();
+} catch (error) {
+  // Option 1: Re-throw as-is
+  throw error;
+  
+  // Option 2: Wrap with more context
+  throw new Error(`Failed to load temperatures: ${error.message}`);
+  
+  // Option 3: Create custom error with original attached
+  const newError = new Error("Temperature fetch failed");
+  newError.cause = error;  // Attach original error
+  throw newError;
+}
+```
+

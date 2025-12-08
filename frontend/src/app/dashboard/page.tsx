@@ -1,7 +1,8 @@
+import { getTemperatures, getMachineUtilization } from "@/lib/api";
 
-import { getTemperatures } from "@/lib/api";
 import TimelineChart from "../components/TimelineChart";
 import BoxPlot from "../components/BoxPlot";
+
 const data = [
   {
     "country": "AD",
@@ -14,14 +15,18 @@ const data = [
   }
 ];
 
-export default async function Dashboard() {
+export default async function Dashboard({
+  searchParams // page components automatically receive these props
+} : {
+  searchParams: Promise<{date?: string}>
+}) {
+
   try {
-
-    const temperature_data = await getTemperatures('2022-02-22');
-
-    if(!temperature_data){
-      throw new Error("No data for this date.");
-    }
+    const params = await searchParams;
+    console.log("Dashboard received date param:", params);
+    const date = params.date || "2022-02-23";
+    const temperature_data = await getTemperatures(date);
+    const machine_util_data = await getMachineUtilization(date);
 
 
     return (
@@ -76,7 +81,13 @@ export default async function Dashboard() {
             Temperature History (24 Hours)
             </h2>
             <div className="h-[400px]">
-            <BoxPlot data={temperature_data} />
+              {temperature_data.length > 0 ? (
+              <BoxPlot data={temperature_data} />
+              ):(
+              <p className="text-red-600">
+              No temperature data available for {date}</p>
+              )}
+            
           </div>
           </div>
           <div className="bg-white rounded-lg shadow-sm p-6 w-1/2">
@@ -104,48 +115,49 @@ export default async function Dashboard() {
             <div className="bg-green-50 rounded-lg p-6">
               <div className="flex justify-between items-baseline mb-3">
                 <span className="text-slate-700 font-medium">Running Time</span>
-                <span className="text-3xl font-bold text-green-600">84.4%</span>
+                <span className="text-3xl font-bold text-green-600">{machine_util_data?.running_percentage ?? 'N/A'}%</span>
               </div>
               <div className="w-full bg-green-200 rounded-full h-2 mb-2">
-                <div className="bg-green-600 h-2 rounded-full" style={{ width: '84.4%' }}></div>
+                <div className="bg-green-600 h-2 rounded-full" style={{ width: `${machine_util_data?.running_percentage ?? '100'}%`}}></div>
               </div>
-              <p className="text-slate-600 text-sm">1215 min / 1440 min</p>
+              <p className="text-slate-600 text-sm"> {machine_util_data?.state_running ?? 'N/A'} / 24 hours</p>
             </div>
 
             {/* Idle Time Card */}
             <div className="bg-yellow-50 rounded-lg p-6">
               <div className="flex justify-between items-baseline mb-3">
                 <span className="text-slate-700 font-medium">Idle Time</span>
-                <span className="text-3xl font-bold text-yellow-600">10.4%</span>
+                <span className="text-3xl font-bold text-yellow-600">N/A</span>
               </div>
               <div className="w-full bg-yellow-200 rounded-full h-2 mb-2">
-                <div className="bg-yellow-600 h-2 rounded-full" style={{ width: '10.4%' }}></div>
+                <div className="bg-yellow-600 h-2 rounded-full" style={{ width: '0%' }}></div>
               </div>
-              <p className="text-slate-600 text-sm">150 min / 1440 min</p>
+              <p className="text-slate-600 text-sm">N/A</p>
             </div>
 
             {/* Down Time Card */}
             <div className="bg-red-50 rounded-lg p-6">
               <div className="flex justify-between items-baseline mb-3">
                 <span className="text-slate-700 font-medium">Down Time</span>
-                <span className="text-3xl font-bold text-red-600">5.2%</span>
+                <span className="text-3xl font-bold text-red-600">{machine_util_data?.down_percentage ?? 'N/A'}%</span>
               </div>
               <div className="w-full bg-red-200 rounded-full h-2 mb-2">
-                <div className="bg-red-600 h-2 rounded-full" style={{ width: '5.2%' }}></div>
+                <div className="bg-red-600 h-2 rounded-full" style={{ width: `${machine_util_data?.down_percentage ?? '100'}%` }}></div>
               </div>
-              <p className="text-slate-600 text-sm">75 min / 1440 min</p>
+              <p className="text-slate-600 text-sm"> {machine_util_data?.state_planned_down ?? 'N/A'} / 24 hours</p>
             </div>
           </div>
 
           {/* Total */}
           <p className="text-center text-slate-500 text-sm">
-            Total: 1440 min (100.0%)
+            Total: {machine_util_data ? machine_util_data.state_planned_down + machine_util_data.state_running : 24} hours
           </p>
         </div>
         </div>
       </div>
     );
   } catch (error) {
+    console.log(error);
     return (
       <div className="bg-red-50 border border-red-200 rounded-lg p-6">
         <h1 className="text-2xl font-bold text-red-800 mb-2">Error</h1>

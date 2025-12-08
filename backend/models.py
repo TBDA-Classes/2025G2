@@ -69,18 +69,16 @@ class VariableLogString(Base):
 class AggMachineActivityDaily(Base):
     """
     Example row:
-    record_date=2021-01-15, state_planned_down=0, state_running=8, state_unplanned_down=0
+    dt=2021-01-15, state_planned_down=0, state_running=8, state_unplanned_down=0
     """
     __tablename__ = "agg_machine_activity_daily"
 
     # PostgreSQL DATE type → Python date
-    # Mapped 'record_date' to SQL column 'date' to avoid name collision
-    record_date: Mapped[date] = mapped_column("date", primary_key=True)
-    state_planned_down: Mapped[int] 
-    state_running: Mapped[int] 
-    state_unplanned_down: Mapped[int] 
+    dt: Mapped[date] = mapped_column(primary_key=True)
+    state_planned_down: Mapped[float] 
+    state_running: Mapped[float] 
+    state_unplanned_down: Mapped[float] 
     last_updated_at: Mapped[Optional[datetime]]
-
 
 # Class that matches our table structure in the aggregated DB.
 class AggSensorStats(Base):

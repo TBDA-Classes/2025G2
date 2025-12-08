@@ -1,22 +1,33 @@
+"use client";
 import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import { useState } from 'react';
+import { useRouter } from "next/navigation";
+import dayjs from 'dayjs';
 
-export default function BasicDatePicker(value) {
 
-    [value, setValue] = useState(date)
+// Important fix: JSX components needs their attributes passed as a single props object {}.
+export default function BasicDatePicker({
+    date, setDate, minDate, maxDate
+} : {
+    date: string, setDate : any, minDate : string | undefined, maxDate: string | undefined}) {
 
+    const router = useRouter();
+
+    
     return (
-    <LocalizationProvider dateAdapter={AdapterDayjs}>
-        <DemoContainer components={['DatePicker']}>
-        <DatePicker
-        label="Controlled picker"
-        value={date}
-        onChange={(newValue) => setValue(newValue)}
-        />
-        </DemoContainer>
-    </LocalizationProvider>
+        <LocalizationProvider dateAdapter={AdapterDayjs}>
+            <DatePicker
+            label="Select date"
+            value={dayjs(date)}
+            minDate={minDate ? dayjs(minDate) : undefined}
+            maxDate={maxDate ? dayjs(maxDate) : undefined}
+            onChange={(newValue) => {
+                setDate(newValue?.format('YYYY-MM-DD') || '')
+            }}
+            />
+        </LocalizationProvider>
     );
     }
