@@ -60,6 +60,7 @@ This file is used by all team members to record their working hours and activiti
 | Atle Sund | Frontend/Backend | Backend | Created connection to the aggregation DB using the credentials given by the professor. Created the DB and loaded data. | 2025-11-27 | 2 |
 | Atle Sund | Frontend/Backend | Frontend/Backend | ETL scripts, models, types, api endpoints | 2025-12-03 | 3 |
 | Erik Alexander Standal | Frontend | Worked on the frontend, api connections and graphs| 2025-12-04 | 4 |
+| Jovan Bajcetic | UI/UX + Scrum master | Documentation | Created first version of the project documentation using sphinx and created instructions to see this documentation on sphinx_documentation file | 2025-12-08 | 3 |
 ---
 
  *Tip:*  
