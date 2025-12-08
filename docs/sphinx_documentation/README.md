@@ -20,7 +20,10 @@ If Graphviz is not installed on your system (needed for diagrams), install it fr
 ```bash
 brew install graphviz
 ```
-
+- Linux
+```bash
+sudo apt install graphviz
+```
 ---
 
 ## 2. Build the documentation
@@ -57,4 +60,4 @@ build/html/index.html
 
 - Do not edit the build/ directory. It is regenerated on every build.
 - All editable content is located inside the source/ directory.
-- **This documentation is continously being modified, so you might not be seing the final version.**
+- **This documentation is continuously being updated, so you may not be viewing the final version.**
