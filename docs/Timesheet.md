@@ -58,6 +58,8 @@ This file is used by all team members to record their working hours and activiti
 | Atle Sund | Frontend/Backend | Backend | Created an aggregation database for better performance. This required setup for an additional DB connection, as well as new models found in models.py. Since our aggregation DB will be simple, SQLAlchemy will be used  | 2025-11-21 | 2 |
 | Atle Sund | Frontend/Backend | Backend | Worked on the ETL script to facilitate date inputs, this way it will be easier to test. Will also add sensor type as an argument.  | 2025-11-25 | 1.5 |
 | Atle Sund | Frontend/Backend | Backend | Created connection to the aggregation DB using the credentials given by the professor. Created the DB and loaded data. | 2025-11-27 | 2 |
+| Atle Sund | Frontend/Backend | Frontend/Backend | ETL scripts, models, types, api endpoints | 2025-12-03 | 3 |
+| Erik Alexander Standal | Frontend | Worked on the frontend, api connections and graphs| 2025-12-04 | 4 |
 ---
 
  *Tip:*  

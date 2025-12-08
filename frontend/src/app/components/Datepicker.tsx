@@ -9,7 +9,11 @@ import dayjs from 'dayjs';
 
 
 // Important fix: JSX components needs their attributes passed as a single props object {}.
-export default function BasicDatePicker({date, setDate} : {date: string, setDate : any}) {
+export default function BasicDatePicker({
+    date, setDate, minDate, maxDate
+} : {
+    date: string, setDate : any, minDate : string | undefined, maxDate: string | undefined}) {
+
     const router = useRouter();
 
     
@@ -18,6 +22,8 @@ export default function BasicDatePicker({date, setDate} : {date: string, setDate
             <DatePicker
             label="Select date"
             value={dayjs(date)}
+            minDate={minDate ? dayjs(minDate) : undefined}
+            maxDate={maxDate ? dayjs(maxDate) : undefined}
             onChange={(newValue) => {
                 setDate(newValue?.format('YYYY-MM-DD') || '')
             }}

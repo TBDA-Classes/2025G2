@@ -48,6 +48,13 @@ class MachineUtilOut(BaseModel):
     running_percentage: Optional[float]
     down_percentage : Optional[float]
 
+class DataStatusOut(BaseModel):
+    table_name: str
+    first_date: str
+    last_date: str
+    total_records: Optional[int]
+    number_of_sensors: Optional[int]
+
 # When you visit http://localhost:8000/ you'll see this message
 @app.get("/")
 def home():
@@ -84,19 +91,6 @@ def get_period(db: Session = Depends(get_prod_db)):
     if not periods:
         raise HTTPException(status_code=404, detail="Period(s) not found")
     return [PeriodOut(id=p.id, name=p.name) for p in periods]
-
-
-# Will not work yet, need to set up aggregated db first
-@app.get("/api/v1/data_availability")
-def get_data_availability(db: Session = Depends(get_agg_db)):
-    result = db.execute(text("SELECT * FROM v_data_status")).fetchone()
-    return {
-        "first_date": str(result.first_date),
-        "last_date": str(result.last_date),
-        "total_days": result.total_records,
-        "last_updated": str(result.last_updated)
-    }
-
 
 
 @app.get("/api/v1/machine_activity", response_model=List[MachineActivityOut])
@@ -286,3 +280,43 @@ def get_machine_util(
         raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+
+
+
+
+@app.get("/api/v1/data_status", response_model=List[DataStatusOut])
+def get_data_status(
+db : Session = Depends(get_agg_db)
+):
+    query = '''
+    SELECT
+    table_name,
+    first_date,
+    last_date,
+    total_records,
+    number_of_sensors
+    FROM v_data_status;
+    '''
+    try:
+
+        rows = db.execute(text(query)).fetchall()
+
+        if not rows:
+            raise HTTPException(status_code=404, detail=f"No data found")
+        
+        else:
+            return[DataStatusOut(
+                table_name= r.table_name,
+                first_date= str(r.first_date),
+                last_date= str(r.last_date),
+                total_records= r.total_records,
+                number_of_sensors= r.number_of_sensors
+            ) for r in rows
+            ]
+
+    
+    except HTTPException as e:
+        raise e
+    except Exception as e:
+        raise HTTPException(status_code=500, detail="Database error")

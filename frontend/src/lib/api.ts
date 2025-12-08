@@ -4,6 +4,9 @@ import { Period } from "@/types/Period";
 import { METHODS } from "http";
 import { Temperature } from "@/types/Temperature";
 import { Utilization } from "@/types/Utilization";
+import { error } from "console";
+import { Session } from "inspector/promises";
+import { DataStatus } from "@/types/DataStatus";
 
 // Create a base URL constant
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -59,7 +62,7 @@ export async function getDateState(date: string){
 }
 
 
-export async function getTemperatures(date:string){
+export async function getTemperatures(date: string, sensorName: string = "TEMPERATURA_BASE"){
     if (!BASE_URL) {
         throw new Error('API URL is not configured. Please check your environment variables.');
     }
@@ -67,7 +70,7 @@ export async function getTemperatures(date:string){
         throw new Error('Date parameter is required');
     }
     try{ 
-        const url =  `${BASE_URL}/temperature?target_date=${date}`;
+        const url = `${BASE_URL}/temperature?target_date=${date}&sensor_name=${sensorName}`;
         
         const response = await fetch(url, {
             method: "GET",
@@ -123,6 +126,36 @@ export async function getMachineUtilization(date:string){
         
         console.log('DATA[0]:', data[0])
         return data[0] as Utilization;
+    }catch(error){
+        console.error("Error fetching utilization data:", error);
+        throw new Error(`Failed to fetch utilization data: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+}
+
+
+export async function getDataStatus(){
+    if(!BASE_URL){
+        throw new Error("BASE URL MISSING")
+    }
+
+    try{
+        const url = `${BASE_URL}/data_status`;
+        const response = await fetch(url, {method:"GET", headers:{"Content-Type":"application/json"}})
+
+        if(response.status == 404){
+            return null;
+        }
+        if(!response.ok){
+            console.log(response);
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+
+        return data[0] as DataStatus;
+
+
+
     }catch(error){
         console.error("Error fetching utilization data:", error);
         throw new Error(`Failed to fetch utilization data: ${error instanceof Error ? error.message : 'Unknown error'}`);

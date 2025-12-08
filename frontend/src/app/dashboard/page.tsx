@@ -118,7 +118,7 @@ export default async function Dashboard({
                 <span className="text-3xl font-bold text-green-600">{machine_util_data?.running_percentage ?? 'N/A'}%</span>
               </div>
               <div className="w-full bg-green-200 rounded-full h-2 mb-2">
-                <div className="bg-green-600 h-2 rounded-full" style={{ width: '84.4%' }}></div>
+                <div className="bg-green-600 h-2 rounded-full" style={{ width: `${machine_util_data?.running_percentage ?? '100'}%`}}></div>
               </div>
               <p className="text-slate-600 text-sm"> {machine_util_data?.state_running ?? 'N/A'} / 24 hours</p>
             </div>
@@ -142,7 +142,7 @@ export default async function Dashboard({
                 <span className="text-3xl font-bold text-red-600">{machine_util_data?.down_percentage ?? 'N/A'}%</span>
               </div>
               <div className="w-full bg-red-200 rounded-full h-2 mb-2">
-                <div className="bg-red-600 h-2 rounded-full" style={{ width: '5.2%' }}></div>
+                <div className="bg-red-600 h-2 rounded-full" style={{ width: `${machine_util_data?.down_percentage ?? '100'}%` }}></div>
               </div>
               <p className="text-slate-600 text-sm"> {machine_util_data?.state_planned_down ?? 'N/A'} / 24 hours</p>
             </div>
@@ -150,7 +150,7 @@ export default async function Dashboard({
 
           {/* Total */}
           <p className="text-center text-slate-500 text-sm">
-            Total: 1440 min (100.0%)
+            Total: {machine_util_data ? machine_util_data.state_planned_down + machine_util_data.state_running : 24} hours
           </p>
         </div>
         </div>
