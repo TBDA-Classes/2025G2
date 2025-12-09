@@ -1,0 +1,54 @@
+PROJECT REQUIREMENTS & COMPLIANCE
+===================================
+
+Introduction
+------------
+This section summarizes the project’s functional requirements and
+explains how the implemented solution satisfies each of them.
+
+Functional Requirements
+-----------------------
+
+1. Visualize machine utilization
+
+   **Status:** To be implemented  
+    **How:**  
+     - Aggregated data from ETL scripts  
+     - Dashboard utilization cards  
+     - 24-hour distribution
+
+2. Display machine status timeline
+
+   **Status:** To be implemented  
+    **How:**  
+     - TimelineChart component  
+     - 10-minute windows  
+     - Color-coded segments
+
+3. Show temperature history
+
+   **Status:** To be implemented  
+    **How:**  
+     - Aggregated hourly temperature metrics  
+     - Line chart in Dashboard
+
+4. Show program execution history
+
+   **Status:** To be implemented
+
+
+5. Monitor energy consumption
+
+   **Status:** To be implemented  
+    **How:**  
+     - Hourly consumption  
+     - Shift-based totals
+
+6. Present alerts with filtering
+
+   **Status:** To be implemented  
+    **How:**  
+     - Alerts list  
+     - Filter by type and shift  
+     - Detailed alert info panel
+

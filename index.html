@@ -1,0 +1,277 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Numerical Control Machine Documentation &mdash; Numerical Control Machine 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=f2a433a1"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="INTRODUCTION" href="introduction.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="#" class="icon icon-home">
+            Numerical Control Machine
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">INTRODUCTION</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="introduction.html#project-overview">Project Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="introduction.html#project-needs">Project Needs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="introduction.html#solution-approach">Solution approach</a></li>
+<li class="toctree-l2"><a class="reference internal" href="introduction.html#team-of-the-project">Team of the Project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="introduction.html#where-to-go-next">Where to go next</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">SYSTEM ARCHITECTURE</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#system-architecture-diagram">System Architecture Diagram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#dual-database-strategy">Dual-Database Strategy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#frontendbackend-interaction">Frontend–Backend Interaction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#user-interface-flow-integration">User Interface Flow Integration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="backend.html">BACKEND OVERVIEW</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="backend.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backend.html#backend-structure">Backend Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backend.html#backend-file-structure">Backend File Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backend.html#database-driver">Database Driver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backend.html#environment-variables">Environment Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backend.html#running-the-backend">Running the Backend</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backend.html#data-aggregation-strategy">Data Aggregation Strategy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="backend.html#indexing-strategy">Indexing Strategy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="backend.html#views">Views</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="backend.html#connecting-to-postgresql">Connecting to PostgreSQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backend.html#backend-endpoints-simplified">Backend Endpoints (Simplified)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="frontend.html">FRONTEND OVERVIEW</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="frontend.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frontend.html#project-structure">Project Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frontend.html#setup-instructions">Setup Instructions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frontend.html#pages-and-routing">Pages and Routing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frontend.html#ui-components">UI Components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frontend.html#data-flow">Data Flow</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="db_sql.html">SQL DATABASE AND DATA ANALYSIS</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="db_sql.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="db_sql.html#cnc-machine-status-semantics">CNC Machine Status Semantics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="db_sql.html#data-extraction-strategy">Data Extraction Strategy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="db_sql.html#aggregation-database-schema">Aggregation Database Schema</a></li>
+<li class="toctree-l2"><a class="reference internal" href="db_sql.html#json-and-sql-operations">JSON and SQL Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="db_sql.html#shift-based-interpretation">Shift-Based Interpretation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ui_ux.html">UI / UX DESIGN</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ui_ux.html#design-goals">Design Goals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ui_ux.html#global-layout-and-navigation">Global Layout and Navigation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ui_ux.html#user-flow-diagram">User Flow Diagram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ui_ux.html#dashboard-screen">Dashboard Screen</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ui_ux.html#machine-utilisation-cards">Machine Utilisation Cards</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ui_ux.html#machine-status-timeline">Machine Status Timeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ui_ux.html#temperature-and-program-history">Temperature and Program History</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ui_ux.html#energy-screen">Energy Screen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ui_ux.html#alerts-screen">Alerts Screen</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ui_ux.html#summary-view">Summary View</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ui_ux.html#alert-list-and-detail">Alert List and Detail</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ui_ux.html#collaboration-with-frontend-and-data-teams">Collaboration with Frontend and Data Teams</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="devops.html">DEVOPS &amp; DEPLOYMENT</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="devops.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devops.html#frontend-deployment-vercel">Frontend Deployment (Vercel)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devops.html#backend-deployment">Backend Deployment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devops.html#environment-variables">Environment Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devops.html#vpn-and-database-access">VPN and Database Access</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devops.html#logs-and-monitoring">Logs and Monitoring</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="requirements.html">PROJECT REQUIREMENTS &amp; COMPLIANCE</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="requirements.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="requirements.html#functional-requirements">Functional Requirements</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">Numerical Control Machine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="#" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Numerical Control Machine Documentation</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="numerical-control-machine-documentation">
+<h1>Numerical Control Machine Documentation<a class="headerlink" href="#numerical-control-machine-documentation" title="Link to this heading"></a></h1>
+<p>This is the documentation for the <em>Numerical Control Machine Interface</em>
+project. This site describes the project context, its architecture, technical
+components (backend, frontend, database), as well as the user interface logic
+and deployment aspects.</p>
+<div class="toctree-wrapper compound">
+<p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction.html">INTRODUCTION</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="introduction.html#project-overview">Project Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="introduction.html#project-needs">Project Needs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="introduction.html#solution-approach">Solution approach</a></li>
+<li class="toctree-l2"><a class="reference internal" href="introduction.html#team-of-the-project">Team of the Project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="introduction.html#where-to-go-next">Where to go next</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">SYSTEM ARCHITECTURE</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#system-architecture-diagram">System Architecture Diagram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#dual-database-strategy">Dual-Database Strategy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#frontendbackend-interaction">Frontend–Backend Interaction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#user-interface-flow-integration">User Interface Flow Integration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="backend.html">BACKEND OVERVIEW</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="backend.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backend.html#backend-structure">Backend Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backend.html#backend-file-structure">Backend File Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backend.html#database-driver">Database Driver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backend.html#environment-variables">Environment Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backend.html#running-the-backend">Running the Backend</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backend.html#data-aggregation-strategy">Data Aggregation Strategy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backend.html#connecting-to-postgresql">Connecting to PostgreSQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backend.html#backend-endpoints-simplified">Backend Endpoints (Simplified)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="frontend.html">FRONTEND OVERVIEW</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="frontend.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frontend.html#project-structure">Project Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frontend.html#setup-instructions">Setup Instructions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frontend.html#pages-and-routing">Pages and Routing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frontend.html#ui-components">UI Components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frontend.html#data-flow">Data Flow</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="db_sql.html">SQL DATABASE AND DATA ANALYSIS</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="db_sql.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="db_sql.html#cnc-machine-status-semantics">CNC Machine Status Semantics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="db_sql.html#data-extraction-strategy">Data Extraction Strategy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="db_sql.html#aggregation-database-schema">Aggregation Database Schema</a></li>
+<li class="toctree-l2"><a class="reference internal" href="db_sql.html#json-and-sql-operations">JSON and SQL Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="db_sql.html#shift-based-interpretation">Shift-Based Interpretation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ui_ux.html">UI / UX DESIGN</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ui_ux.html#design-goals">Design Goals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ui_ux.html#global-layout-and-navigation">Global Layout and Navigation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ui_ux.html#user-flow-diagram">User Flow Diagram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ui_ux.html#dashboard-screen">Dashboard Screen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ui_ux.html#energy-screen">Energy Screen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ui_ux.html#alerts-screen">Alerts Screen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ui_ux.html#collaboration-with-frontend-and-data-teams">Collaboration with Frontend and Data Teams</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="devops.html">DEVOPS &amp; DEPLOYMENT</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="devops.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devops.html#frontend-deployment-vercel">Frontend Deployment (Vercel)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devops.html#backend-deployment">Backend Deployment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devops.html#environment-variables">Environment Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devops.html#vpn-and-database-access">VPN and Database Access</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devops.html#logs-and-monitoring">Logs and Monitoring</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="requirements.html">PROJECT REQUIREMENTS &amp; COMPLIANCE</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="requirements.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="requirements.html#functional-requirements">Functional Requirements</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</section>
+<section id="indexes-tables">
+<h1>Indexes &amp; Tables<a class="headerlink" href="#indexes-tables" title="Link to this heading"></a></h1>
+<ul class="simple">
+<li><p><a class="reference internal" href="genindex.html"><span class="std std-ref">Index</span></a></p></li>
+<li><p><a class="reference internal" href="py-modindex.html"><span class="std std-ref">Module Index</span></a></p></li>
+<li><p><a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p></li>
+</ul>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="introduction.html" class="btn btn-neutral float-right" title="INTRODUCTION" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, TBDA-G2.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
