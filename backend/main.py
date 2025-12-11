@@ -55,6 +55,11 @@ class DataStatusOut(BaseModel):
     total_records: Optional[int]
     number_of_sensors: Optional[int]
 
+class MachineChangeOut(BaseModel):
+    ts: str
+    old_value: float
+    new_value: float
+
 # When you visit http://localhost:8000/ you'll see this message
 @app.get("/")
 def home():
@@ -320,3 +325,49 @@ db : Session = Depends(get_agg_db)
         raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail="Database error")
+    
+@app.get("/api/v1/machine_changes", response_model=List[MachineChangeOut])
+def get_machine_changes(
+    start: DateType,
+    end: DateType,
+    db: Session = Depends(get_prod_db)
+):
+    """
+    Returns only the timestamp where MACHINE_IN_OPERATION changes value.
+    """
+
+    query = text("""
+        WITH raw AS (
+            SELECT 
+                to_timestamp(vlf.date/1000) AS ts,
+                vlf.value,
+                lag(vlf.value) OVER (ORDER BY vlf.date) AS prev_value
+            FROM variable_log_float vlf
+            JOIN variable v ON v.id_var = vlf.id_var
+            WHERE v.name = 'MACHINE_IN_OPERATION'
+            AND to_timestamp(vlf.date/1000) BETWEEN :start AND :end
+        )
+        SELECT ts, prev_value, value
+        FROM raw
+        WHERE prev_value IS NOT NULL
+        AND prev_value <> value
+        ORDER BY ts ASC;
+    """)
+
+    try:
+        rows = db.execute(query, {
+            "start": start,
+            "end": end
+        }).fetchall()
+
+        return [
+            MachineChangeOut(
+                ts=str(r.ts),
+                old_value=r.prev_value,
+                new_value=r.value
+            )
+            for r in rows
+        ]
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
