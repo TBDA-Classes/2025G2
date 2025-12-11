@@ -37,7 +37,7 @@ export default function DashboardLayout({children}: { children: ReactNode; }) {
   
 
   return (
-    <div className="flex h-screen bg-slate-200 text-slate-100">
+    <div className="flex h-screen bg-slate-200">
       <SideBar />
       <main className="flex-1 overflow-y-auto">
         {/* Sticky Date Selector */}

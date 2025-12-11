@@ -7,6 +7,7 @@ import { Utilization } from "@/types/Utilization";
 import { error } from "console";
 import { Session } from "inspector/promises";
 import { DataStatus } from "@/types/DataStatus";
+import { Alert } from "@/types/Alert";
 
 // Create a base URL constant
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -159,5 +160,42 @@ export async function getDataStatus(){
     }catch(error){
         console.error("Error fetching utilization data:", error);
         throw new Error(`Failed to fetch utilization data: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+}
+
+export async function getAlertsForDate(date: string): Promise<Alert[]> {
+    if (!BASE_URL) {
+        throw new Error('API URL is not configured. Please check your environment variables.');
+    }
+    if (!date) {
+        throw new Error('Date parameter is required');
+    }
+
+    try {
+        const url = `${BASE_URL}/alerts?target_date=${date}`;
+        console.log('Fetching alerts:', url);
+
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        // No data exists for the date
+        if (response.status === 404) {
+            return [];
+        }
+
+        if (!response.ok) {
+            console.log(response);
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data as Alert[];
+    } catch (error) {
+        console.error("Error fetching alerts:", error);
+        throw new Error(`Failed to fetch alerts: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
 }

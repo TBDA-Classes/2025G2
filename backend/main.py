@@ -55,6 +55,11 @@ class DataStatusOut(BaseModel):
     total_records: Optional[int]
     number_of_sensors: Optional[int]
 
+class AlertsOut(BaseModel):
+    alert_type: str
+    unique_alarms: int
+    total_occurrences: int
+
 # When you visit http://localhost:8000/ you'll see this message
 @app.get("/")
 def home():
@@ -320,3 +325,82 @@ db : Session = Depends(get_agg_db)
         raise e
     except Exception as e:
         raise HTTPException(status_code=500, detail="Database error")
+
+
+@app.get("/api/v1/alerts", response_model=List[AlertsOut])
+def get_alerts(
+    target_date: DateType,
+    db: Session = Depends(get_prod_db)
+):
+    """
+    Get alert counts categorized by type (Emergency, Error, Alert, Other) for a given date.
+
+    Args:
+        db: Database Session
+        target_date: The date of interest, format: "2022-02-23"
+    Returns:
+        List of AlertsOut objects with alert_type, unique_alarms, and total_occurrences
+    """
+
+    query = text("""
+        WITH alarm_data AS (
+            SELECT
+                to_timestamp(a.date / 1000) AS timestamp,
+                TRIM(elem ->> 0) AS alarm_code,
+                TRIM(elem ->> 1) AS alarm_description
+            FROM variable_log_string a
+            JOIN variable b ON a.id_var = b.id
+            CROSS JOIN LATERAL jsonb_array_elements(a.value::jsonb) AS elem
+            WHERE b.id = 447
+              AND a.value IS NOT NULL
+              AND a.value != '[]'
+              AND to_timestamp(a.date / 1000)::date = :target_date
+        ),
+        categorized AS (
+            SELECT
+                timestamp,
+                alarm_code,
+                alarm_description,
+                CASE
+                    WHEN alarm_description ILIKE '%emerg%' THEN 'Emergency'
+                    WHEN alarm_description ILIKE '%error%' OR 
+                         alarm_description ILIKE '%err%' OR
+                         alarm_description ILIKE '%fallo%' OR
+                         alarm_description ILIKE '%fault%' THEN 'Error'
+                    WHEN alarm_description ILIKE '%alert%' OR 
+                         alarm_description ILIKE '%alarm%' OR 
+                         alarm_description ILIKE '%warn%' OR
+                         alarm_description ILIKE '%aviso%' OR
+                         alarm_description ILIKE '%attention%' THEN 'Alert'
+                    ELSE 'Other'
+                END AS alert_type
+            FROM alarm_data
+        )
+        SELECT 
+            alert_type,
+            COUNT(DISTINCT alarm_code) AS unique_alarms,
+            COUNT(*) AS total_occurrences
+        FROM categorized
+        GROUP BY alert_type
+        ORDER BY alert_type;
+    """)
+
+    try:
+        result = db.execute(query, {"target_date": str(target_date)})
+        data = result.fetchall()
+
+        if not data:
+            raise HTTPException(status_code=404, detail=f"No alert data found for {target_date}")
+        
+        return [
+            AlertsOut(
+                alert_type=row.alert_type,
+                unique_alarms=row.unique_alarms,
+                total_occurrences=row.total_occurrences
+            )
+            for row in data
+        ]
+    except HTTPException:
+        raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
