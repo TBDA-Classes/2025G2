@@ -11,11 +11,11 @@ Project Needs
 -------------
 Key needs that the solution must address include:
 
-- Identify operation periods of the machine.
-- Create a user interface to facilitate interaction.
-- Determine when the machine is working.
-- Calculate timing and energy demands per program name.
-- Determine alerts and contextualize them.
+- Create a user interface to facilitate interaction
+- Identify operation periods of the machine
+- Determine when the machine is working
+- Calculate timing and energy demands per program name
+- Determine alerts and contextualize them
 
 Solution approach
 -----------------
@@ -29,14 +29,8 @@ Team of the Project
 -------------------
 
 The team has followed an iterative approach using Scrum with weekly sprints.
-The first focus was to develop a minimal version of the system (MVP) and
-then expanding its functionality step by step.
-
-The work plan includes:
-
-- Initial focus (MVP): detect and display basic machine states through a FastAPI backend and a simple React dashboard.
-- Further iterations: add energy calculations per program, contextualized alerts and improved visualizations
-- Continuous improvement: refine the UI, extend backend endpoints, and ensure scalability so the solution can resemble a real-world system.
+The focus is to develop a minimal version of the system, covering the project needs, but that could also 
+be expanded over time with new functionalities.
 
 You can follow the project's progress through the sprints entering this link:
 https://planner.cloud.microsoft/webui/plan/CvHDhx-jAUGVX_BxlIv045cAC1Zn/view/board?tid=6afea85d-c323-4270-b69d-a4fb3927c254 

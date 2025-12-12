@@ -5,7 +5,7 @@ Introduction
 ------------
 The backend is implemented using **FastAPI** and relies on:
 
-* SQLAlchemy as ORM  
+* SQLAlchemy as ORM (Object-Relational Mapper) 
 * psycopg3 as PostgreSQL driver  
 * python-dotenv for configuration  
 * Uvicorn for development server  

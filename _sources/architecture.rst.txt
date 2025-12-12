@@ -5,7 +5,7 @@ Overview
 --------
 This project implements a complete monitoring solution for a CNC machine, combining
 real-time data processing, aggregated analytics, interactive dashboards, and alert
-management. The architecture is divided into four major components:
+management. The architecture is divided into following components:
 
 * **Frontend (Next.js + React + Tailwind CSS)**  
     Modern single-page application providing interactive dashboards, filtering tools,
@@ -87,7 +87,7 @@ data interactively without delay.
 Frontend–Backend Interaction
 ----------------------------
 The frontend communicates with the backend via a single Axios wrapper located in
-``src/lib/api.ts``. All components—including dashboards, charts, and alert lists—request
+``src/lib/api.ts``. All components (including dashboards, charts, and alert lists) request
 data using date parameters and/or time-window selections.
  
 The backend exposes endpoints that return JSON-structured responses optimized for the
@@ -96,27 +96,27 @@ frontend components.
 
 User Interface Flow Integration
 -------------------------------
-The architecture was heavily shaped by the UI/UX design process:
+    The architecture was heavily shaped by the UI/UX design process:
   * The Dashboard requires:
-    - 24-hour machine utilization data
-    - 10-minute time window timeline
-    - Temperature history
-    - Program execution history
+        - 24-hour machine utilization data
+        - 10-minute time window timeline
+        - Temperature history
+        - Program execution history
 
   * The Energy section requires:
-    - Real-time power
-    - Hourly consumption
-    - Shift-based totals
+        - Real-time power
+        - Hourly consumption
+        - Shift-based totals
 
   * The Alerts section requires:
-    - Alerts by type
-    - Filterable list of alerts
-    - Details panel for selected alert
+        - Alerts by type
+        - Filterable list of alerts
+        - Details panel for selected alert
 
 Backend endpoints and aggregation tables were designed specifically to support these
 data flows efficiently.
 
-The dashboard UI is described in detail in the :doc:`ui_ux` section.
+**The dashboard UI is described in detail in the :doc:`ui_ux` section**
 
 
 
