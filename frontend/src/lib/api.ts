@@ -8,31 +8,14 @@ import { error } from "console";
 import { Session } from "inspector/promises";
 import { DataStatus } from "@/types/DataStatus";
 import { Alert } from "@/types/Alert";
+import { MachineOperation } from "@/types/MachineOperation";
+import { MachineProgram } from "@/types/MachineProgram";
 
 // Create a base URL constant
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
 
-export async function getPeriods(): Promise<Period[]>{
-    try {
-    // Construct full URL
-    const url = `${BASE_URL}/periods`;
-    const response = await fetch(url, {
-        method: "GET",
-        headers: {
-            "Content-Type": "application/json",
-        },
-    });
-    if(!response.ok){
-        throw new Error(`HTTP error! status: ${response.status}`);
-    }
-    const data = await response.json();
-    return data as Period[];
-    } catch(error){
-        console.error("Error fetching periods:", error);
-        throw new Error(`Failed to fetch periods: ${error instanceof Error ? error.message : 'Unknown error'}`);
-    }
-}
 
+// This is redundant with the machine utilization and we move to using MACHINE_IN_OPERATION instead
 export async function getDateState(date: string){
     if (!BASE_URL) {
         throw new Error('API URL is not configured. Please check your environment variables.');
@@ -63,6 +46,7 @@ export async function getDateState(date: string){
 }
 
 
+// Gets temperatures for the main page of the dashboard
 export async function getTemperatures(date: string, sensorName: string = "TEMPERATURA_BASE"){
     if (!BASE_URL) {
         throw new Error('API URL is not configured. Please check your environment variables.');
@@ -89,8 +73,8 @@ export async function getTemperatures(date: string, sensorName: string = "TEMPER
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
-        console.log('DATA:', data) // Returns an array of objects of class Temperature [{}, {}]
-        console.log('DATA[0]:', data[0])
+        //console.log('DATA:', data) // Returns an array of objects of class Temperature [{}, {}]
+        //console.log('DATA[0]:', data[0])
         return data as Temperature[];
     }catch(error){
         console.error("Error fetching temperatures:", error);
@@ -98,6 +82,7 @@ export async function getTemperatures(date: string, sensorName: string = "TEMPER
     }
 }
 
+// Gets the Machine Utilization (running and idle time)
 export async function getMachineUtilization(date:string){
     if (!BASE_URL) {
         throw new Error('API URL is not configured. Please check your environment variables.');
@@ -125,7 +110,7 @@ export async function getMachineUtilization(date:string){
         }
         const data = await response.json();
         
-        console.log('DATA[0]:', data[0])
+        //console.log('DATA[0]:', data[0])
         return data[0] as Utilization;
     }catch(error){
         console.error("Error fetching utilization data:", error);
@@ -133,7 +118,7 @@ export async function getMachineUtilization(date:string){
     }
 }
 
-
+// Gets the first and last date of data to set restrictions for the filters.
 export async function getDataStatus(){
     if(!BASE_URL){
         throw new Error("BASE URL MISSING")
@@ -163,6 +148,7 @@ export async function getDataStatus(){
     }
 }
 
+// For the Alerts page
 export async function getAlertsForDate(date: string): Promise<Alert[]> {
     if (!BASE_URL) {
         throw new Error('API URL is not configured. Please check your environment variables.');
@@ -197,5 +183,82 @@ export async function getAlertsForDate(date: string): Promise<Alert[]> {
     } catch (error) {
         console.error("Error fetching alerts:", error);
         throw new Error(`Failed to fetch alerts: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+}
+
+export async function getMachineOperations(start:string, end:string){
+    if(!BASE_URL){
+        throw new Error("API URL not configured");
+    }
+    if(!start || !end){
+        throw new Error("Missing start and end timestamps");
+    }
+
+    try{
+        // encodeURIComponent URL-encodes special characters in a string safely - in our case: spaces
+        const url = `${BASE_URL}/machine_changes?start=${encodeURIComponent(start)}&end=${encodeURIComponent(end)}`;
+
+        const response = await fetch(url, {
+            method:'get',
+            headers: { 
+            'Content-type':'Application/json'
+        }
+        });
+        // No data exists for the date
+        if (response.status === 404) {
+            return [];
+        }
+
+        if (!response.ok) {
+            console.log(response);
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        console.log( 'DATA: ', data);
+        return data as MachineOperation[];
+        
+
+    } catch (error) {
+        console.error("Error fetching operation status:", error);
+        throw new Error(`Failed to fetch operation status: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    };
+
+}
+
+// Gets the machine program data for a given date
+export async function getMachinePrograms(date: string): Promise<MachineProgram[]> {
+    if (!BASE_URL) {
+        throw new Error('API URL is not configured. Please check your environment variables.');
+    }
+    if (!date) {
+        throw new Error('Date parameter is required');
+    }
+
+    try {
+        const url = `${BASE_URL}/machine_program?target_date=${date}`;
+
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        // No data exists for the date
+        if (response.status === 404) {
+            return [];
+        }
+
+        if (!response.ok) {
+            console.log(response);
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data as MachineProgram[];
+    } catch (error) {
+        console.error("Error fetching machine programs:", error);
+        throw new Error(`Failed to fetch machine programs: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
 }

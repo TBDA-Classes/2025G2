@@ -138,4 +138,18 @@ class DataStatus(Base):
     last_updated: Mapped[Optional[datetime]]
 
 
+class MachineProgramData(Base):
+    """
+    Machine program usage data - stores duration of each program per day
+    Example row:
+    id=1, dt=2021-01-15, program=123, duration_seconds=3600
+    """
+    __tablename__ = "machine_program_data"
+    
+    id: Mapped[int] = mapped_column(primary_key=True)
+    dt: Mapped[date]
+    program: Mapped[int]
+    duration_seconds: Mapped[int]
+
+
 

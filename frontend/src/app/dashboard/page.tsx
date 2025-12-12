@@ -1,18 +1,17 @@
-import { getTemperatures, getMachineUtilization } from "@/lib/api";
-
+import { getTemperatures, getMachineUtilization, getMachineOperations, getMachinePrograms } from "@/lib/api";
 import TimelineChart from "../components/TimelineChart";
 import BoxPlot from "../components/BoxPlot";
 
-const data = [
-  {
-    "country": "AD",
-    "hot dog": 51,
-    "burger": 12,
-    "sandwich": 132,
-    "kebab": 26,
-    "fries": 112,
-    "donut": 51
-  }
+// Colors for program badges - cycling through these
+const PROGRAM_COLORS = [
+  { bg: 'bg-blue-500', border: 'border-blue-400', text: 'text-blue-500' },
+  { bg: 'bg-purple-500', border: 'border-purple-400', text: 'text-purple-500' },
+  { bg: 'bg-pink-500', border: 'border-pink-400', text: 'text-pink-500' },
+  { bg: 'bg-orange-400', border: 'border-orange-300', text: 'text-orange-500' },
+  { bg: 'bg-emerald-500', border: 'border-emerald-400', text: 'text-emerald-500' },
+  { bg: 'bg-cyan-500', border: 'border-cyan-400', text: 'text-cyan-500' },
+  { bg: 'bg-amber-500', border: 'border-amber-400', text: 'text-amber-500' },
+  { bg: 'bg-rose-500', border: 'border-rose-400', text: 'text-rose-500' },
 ];
 
 export default async function Dashboard({
@@ -27,6 +26,18 @@ export default async function Dashboard({
     const date = params.date || "2022-02-23";
     const temperature_data = await getTemperatures(date);
     const machine_util_data = await getMachineUtilization(date);
+    const program_data = await getMachinePrograms(date);
+    
+    // Hardcoded time range for now (using +00:00 to match API's UTC timestamps)
+    const timelineStart = `${date} 16:00:00+00:00`;
+    const timelineEnd = `${date} 16:30:00+00:00`;
+    const operation_data = await getMachineOperations(timelineStart, timelineEnd);
+
+    // Calculate program statistics
+    const totalPrograms = program_data.length;
+    const totalSeconds = program_data.reduce((sum, p) => sum + p.duration_seconds, 0);
+    const totalHours = Math.floor(totalSeconds / 3600);
+    const totalMinutes = Math.floor((totalSeconds % 3600) / 60);
 
 
     return (
@@ -57,21 +68,17 @@ export default async function Dashboard({
           <div className="flex gap-6 mb-4">
             <div className="flex items-center gap-2">
               <div className="w-4 h-4 rounded-full bg-green-500"></div>
-              <span className="text-slate-700 font-medium">RUN</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded-full bg-yellow-500"></div>
-              <span className="text-slate-700 font-medium">IDLE</span>
+              <span className="text-slate-700 font-medium">RUN (255)</span>
             </div>
             <div className="flex items-center gap-2">
               <div className="w-4 h-4 rounded-full bg-red-500"></div>
-              <span className="text-slate-700 font-medium">DOWN</span>
+              <span className="text-slate-700 font-medium">IDLE (0)</span>
             </div>
           </div>
 
           {/* Timeline Chart */}
-          <div className="h-[400px]">
-            <TimelineChart data={data} />
+          <div className="h-24">
+            <TimelineChart data={operation_data} startTime={timelineStart} endTime={timelineEnd} />
           </div>
         </div>
 
@@ -92,11 +99,55 @@ export default async function Dashboard({
           </div>
           <div className="bg-white rounded-lg shadow-sm p-6 w-1/2">
             <h2 className="text-2xl font-semibold text-slate-900 mb-4">
-            Program History (24 Hours)
+              Program Statistics (24 Hours)
             </h2>
-            <div className="h-[400px]">
-            <TimelineChart data={data} />
-          </div>
+            
+            {program_data.length > 0 ? (
+              <>
+                {/* Program Cards Grid */}
+                <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-6">
+                  {program_data.map((program, index) => {
+                    const color = PROGRAM_COLORS[index % PROGRAM_COLORS.length];
+                    const minutes = Math.round(program.duration_seconds / 60);
+                    const displayMinutes = program.duration_seconds > 0 && minutes === 0 ? '<1' : minutes;
+                    return (
+                      /* the key attribute is for identifiying the items during rendering */
+                      <div 
+                        key={program.program} 
+                        className={`border-2 ${color.border} rounded-xl p-4 hover:shadow-md transition-shadow`}
+                      >
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className={`${color.bg} text-white text-sm font-bold px-2 py-1 rounded-md`}>
+                            P{program.program}
+                          </span>
+                        </div>
+                        <p className="text-slate-600 text-sm">{displayMinutes} min</p>
+                      </div>
+                    );
+                  })}
+                </div>
+
+                {/* Summary Row */}
+                <div className="border-t border-slate-200 pt-4">
+                  <div className="grid grid-cols-3 text-center">
+                    <div>
+                      <p className="text-slate-500 text-sm">Programs</p>
+                      <p className="text-xl font-bold text-slate-800">{totalPrograms}</p>
+                    </div>
+                    <div>
+                      <p className="text-slate-500 text-sm">Total Time</p>
+                      <p className="text-xl font-bold text-slate-800">{totalHours}h {totalMinutes}min</p>
+                    </div>
+                    <div>
+                      <p className="text-slate-500 text-sm">Active</p>
+                      <p className="text-xl font-bold text-slate-800">{totalPrograms} / {totalPrograms}</p>
+                    </div>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <p className="text-red-600">No program data available for {date}</p>
+            )}
           </div>
         </div>
 

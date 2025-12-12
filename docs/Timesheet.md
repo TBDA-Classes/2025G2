@@ -70,9 +70,11 @@ This file is used by all team members to record their working hours and activiti
 | Atle Sund | Frontend/Backend | Backend | Worked on the ETL script to facilitate date inputs, this way it will be easier to test. Will also add sensor type as an argument.  | 2025-11-25 | 1.5 |
 | Atle Sund | Frontend/Backend | Backend | Created connection to the aggregation DB using the credentials given by the professor. Created the DB and loaded data. | 2025-11-27 | 2 |
 | Atle Sund | Frontend/Backend | Frontend/Backend | ETL scripts, models, types, api endpoints | 2025-12-03 | 3 |
-| Erik Alexander Standal | Frontend | Worked on the frontend, api connections and graphs| 2025-12-04 | 4 |
+| Erik Alexander Standal | Frontend | Frontend | Worked on the frontend, api connections and graphs| 2025-12-04 | 4 |
 | Jovan Bajcetic | UI/UX + Scrum master | Documentation | Created first version of the project documentation using sphinx and created instructions to see this documentation on sphinx_documentation file | 2025-12-08 | 3 |
 | Andres Janeiro | Data Analyst | Queries | Created queries forthe energy page on Figma | 2025-12-10 | 3 |
+| Atle Sund | Frontend/Backend | Frontend/Backend | ETL scripts, models, types, api endpoints and graphs | 2025-11-03 | 3 |
+| Atle Sund | Frontend/Backend | Frontend/Backend | ETL scripts, models, types, api endpoints and graphs | 2025-12-03 | 2 |
 ---
 
  *Tip:*  

@@ -65,6 +65,13 @@ CREATE TABLE IF NOT EXISTS machine_utilization(
         GENERATED ALWAYS AS (state_end_time - state_start_time) STORED
 );
 
+CREATE TABLE IF NOT EXISTS machine_program_data(
+    id SERIAL PRIMARY KEY,
+    dt DATE,
+    program INT,
+    duration_seconds BIGINT NOT NULL CHECK (duration_seconds >= 0)
+);
+
 -- =============================================================================
 -- INDEXES
 -- =============================================================================
