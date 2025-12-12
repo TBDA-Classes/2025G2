@@ -480,10 +480,10 @@ WITH RegistrosOrdenados AS (
         variable v ON vf.id_var = v.id
     WHERE
         v.name = 'OPERATING_MODE'
-        -- CONDICIONES DE RANGO DE FECHAS PERSONALIZABLES ⬇️
+        -- CONDICIONES DE RANGO DE FECHAS PERSONALIZABLES 
         AND TO_TIMESTAMP(vf.date/1000) >= '2021-01-07 00:00:00'::timestamp
         AND TO_TIMESTAMP(vf.date/1000) < '2021-01-15 23:59:59'::timestamp
-        -- CONDICIONES DE RANGO DE FECHAS PERSONALIZABLES ⬆️
+        -- CONDICIONES DE RANGO DE FECHAS PERSONALIZABLES 
         AND vf.value IS NOT NULL
         AND CAST(vf.value AS TEXT) <> 'NaN'
     ORDER BY
