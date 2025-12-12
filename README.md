@@ -1,5 +1,5 @@
 # 2025G2
-Docsumentation: https://tbda-classes.github.io/2025G2/
+Documentation: https://tbda-classes.github.io/2025G2/
 ## Project Overview
 This project focuses on analyzing data collected from **Numerical Control (NC) machines** to transform high-frequency data into human-understandable insights.
 
