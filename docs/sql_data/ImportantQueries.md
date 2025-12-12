@@ -429,3 +429,40 @@ ORDER BY
     WHEN 'Swing (14-22)' THEN 3
   END;
 ```
+
+### PQ1 - Initial query to identify the hours in which variable changes are registered
+
+```sql
+WITH horas AS (  
+  SELECT dt FROM (  
+    SELECT generate_series(  
+      '2021-01-07 00:00:00'::timestamp,  
+      '2021-01-15 23:00:00'::timestamp,  
+      interval '1 hour'  
+    ) AS dt  
+  ) sub
+),  
+cambios_por_hora AS (  
+  SELECT   
+    to_timestamp(ROUND((TRUNC(CAST(date AS bigint)/1000) / 3600))*3600) AS dt,  
+    COUNT(DISTINCT id_var) AS total_variables  
+  FROM public.variable_log_float  
+  WHERE to_timestamp(TRUNC(CAST(date AS bigint)/1000)) >= '2021-01-07 00:00:00'  
+    AND to_timestamp(TRUNC(CAST(date AS bigint)/1000)) < '2021-01-16 00:00:00'  
+  GROUP BY dt  
+)  
+SELECT  
+  h.dt,  
+  TO_CHAR(h.dt, 'FMDay') AS dia_semana,  
+  COALESCE(c.total_variables, 0) AS total_variables,  
+  CASE   
+    WHEN COALESCE(c.total_variables, 0) = 0 THEN 'Máquina parada'  
+    WHEN COALESCE(c.total_variables, 0) < 30 THEN 'Parada probable'  
+    WHEN COALESCE(c.total_variables, 0) BETWEEN 30 AND 80 THEN 'Actividad media'  
+    ELSE 'Máquina en operación'  
+  END AS estado_maquina  
+FROM horas h  
+LEFT JOIN cambios_por_hora c ON h.dt = c.dt  
+ORDER BY h.dt;
+```
+
