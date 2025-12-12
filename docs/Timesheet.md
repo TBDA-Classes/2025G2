@@ -64,15 +64,23 @@ This file is used by all team members to record their working hours and activiti
 | Jovan Bajcetic | UI/UX + Scrum master | UI/UX prototype | Actualization of first figma protype and edition | 2025-11-02 | 1.5 |
 | Clemence Tardivel | UI/UX | UI/UX prototype | Edition of the figma protype | 2025-11-02 | 1.5  |
 | Atle Sund | Frontend/Backend | Frontend | Created a production worthy structure for the fronetend dividing the dashboard folder into dashboard-index, alerts and energy. Created a sidebar navigation. Started on the layout for the main Dashbaord, now waiting for confirmation that the data used by the plots are plausible from the data analysis team.   | 2025-11-14 | 3.5 |
+| Javier Pajares | Data Analyst | Queries | Transform the queries for the frontend team | 2025-11-14 | 2 |
+| Javier Pajares | Data Analyst | Queries | Identify and study the exact times of the machine | 2025-11-14 | 2 |
 | Atle Sund | Frontend/Backend | Frontend | Finalized the "homepage" and made navigation possible  | 2025-11-19 | 1 |
 | Atle Sund | Frontend/Backend | Backend | First doing data analysis to understand better the data and possibilities, also had meeting with Javier to discuss which information we need and how we can retrieve them  | 2025-11-20 | 2 |
 | Atle Sund | Frontend/Backend | Backend | Created an aggregation database for better performance. This required setup for an additional DB connection, as well as new models found in models.py. Since our aggregation DB will be simple, SQLAlchemy will be used  | 2025-11-21 | 2 |
+| Javier Pajares | Data Analyst | Queries | Review Figma Data & Graph Feasibility | 2025-11-24 | 1 |
+| Javier Pajares | Data Analyst | Queries | Coordination between Data Analysis - UI/UX | 2025-11-24 | 1.5 |
 | Atle Sund | Frontend/Backend | Backend | Worked on the ETL script to facilitate date inputs, this way it will be easier to test. Will also add sensor type as an argument.  | 2025-11-25 | 1.5 |
 | Atle Sund | Frontend/Backend | Backend | Created connection to the aggregation DB using the credentials given by the professor. Created the DB and loaded data. | 2025-11-27 | 2 |
+| Javier Pajares | Data Analyst | Queries | Make suggestion for layout on the machines "Working hours" | 2025-12-01 | 1.5 |
+| Javier Pajares | Data Analyst | Queries | Finalize the queries for the first Figma Page | 2025-12-01 | 2 |
+| Andrés Janeiro | Data Analyst | Queries | Finalize the queries for the first Figma Page | 2025-12-01 | 1 |
 | Atle Sund | Frontend/Backend | Frontend/Backend | ETL scripts, models, types, api endpoints | 2025-12-03 | 3 |
 | Erik Alexander Standal | Frontend | Frontend | Worked on the frontend, api connections and graphs| 2025-12-04 | 4 |
 | Jovan Bajcetic | UI/UX + Scrum master | Documentation | Created first version of the project documentation using sphinx and created instructions to see this documentation on sphinx_documentation file | 2025-12-08 | 3 |
-| Andres Janeiro | Data Analyst | Queries | Created queries forthe energy page on Figma | 2025-12-10 | 3 |
+| Andres Janeiro | Data Analyst | Queries | Created queries for the energy page on Figma | 2025-12-10 | 3 |
+| Javier Pajares | Data Analyst | Queries | Modify queries for working hours and program history | 2025-12-10 | 1.5 |
 | Atle Sund | Frontend/Backend | Frontend/Backend | ETL scripts, models, types, api endpoints and graphs | 2025-11-03 | 3 |
 | Atle Sund | Frontend/Backend | Frontend/Backend | ETL scripts, models, types, api endpoints and graphs | 2025-12-03 | 2 |
 ---
