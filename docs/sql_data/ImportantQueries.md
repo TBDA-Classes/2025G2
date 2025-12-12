@@ -466,3 +466,61 @@ LEFT JOIN cambios_por_hora c ON h.dt = c.dt
 ORDER BY h.dt;
 ```
 
+### OQ1: Initial query to know the duration of each operating mode (eventually the variable used was changed to be PROG_STATUS)
+
+```sql
+WITH RegistrosOrdenados AS (
+    -- 1. Obtener todos los registros de OPERATING_MODE y ordenarlos por tiempo
+    SELECT
+        TO_TIMESTAMP(vf.date/1000) AS fecha_evento,
+        vf.value AS operating_mode_value
+    FROM
+        variable_log_float vf
+    LEFT JOIN
+        variable v ON vf.id_var = v.id
+    WHERE
+        v.name = 'OPERATING_MODE'
+        -- CONDICIONES DE RANGO DE FECHAS PERSONALIZABLES ⬇️
+        AND TO_TIMESTAMP(vf.date/1000) >= '2021-01-07 00:00:00'::timestamp
+        AND TO_TIMESTAMP(vf.date/1000) < '2021-01-15 23:59:59'::timestamp
+        -- CONDICIONES DE RANGO DE FECHAS PERSONALIZABLES ⬆️
+        AND vf.value IS NOT NULL
+        AND CAST(vf.value AS TEXT) <> 'NaN'
+    ORDER BY
+        vf.date
+),
+CambiosDetectados AS (
+    -- 2. CTE Intermedia: Usar LAG para detectar el cambio y exponerlo
+    SELECT
+        fecha_evento,
+        operating_mode_value,
+        -- Marcar si el estado cambió
+        operating_mode_value IS DISTINCT FROM LAG(operating_mode_value) OVER (ORDER BY fecha_evento) AS estado_cambio
+    FROM
+        RegistrosOrdenados
+),
+SegmentosTemporales AS (
+    -- 3. CTE Final: Filtrar solo los puntos de cambio (donde estado_cambio = TRUE)
+    SELECT
+        fecha_evento AS fecha_inicio_segmento,
+        operating_mode_value,
+        -- Usar LEAD para encontrar la fecha de INICIO del siguiente segmento, que es nuestro FIN
+        LEAD(fecha_evento, 1) OVER (ORDER BY fecha_evento) AS fecha_fin_segmento
+    FROM
+        CambiosDetectados
+    WHERE
+        estado_cambio = TRUE
+)
+-- 4. SELECT FINAL
+SELECT
+    fecha_inicio_segmento,
+    fecha_fin_segmento,
+    operating_mode_value,
+    EXTRACT(EPOCH FROM (fecha_fin_segmento - fecha_inicio_segmento)) AS duracion_segundos
+FROM
+    SegmentosTemporales
+WHERE
+    fecha_fin_segmento IS NOT NULL
+ORDER BY
+    fecha_inicio_segmento;
+```
