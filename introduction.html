@@ -1,0 +1,285 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>INTRODUCTION &mdash; Numerical Control Machine 1.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=e59714d7" />
+      <link rel="stylesheet" type="text/css" href="_static/graphviz.css?v=4ae1632d" />
+
+  
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=f2a433a1"></script>
+      <script src="_static/doctools.js?v=9bcbadda"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="SYSTEM ARCHITECTURE" href="architecture.html" />
+    <link rel="prev" title="Numerical Control Machine Documentation" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html" class="icon icon-home">
+            Numerical Control Machine
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Contents</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">INTRODUCTION</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#project-overview">Project Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#project-needs">Project Needs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#solution-approach">Solution approach</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#team-of-the-project">Team of the Project</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#where-to-go-next">Where to go next</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="architecture.html">SYSTEM ARCHITECTURE</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#system-architecture-diagram">System Architecture Diagram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#dual-database-strategy">Dual-Database Strategy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#frontendbackend-interaction">Frontend–Backend Interaction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#user-interface-flow-integration">User Interface Flow Integration</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="backend.html">BACKEND OVERVIEW</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="backend.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backend.html#backend-structure">Backend Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backend.html#backend-file-structure">Backend File Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backend.html#database-driver">Database Driver</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backend.html#environment-variables">Environment Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backend.html#running-the-backend">Running the Backend</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backend.html#data-aggregation-strategy">Data Aggregation Strategy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="backend.html#indexing-strategy">Indexing Strategy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="backend.html#views">Views</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="backend.html#connecting-to-postgresql">Connecting to PostgreSQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backend.html#backend-endpoints-simplified">Backend Endpoints (Simplified)</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="frontend.html">FRONTEND OVERVIEW</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="frontend.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frontend.html#project-structure">Project Structure</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frontend.html#setup-instructions">Setup Instructions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frontend.html#pages-and-routing">Pages and Routing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frontend.html#ui-components">UI Components</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frontend.html#data-flow">Data Flow</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="db_sql.html">SQL DATABASE AND DATA ANALYSIS</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="db_sql.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="db_sql.html#cnc-machine-status-semantics">CNC Machine Status Semantics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="db_sql.html#data-extraction-strategy">Data Extraction Strategy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="db_sql.html#aggregation-database-schema">Aggregation Database Schema</a></li>
+<li class="toctree-l2"><a class="reference internal" href="db_sql.html#json-and-sql-operations">JSON and SQL Operations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="db_sql.html#shift-based-interpretation">Shift-Based Interpretation</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="ui_ux.html">UI / UX DESIGN</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="ui_ux.html#design-goals">Design Goals</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ui_ux.html#global-layout-and-navigation">Global Layout and Navigation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ui_ux.html#user-flow-diagram">User Flow Diagram</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ui_ux.html#dashboard-screen">Dashboard Screen</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ui_ux.html#machine-utilisation-cards">Machine Utilisation Cards</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ui_ux.html#machine-status-timeline">Machine Status Timeline</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ui_ux.html#temperature-and-program-history">Temperature and Program History</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ui_ux.html#energy-screen">Energy Screen</a></li>
+<li class="toctree-l2"><a class="reference internal" href="ui_ux.html#alerts-screen">Alerts Screen</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="ui_ux.html#summary-view">Summary View</a></li>
+<li class="toctree-l3"><a class="reference internal" href="ui_ux.html#alert-list-and-detail">Alert List and Detail</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="ui_ux.html#collaboration-with-frontend-and-data-teams">Collaboration with Frontend and Data Teams</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="devops.html">DEVOPS &amp; DEPLOYMENT</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="devops.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devops.html#frontend-deployment-vercel">Frontend Deployment (Vercel)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devops.html#backend-deployment">Backend Deployment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devops.html#environment-variables">Environment Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devops.html#vpn-and-database-access">VPN and Database Access</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devops.html#logs-and-monitoring">Logs and Monitoring</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="requirements.html">PROJECT REQUIREMENTS &amp; COMPLIANCE</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="requirements.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="requirements.html#functional-requirements">Functional Requirements</a></li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Numerical Control Machine</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content style-external-links">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">INTRODUCTION</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/introduction.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="introduction">
+<h1>INTRODUCTION<a class="headerlink" href="#introduction" title="Link to this heading"></a></h1>
+<section id="project-overview">
+<h2>Project Overview<a class="headerlink" href="#project-overview" title="Link to this heading"></a></h2>
+<p>This project focuses on analyzing data collected from Numerical Control (CN) machines to transform high-frequency data into human-understandable insights.
+The aim is to support operators and engineers by providing information on machine operation, energy usage, and alerts in a structured and accesible way.</p>
+</section>
+<section id="project-needs">
+<h2>Project Needs<a class="headerlink" href="#project-needs" title="Link to this heading"></a></h2>
+<p>Key needs that the solution must address include:</p>
+<ul class="simple">
+<li><p>Identify operation periods of the machine</p></li>
+<li><p>Create a user interface to facilitate interaction</p></li>
+<li><p>Determine when the machine is working</p></li>
+<li><p>Calculate timing and energy demands per program name</p></li>
+<li><p>Determine alerts and contextualize them</p></li>
+</ul>
+</section>
+<section id="solution-approach">
+<h2>Solution approach<a class="headerlink" href="#solution-approach" title="Link to this heading"></a></h2>
+<p>To meet these needs, the team will use:</p>
+<ul class="simple">
+<li><p>BACKEND: FastAPI to process data, implement algorithms, and provide APIs</p></li>
+<li><p>FRONTEND: React to build an interactive user-friendly interface</p></li>
+<li><p>DATABASE: A SQL-based database for storing and querying high-frequency data</p></li>
+</ul>
+</section>
+<section id="team-of-the-project">
+<h2>Team of the Project<a class="headerlink" href="#team-of-the-project" title="Link to this heading"></a></h2>
+<p>The team has followed an iterative approach using Scrum with weekly sprints.
+The first focus was to develop a minimal version of the system (MVP) and
+then expanding its functionality step by step.</p>
+<p>The work plan includes:</p>
+<ul class="simple">
+<li><p>Initial focus (MVP): detect and display basic machine states through a FastAPI backend and a simple React dashboard.</p></li>
+<li><p>Further iterations: add energy calculations per program, contextualized alerts and improved visualizations</p></li>
+<li><p>Continuous improvement: refine the UI, extend backend endpoints, and ensure scalability so the solution can resemble a real-world system.</p></li>
+</ul>
+<p>You can follow the project’s progress through the sprints entering this link:
+<a class="reference external" href="https://planner.cloud.microsoft/webui/plan/CvHDhx-jAUGVX_BxlIv045cAC1Zn/view/board?tid=6afea85d-c323-4270-b69d-a4fb3927c254">https://planner.cloud.microsoft/webui/plan/CvHDhx-jAUGVX_BxlIv045cAC1Zn/view/board?tid=6afea85d-c323-4270-b69d-a4fb3927c254</a></p>
+<p>The team members and their roles are defined in the following table:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 50.0%" />
+<col style="width: 50.0%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Name</p></th>
+<th class="head"><p>Role / Responsibility</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Andres Janeiro Villar</p></td>
+<td><p>Data Analysis</p></td>
+</tr>
+<tr class="row-odd"><td><p>Javier Pajares Camacho</p></td>
+<td><p>Data Analysis</p></td>
+</tr>
+<tr class="row-even"><td><p>Mayssa El Jamil</p></td>
+<td><p>Data Analysis</p></td>
+</tr>
+<tr class="row-odd"><td><p>Atle Sund</p></td>
+<td><p>Frontend / Backend</p></td>
+</tr>
+<tr class="row-even"><td><p>Basile David</p></td>
+<td><p>Backend</p></td>
+</tr>
+<tr class="row-odd"><td><p>Erik Alexander Standal</p></td>
+<td><p>Frontend</p></td>
+</tr>
+<tr class="row-even"><td><p>Chorouk El Bouch</p></td>
+<td><p>UI / UX, Data Analysis</p></td>
+</tr>
+<tr class="row-odd"><td><p>Clemence Tardivel</p></td>
+<td><p>UI / UX</p></td>
+</tr>
+<tr class="row-even"><td><p>Jovan Bajcetic Maquieria</p></td>
+<td><p>UI / UX, Scrum Master</p></td>
+</tr>
+</tbody>
+</table>
+<p>Each subteam organized itself independently to complete its tasks for each sprint.</p>
+</section>
+<section id="where-to-go-next">
+<h2>Where to go next<a class="headerlink" href="#where-to-go-next" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><a class="reference internal" href="architecture.html"><span class="doc">SYSTEM ARCHITECTURE</span></a> — System architecture</p></li>
+<li><p><a class="reference internal" href="backend.html"><span class="doc">BACKEND OVERVIEW</span></a> — Backend and ETL logic</p></li>
+<li><p><a class="reference internal" href="frontend.html"><span class="doc">FRONTEND OVERVIEW</span></a> — Frontend implementation</p></li>
+<li><p><a class="reference internal" href="db_sql.html"><span class="doc">SQL DATABASE AND DATA ANALYSIS</span></a> — SQL databases and data analysis work</p></li>
+<li><p><a class="reference internal" href="ui_ux.html"><span class="doc">UI / UX DESIGN</span></a> — Interface logic and UX decisions</p></li>
+<li><p><a class="reference internal" href="devops.html"><span class="doc">DEVOPS &amp; DEPLOYMENT</span></a> — Deployment and environment setup</p></li>
+<li><p><a class="reference internal" href="requirements.html"><span class="doc">PROJECT REQUIREMENTS &amp; COMPLIANCE</span></a> — Requirements and how the solution satisfies them</p></li>
+</ul>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="index.html" class="btn btn-neutral float-left" title="Numerical Control Machine Documentation" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="architecture.html" class="btn btn-neutral float-right" title="SYSTEM ARCHITECTURE" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2025, TBDA-G2.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
