@@ -1,5 +1,5 @@
-import { getAlertsForDate } from "@/lib/api";
-import { Alert } from "@/types/Alert";
+import { getAlertsDailyCount, getAlertsDetail } from "@/lib/api";
+import AlertListWithDetails from "../../components/AlertListWithDetails";
 
 export default async function Alerts({
   searchParams
@@ -8,65 +8,66 @@ export default async function Alerts({
 }) {
   try {
     const params = await searchParams;
-    const date = params.date || "2022-02-23";
-    const alerts = await getAlertsForDate(date);
+    const date = params.date || "2021-09-14";
+    const alertCounts = await getAlertsDailyCount(date);
+    const alertDetails = await getAlertsDetail(date);
 
-    // Helper function to get alert count by type
+    // Helper function to get alert count by type (types are lowercase from agg DB)
     const getAlertCount = (type: string): number => {
-      const alert = alerts.find((a) => a.alert_type === type);
-      return alert?.total_occurrences ?? 0;
+      const alert = alertCounts.find((a) => a.alert_type === type);
+      return alert?.amount ?? 0;
     };
 
-    const emergencyCount = getAlertCount("Emergency");
-    const errorCount = getAlertCount("Error");
-    const alertCount = getAlertCount("Alert");
-    const otherCount = getAlertCount("Other");
+    const emergencyCount = getAlertCount("emergency");
+    const errorCount = getAlertCount("error");
+    const warningCount = getAlertCount("warning");
+    const otherCount = getAlertCount("other");
 
     return (
       <div className="p-8">
         <div className="space-y-6">
           {/* Page Header */}
           <div>
-            <h1 className="text-4xl font-bold text-slate-900 mb-2">Alerts</h1>
-            <p className="text-slate-600 text-lg">
-              Alert summary for {date}
+            <h1 className="text-2xl font-bold text-slate-900 mb-2">Alert manager</h1>
+            <p className="text-slate-600 text-sm">
+              Monitor and manage machine alerts
             </p>
           </div>
 
           <div className="flex gap-6">
             {/* Alert Summary Box */}
-            <div className="w-1/2 bg-white rounded-lg p-6">
-              <h2 className="text-xl font-semibold text-slate-900 mb-4">
-                Alert Summary
+            <div className="w-2/3 bg-white rounded-2xl p-6">
+              <h2 className="text-1xl font-medium text-slate-800 mb-6">
+                Alerts on {new Date(date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })}
               </h2>
-              {alerts.length > 0 ? (
-                <>
-                  <div className="bg-red-400 rounded-lg w-fit p-2 mb-2">
-                    {emergencyCount} Emergency
+              {alertCounts.length > 0 ? (
+                <div className="flex items-center justify-between">
+                  
+                  <div className="flex gap-3">
+                    <span className="border-2 border-red-400 text-red-500 rounded-full px-4 py-1">
+                      {emergencyCount} Emergency
+                    </span>
+                    <span className="border-2 border-yellow-400 text-yellow-600 rounded-full px-4 py-1">
+                      {errorCount} Error
+                    </span>
+                    <span className="border-2 border-blue-400 text-blue-500 rounded-full px-4 py-1">
+                      {warningCount} Warning
+                    </span>
+                    <span className="border-2 border-slate-400 text-slate-500 rounded-full px-4 py-1">
+                      {otherCount} Other
+                    </span>
                   </div>
-                  <div className="bg-yellow-400 rounded-lg w-fit p-2 mb-2">
-                    {errorCount} Error
-                  </div>
-                  <div className="bg-orange-400 rounded-lg w-fit p-2 mb-2">
-                    {alertCount} Alert
-                  </div>
-                  <div className="bg-blue-400 rounded-lg w-fit p-2">
-                    {otherCount} Other
-                  </div>
-                </>
+                </div>
               ) : (
                 <p className="text-slate-500">No alerts found for {date}</p>
               )}
             </div>
-
-            {/* Placeholder for additional content */}
-            <div className="w-1/2 bg-white rounded-lg p-6">
-              <h2 className="text-xl font-semibold text-slate-900 mb-4">
-                Details
-              </h2>
-              
-            </div>
+            {/* Empty placeholder to match AlertListWithDetails layout (w-2/3 + gap + w-1/3) */}
+            <div className="w-1/3"></div>
           </div>
+
+          {/* Alert List and Details Section - Client Component for interactivity */}
+          <AlertListWithDetails alertDetails={alertDetails} date={date} />
         </div>
       </div>
     );

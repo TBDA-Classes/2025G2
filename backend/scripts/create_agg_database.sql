@@ -43,13 +43,26 @@ CREATE TABLE IF NOT EXISTS agg_sensor_stats (
 -- TABLE alerts
 -- Purpose: Store daily alerts (only the ones of importance)
 
-CREATE TABLE IF NOT EXISTS alerts(
-    id SERIAL PRIMARY KEY, -- SERIAL for automatic IDs 
-    dt TIMESTAMP NOT NULL,
+CREATE TABLE IF NOT EXISTS alerts_daily_count(
+    day DATE NOT NULL,
     alert_type VARCHAR(20) NOT NULL
-        CHECK(alert_type in ('emergency', 'error', 'warning')),
-    description VARCHAR(500) NOT NULL
+        CHECK(alert_type in ('emergency', 'error', 'warning', 'other')),
+    amount INT NOT NULL,
+    PRIMARY KEY (day, alert_type)
 );
+
+CREATE TABLE IF NOT EXISTS alerts_detail(
+    id SERIAL PRIMARY KEY,
+    dt TIMESTAMP NOT NULL,
+    day DATE GENERATED ALWAYS AS (dt::date) STORED,
+    alert_type VARCHAR(20) NOT NULL
+        CHECK(alert_type in ('emergency', 'error', 'warning', 'other')),
+    alarm_code TEXT,
+    alarm_description TEXT,
+    raw_elem_json JSONB
+);
+CREATE INDEX idx_alerts_detail_day_type ON alerts_detail (day, alert_type);
+
 
 CREATE TABLE IF NOT EXISTS machine_utilization(
     id SERIAL PRIMARY KEY,
@@ -79,6 +92,7 @@ CREATE TABLE IF NOT EXISTS machine_program_data(
 -- B-Tree indexes for fast date-based lookups
 -- Tailored for our request: GET sensor X's data for date Y
 CREATE INDEX IF NOT EXISTS idx_sensor_date ON agg_sensor_stats(sensor_name, CAST(dt AS DATE));
+
 
 -- =============================================================================
 -- VIEWS

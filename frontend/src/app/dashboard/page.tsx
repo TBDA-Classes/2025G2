@@ -1,6 +1,6 @@
-import { getTemperatures, getMachineUtilization, getMachineOperations, getMachinePrograms } from "@/lib/api";
-import TimelineChart from "../components/TimelineChart";
+import { getTemperatures, getMachineUtilization, getMachinePrograms } from "@/lib/api";
 import BoxPlot from "../components/BoxPlot";
+import TimelineSection from "../components/TimelineSection";
 
 // Colors for program badges - cycling through these
 const PROGRAM_COLORS = [
@@ -23,15 +23,10 @@ export default async function Dashboard({
   try {
     const params = await searchParams;
     console.log("Dashboard received date param:", params);
-    const date = params.date || "2022-02-23";
+    const date = params.date || "2021-09-14";
     const temperature_data = await getTemperatures(date);
     const machine_util_data = await getMachineUtilization(date);
     const program_data = await getMachinePrograms(date);
-    
-    // Hardcoded time range for now (using +00:00 to match API's UTC timestamps)
-    const timelineStart = `${date} 16:00:00+00:00`;
-    const timelineEnd = `${date} 16:30:00+00:00`;
-    const operation_data = await getMachineOperations(timelineStart, timelineEnd);
 
     // Calculate program statistics
     const totalPrograms = program_data.length;
@@ -57,30 +52,8 @@ export default async function Dashboard({
           </p>
         </div>
 
-        {/* Machine Status Timeline Section */}
-        <div className="bg-white rounded-lg shadow-sm p-6">
-          {/* Section Header */}
-          <h2 className="text-2xl font-semibold text-slate-900 mb-4">
-            Machine Status Timeline (24 Hours)
-          </h2>
-
-          {/* Legend */}
-          <div className="flex gap-6 mb-4">
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded-full bg-green-500"></div>
-              <span className="text-slate-700 font-medium">RUN (255)</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-4 h-4 rounded-full bg-red-500"></div>
-              <span className="text-slate-700 font-medium">IDLE (0)</span>
-            </div>
-          </div>
-
-          {/* Timeline Chart */}
-          <div className="h-24">
-            <TimelineChart data={operation_data} startTime={timelineStart} endTime={timelineEnd} />
-          </div>
-        </div>
+        {/* Machine Status Timeline Section - Client Component for dynamic time selection */}
+        <TimelineSection date={date} />
 
         <div className="flex flex-row gap-10 ">
           <div className="bg-white rounded-lg shadow-sm p-6 w-1/2">

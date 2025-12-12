@@ -1,7 +1,8 @@
 from datetime import date, datetime
 from sqlalchemy.orm import DeclarativeBase, Mapped, MappedCollection, mapped_column, relationship
 from sqlalchemy import ForeignKey
-from typing import Optional
+from sqlalchemy.dialects.postgresql import JSONB
+from typing import Optional, Any
 
 
 # IMPORTANT: 
@@ -150,6 +151,36 @@ class MachineProgramData(Base):
     dt: Mapped[date]
     program: Mapped[int]
     duration_seconds: Mapped[int]
+
+
+class AlertsDailyCount(Base):
+    """
+    Daily count of alerts by type
+    Example row:
+    day=2022-02-23, alert_type='error', amount=15
+    """
+    __tablename__ = "alerts_daily_count"
+    
+    day: Mapped[date] = mapped_column(primary_key=True)
+    alert_type: Mapped[str] = mapped_column(primary_key=True)  # 'emergency', 'error', 'warning'
+    amount: Mapped[int]
+
+
+class AlertsDetail(Base):
+    """
+    Detailed alert records with timestamp and description
+    Example row:
+    id=1, dt='2022-02-23 14:30:00', alert_type='error', 
+    alarm_code='E123', alarm_description='Motor fault'
+    """
+    __tablename__ = "alerts_detail"
+    
+    id: Mapped[int] = mapped_column(primary_key=True)
+    dt: Mapped[datetime]
+    alert_type: Mapped[str]  # 'emergency', 'error', 'warning'
+    alarm_code: Mapped[Optional[str]]
+    alarm_description: Mapped[Optional[str]]
+    raw_elem_json: Mapped[Optional[Any]] = mapped_column(JSONB)  # JSONB type
 
 
 
