@@ -3,6 +3,11 @@
 **2025G2**  
 **October 2025**
 
+Dates of interest for displaying the frontend design choices:
+- 14/03/2021 Giving high spike in one temperature
+- 14/09/2021 Showing Machine Status Timeline in good detail
+
+
 ## Introduction
 
 The frontend is developed using Next.js with the App Router.  

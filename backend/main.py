@@ -23,10 +23,6 @@ app.add_middleware(
 
 
 # We use BaseModel from pydantic to enforce and shape the GET response
-class PeriodOut(BaseModel):
-    id: int
-    name: str
-
 class MachineActivityOut(BaseModel):
     date: str
     state_idle: int
@@ -59,10 +55,15 @@ class AlertsOut(BaseModel):
     alert_type: str
     unique_alarms: int
     total_occurrences: int
+
 class MachineChangeOut(BaseModel):
     ts: str
-    old_value: float
-    new_value: float
+    value: int
+
+class MachineProgramOut(BaseModel):
+    dt: str
+    program: int
+    duration_seconds: int
 
 # When you visit http://localhost:8000/ you'll see this message
 @app.get("/")
@@ -83,25 +84,7 @@ def status():
         return {"status": "API is running", "database": f"Connection failed: {str(e)}"}
 
 
-
-@app.get("/api/v1/periods", response_model=List[PeriodOut])
-def get_period(db: Session = Depends(get_prod_db)):
-    """
-    Get all periods from the database using ORM
-
-    Args:
-        db: Database session (automatically provided by FastAPI via Depends)
-
-    Returns:
-        List of PeriodOut objects
-    """
-    # Using a Period object the SQL is abstracted away
-    periods = db.query(Period).order_by(Period.id).all()
-    if not periods:
-        raise HTTPException(status_code=404, detail="Period(s) not found")
-    return [PeriodOut(id=p.id, name=p.name) for p in periods]
-
-
+# Up for removal ...
 @app.get("/api/v1/machine_activity", response_model=List[MachineActivityOut])
 def get_machine_activity(
     target_date: DateType,
@@ -411,31 +394,26 @@ def get_alerts(
     
 @app.get("/api/v1/machine_changes", response_model=List[MachineChangeOut])
 def get_machine_changes(
-    start: DateType,
-    end: DateType,
+    start: str,
+    end: str,
     db: Session = Depends(get_prod_db)
 ):
     """
     Returns only the timestamp where MACHINE_IN_OPERATION changes value.
+
+    Params:
+        start: datetime string, e.g. '2022-01-30 15:00:00'
+        end:   datetime string, e.g. '2022-01-30 15:30:00'
     """
 
     query = text("""
-        WITH raw AS (
-            SELECT 
-                to_timestamp(vlf.date/1000) AS ts,
-                vlf.value,
-                lag(vlf.value) OVER (ORDER BY vlf.date) AS prev_value
-            FROM variable_log_float vlf
-            JOIN variable v ON v.id_var = vlf.id_var
-            WHERE v.name = 'MACHINE_IN_OPERATION'
-            AND to_timestamp(vlf.date/1000) BETWEEN :start AND :end
-        )
-        SELECT ts, prev_value, value
-        FROM raw
-        WHERE prev_value IS NOT NULL
-        AND prev_value <> value
-        ORDER BY ts ASC;
+    SELECT to_timestamp(vlf.date/1000) AS ts,
+    vlf.value
+    FROM variable_log_float vlf
+    WHERE vlf.id_var=597
+    AND to_timestamp(vlf.date/1000) BETWEEN CAST(:start AS timestamp) AND CAST(:end AS timestamp);
     """)
+   
 
     try:
         rows = db.execute(query, {
@@ -446,11 +424,59 @@ def get_machine_changes(
         return [
             MachineChangeOut(
                 ts=str(r.ts),
-                old_value=r.prev_value,
-                new_value=r.value
+                value = r.value
             )
             for r in rows
         ]
 
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+
+@app.get("/api/v1/machine_program", response_model=List[MachineProgramOut])
+def get_machine_program(
+    target_date: DateType,
+    db: Session = Depends(get_agg_db)
+):
+    """
+    Get machine program usage data for a given date.
+    Returns program numbers and their duration in seconds.
+
+    Args:
+        target_date: The date of interest, format: "2021-01-15"
+    Returns:
+        List of MachineProgramOut objects with program and duration_seconds
+    """
+
+    query = text("""
+        SELECT 
+            dt,
+            program,
+            duration_seconds
+        FROM machine_program_data
+        WHERE dt = :target_date
+        ORDER BY duration_seconds DESC;
+    """)
+
+    try:
+        rows = db.execute(query, {"target_date": str(target_date)}).fetchall()
+
+        if not rows:
+            raise HTTPException(
+                status_code=404,
+                detail=f"No program data found for {target_date}"
+            )
+
+        return [
+            MachineProgramOut(
+                dt=str(r.dt),
+                program=r.program,
+                duration_seconds=r.duration_seconds
+            )
+            for r in rows
+        ]
+
+    except HTTPException:
+        raise
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
