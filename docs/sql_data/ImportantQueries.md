@@ -430,7 +430,7 @@ ORDER BY
   END;
 ```
 
-### PQ1 - Initial query to identify the hours in which variable changes are registered
+### PQ1 - Initial version of the query Machine Utilization (to identify hours in which variable changes happen)
 
 ```sql
 WITH horas AS (  
@@ -466,7 +466,7 @@ LEFT JOIN cambios_por_hora c ON h.dt = c.dt
 ORDER BY h.dt;
 ```
 
-### OQ1: Initial query to know the duration of each operating mode (eventually the variable used was changed to be PROG_STATUS)
+### OQ1: Initial version of the query Program History (eventually the variable used was changed to be PROG_STATUS)
 
 ```sql
 WITH RegistrosOrdenados AS (
