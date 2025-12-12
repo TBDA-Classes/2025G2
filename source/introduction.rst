@@ -11,11 +11,11 @@ Project Needs
 -------------
 Key needs that the solution must address include:
 
-- Identify operation periods of the machine
-- Create a user interface to facilitate interaction
-- Determine when the machine is working
-- Calculate timing and energy demands per program name
-- Determine alerts and contextualize them
+- Identify operation periods of the machine.
+- Create a user interface to facilitate interaction.
+- Determine when the machine is working.
+- Calculate timing and energy demands per program name.
+- Determine alerts and contextualize them.
 
 Solution approach
 -----------------

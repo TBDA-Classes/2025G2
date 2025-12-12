@@ -1,0 +1,29 @@
+Numerical Control Machine Documentation
+=======================================
+
+This is the documentation for the *Numerical Control Machine Interface*
+project. This site describes the project context, its architecture, technical
+components (backend, frontend, database), as well as the user interface logic
+and deployment aspects.
+
+.. toctree::
+   :maxdepth: 2
+   :caption: Contents
+
+   introduction
+   architecture
+   backend
+   frontend
+   db_sql
+   ui_ux
+   devops
+   requirements
+
+
+Indexes & Tables
+================
+
+* :ref:`genindex`
+* :ref:`modindex`
+* :ref:`search`
+

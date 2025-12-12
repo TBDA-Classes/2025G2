@@ -1,0 +1,140 @@
+BACKEND OVERVIEW
+================
+
+Introduction
+------------
+The backend is implemented using **FastAPI** and relies on:
+
+* SQLAlchemy as ORM  
+* psycopg3 as PostgreSQL driver  
+* python-dotenv for configuration  
+* Uvicorn for development server  
+* Custom ETL scripts for data aggregation
+
+This layer provides the REST API consumed by the frontend and manages
+communication with both the production database and the aggregation database.
+
+Backend File Structure
+----------------------
+::
+
+   backend/
+   ├── main.py
+   ├── models.py
+   ├── database.py
+   ├── env_example.txt
+   ├── requirements.txt
+   ├── scripts/
+   │   ├── create_agg_database.sql
+   │   ├── etl_agg_machine_utilization.py
+   │   └── etl_agg_sensor_stats.py
+   └── README.md
+
+
+Database Driver
+---------------
+The system uses psycopg3, a modern driver for PostgreSQL with support for both
+synchronous and asynchronous execution. This allows:
+
+* Better performance under concurrent requests  
+* Compatibility with SQLAlchemy  
+* Efficient ETL execution  
+
+
+Environment Variables
+---------------------
+Sensitive configuration parameters (usernames, passwords, hosts, ports) are stored in
+a `.env` file. A simplified example:
+
+::
+
+   DB_USER=atle
+   DB_PASSWORD=secretpassword
+   DB_HOST=localhost
+   DB_PORT=5432
+   DB_NAME=mydatabase
+
+The file is loaded via ``python-dotenv`` and accessed using ``os.getenv()``.
+
+
+Running the Backend
+-------------------
+Step-by-step setup:
+
+::
+
+   cd backend
+   python3 -m venv venv
+   source venv/bin/activate         # macOS/Linux
+   venv\Scripts\activate            # Windows
+   pip install -r requirements.txt
+   cp env_example.txt .env
+   uvicorn main:app --reload
+
+Testing:
+
+* http://localhost:8000  
+* http://localhost:8000/docs
+
+
+Data Aggregation Strategy
+-------------------------
+The production database contains more than 321 million rows. To ensure interactive
+performance in the frontend:
+
+* ETL scripts extract raw sensor data  
+* Transform it through SQL and Python logic  
+* Load computed summaries into the aggregation DB  
+
+Indexing Strategy
+~~~~~~~~~~~~~~~~~
+B-Tree indexes are used for:
+
+* ``timestamp`` fields  
+* ``sensor_name``  
+* ``shift`` values  
+
+These indexes reduce lookup time significantly.
+
+Views
+~~~~~
+The aggregation DB includes views (e.g. ``agg_sensor_stats``) to expose:
+
+* First and last available dates  
+* Daily data coverage  
+* Query ranges supported by the system  
+
+
+Connecting to PostgreSQL
+------------------------
+Example:
+
+::
+
+   psql -h 138.100.82.184 -U lectura -d <database> -p 2345
+
+Useful psql commands:
+
+* ``\l`` list databases  
+* ``\dt`` list tables  
+* ``\dv`` list views  
+* ``\d table`` describe schema  
+* ``\conninfo`` connection info  
+
+
+Backend Endpoints (Simplified)
+------------------------------
+Even though `main.py` contains test endpoints, the backend is designed to provide:
+
+* Machine utilization data  
+* State timeline segments  
+* Temperature history  
+* Program execution history  
+* Energy metrics  
+* Alerts (by type, shift, and timestamp)  
+* System status reports  
+
+Final endpoint specifications depend on the integration between backend, ETL logic,
+and frontend requirements.
+
+See also the :doc:`frontend` page for how the API integrates with the UI.
