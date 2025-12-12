@@ -65,6 +65,18 @@ class MachineProgramOut(BaseModel):
     program: int
     duration_seconds: int
 
+class AlertsDailyCountOut(BaseModel):
+    day: str
+    alert_type: str
+    amount: int
+
+class AlertsDetailOut(BaseModel):
+    id: int
+    dt: str
+    alert_type: str
+    alarm_code: Optional[str]
+    alarm_description: Optional[str]
+
 # When you visit http://localhost:8000/ you'll see this message
 @app.get("/")
 def home():
@@ -478,5 +490,95 @@ def get_machine_program(
 
     except HTTPException:
         raise
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+
+@app.get("/api/v1/alerts_daily_count", response_model=List[AlertsDailyCountOut])
+def get_alerts_daily_count(
+    target_date: DateType,
+    db: Session = Depends(get_agg_db)
+):
+    """
+    Get daily alert counts by type for a given date from the aggregated database.
+
+    Args:
+        target_date: The date of interest, format: "2022-02-23"
+    Returns:
+        List of AlertsDailyCountOut objects with alert_type and amount
+    """
+
+    query = text("""
+        SELECT 
+            day,
+            alert_type,
+            amount
+        FROM alerts_daily_count
+        WHERE day = :target_date
+        ORDER BY amount DESC;
+    """)
+
+    try:
+        rows = db.execute(query, {"target_date": str(target_date)}).fetchall()
+
+        if not rows:
+            return []  # Return empty list if no alerts for this date
+
+        return [
+            AlertsDailyCountOut(
+                day=str(r.day),
+                alert_type=r.alert_type,
+                amount=r.amount
+            )
+            for r in rows
+        ]
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+
+@app.get("/api/v1/alerts_detail", response_model=List[AlertsDetailOut])
+def get_alerts_detail(
+    target_date: DateType,
+    db: Session = Depends(get_agg_db)
+):
+    """
+    Get detailed alert records for a given date from the aggregated database.
+
+    Args:
+        target_date: The date of interest, format: "2022-02-23"
+    Returns:
+        List of AlertsDetailOut objects with timestamp, type, code, and description
+    """
+
+    query = text("""
+        SELECT 
+            id,
+            dt,
+            alert_type,
+            alarm_code,
+            alarm_description
+        FROM alerts_detail
+        WHERE day = :target_date
+        ORDER BY dt ASC;
+    """)
+
+    try:
+        rows = db.execute(query, {"target_date": str(target_date)}).fetchall()
+
+        if not rows:
+            return []  # Return empty list if no alerts for this date
+
+        return [
+            AlertsDetailOut(
+                id=r.id,
+                dt=str(r.dt),
+                alert_type=r.alert_type,
+                alarm_code=r.alarm_code,
+                alarm_description=r.alarm_description
+            )
+            for r in rows
+        ]
+
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")

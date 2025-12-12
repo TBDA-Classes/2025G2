@@ -27,7 +27,7 @@ export default function DashboardLayout({children}: { children: ReactNode; }) {
     });
   }, []);
 
-  const date = searchParams.get('date') || "2022-02-23";
+  const date = searchParams.get('date') || "2021-09-14";
 
   const date_status = getDataStatus();
 
@@ -37,7 +37,7 @@ export default function DashboardLayout({children}: { children: ReactNode; }) {
   
 
   return (
-    <div className="flex h-screen bg-slate-200">
+    <div className="flex h-screen bg-slate-100">
       <SideBar />
       <main className="flex-1 overflow-y-auto">
         {/* Sticky Date Selector */}

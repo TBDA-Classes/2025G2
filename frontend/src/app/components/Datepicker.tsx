@@ -1,10 +1,8 @@
 "use client";
-import { DemoContainer } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { useState } from 'react';
-import { useRouter } from "next/navigation";
+import { useState, useEffect } from 'react';
 import dayjs from 'dayjs';
 
 
@@ -14,8 +12,18 @@ export default function BasicDatePicker({
 } : {
     date: string, setDate : any, minDate : string | undefined, maxDate: string | undefined}) {
 
-    const router = useRouter();
+    // Fix hydration mismatch: only render DatePicker on client
+    const [mounted, setMounted] = useState(false);
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
+    // Show placeholder during SSR to avoid hydration mismatch
+    if (!mounted) {
+        return (
+            <div className="h-14 w-56 bg-slate-100 rounded animate-pulse" />
+        );
+    }
     
     return (
         <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -30,4 +38,4 @@ export default function BasicDatePicker({
             />
         </LocalizationProvider>
     );
-    }
+}

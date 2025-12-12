@@ -10,6 +10,8 @@ import { DataStatus } from "@/types/DataStatus";
 import { Alert } from "@/types/Alert";
 import { MachineOperation } from "@/types/MachineOperation";
 import { MachineProgram } from "@/types/MachineProgram";
+import { AlertsDailyCount } from "@/types/AlertsDailyCount";
+import { AlertsDetail } from "@/types/AlertsDetail";
 
 // Create a base URL constant
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -260,5 +262,79 @@ export async function getMachinePrograms(date: string): Promise<MachineProgram[]
     } catch (error) {
         console.error("Error fetching machine programs:", error);
         throw new Error(`Failed to fetch machine programs: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+}
+
+// Gets the daily alert counts by type for a given date (from aggregated DB)
+export async function getAlertsDailyCount(date: string): Promise<AlertsDailyCount[]> {
+    if (!BASE_URL) {
+        throw new Error('API URL is not configured. Please check your environment variables.');
+    }
+    if (!date) {
+        throw new Error('Date parameter is required');
+    }
+
+    try {
+        const url = `${BASE_URL}/alerts_daily_count?target_date=${date}`;
+
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        // No data exists for the date
+        if (response.status === 404) {
+            return [];
+        }
+
+        if (!response.ok) {
+            console.log(response);
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data as AlertsDailyCount[];
+    } catch (error) {
+        console.error("Error fetching alerts daily count:", error);
+        throw new Error(`Failed to fetch alerts daily count: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+}
+
+// Gets the detailed alert records for a given date (from aggregated DB)
+export async function getAlertsDetail(date: string): Promise<AlertsDetail[]> {
+    if (!BASE_URL) {
+        throw new Error('API URL is not configured. Please check your environment variables.');
+    }
+    if (!date) {
+        throw new Error('Date parameter is required');
+    }
+
+    try {
+        const url = `${BASE_URL}/alerts_detail?target_date=${date}`;
+
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        // No data exists for the date
+        if (response.status === 404) {
+            return [];
+        }
+
+        if (!response.ok) {
+            console.log(response);
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data as AlertsDetail[];
+    } catch (error) {
+        console.error("Error fetching alerts detail:", error);
+        throw new Error(`Failed to fetch alerts detail: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
 }
