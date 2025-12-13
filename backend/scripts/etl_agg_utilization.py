@@ -1,29 +1,40 @@
+'''
+ETL (Extract, Transform and Load) script for daily machine utilization.
+Calculates running hours vs. downtime hours per day based on log activity gaps.
+
+A gap of >10 minutes between log entries is considered downtime.
+
+Usage:
+    python -m backend.scripts.etl_agg_utilization                       # Full backfill
+    python -m backend.scripts.etl_agg_utilization 2021-09-14            # Single day
+    python -m backend.scripts.etl_agg_utilization 2021-09-01 2021-09-30 # Date range
+
+Args:
+    from_date: Start date (optional). If missing, processes all available data.
+    to_date:   End date (optional). If missing, processes single day (from_date).
+'''
+
 import logging
 import sys
 
 from sqlalchemy.orm import Session
 from backend.database import prod_engine, agg_engine
-
 from sqlalchemy import text
 from backend.models import AggMachineActivityDaily
+
 logging.basicConfig(level=logging.INFO)
 
-
-# Questions: 
-# 1) is my connection good - Y
-# 2) How do I import properly and what - N, from ... import ... not import .. from ...
-# 3) How do I throw error properly N, except Exception as e:
-# 4) Return properly - X returned as a list of dicts [{} for r in rows]. 
-# Params are defined as a simple dict {}
-
-# 5) is it ::param or (:param) Y Last one
-
-# 6) What does transform do? We already have the data we want? 
-# Maybe to make it in the same format as table? But it already is??
-# 7)
-
 def extract_data(from_date=None, to_date=None):
-
+    '''
+    Extract running/downtime hours from production database.
+    
+    Params:
+        from_date: Start date filter (optional)
+        to_date:   End date filter (optional)
+    
+    Returns:
+        List of dicts with dt, running_hours, and down_hours per day.
+    '''
     try:
         with prod_engine.connect() as conn:
             query = '''WITH cambios AS (
@@ -130,13 +141,15 @@ def extract_data(from_date=None, to_date=None):
     except Exception as e:
         logger.error(f"ERROR: {str(e)}")
         raise
-        
-
-# 7) How to create a session and how to add and load into that session
-# 8) How to check # of arguments with sys.argv[1]
-
-
+    
 def load_data(transformed_data):
+    '''
+    Load records into the aggregated database.
+    Uses merge to upsert (update if exists, insert if not).
+    
+    Params:
+        transformed_data: List of dicts from extract_data()
+    '''
     session = Session(agg_engine)
     try:
         
@@ -161,6 +174,9 @@ def load_data(transformed_data):
 
 
 def run_etl():
+    '''
+    Main orchestration function.
+    '''
     if len(sys.argv) > 1:
         if len(sys.argv) == 3:
             raw_data = extract_data(sys.argv[1], sys.argv[2])

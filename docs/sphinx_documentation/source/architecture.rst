@@ -7,13 +7,12 @@ This project implements a complete monitoring solution for a CNC machine, combin
 real-time data processing, aggregated analytics, interactive dashboards, and alert
 management. The architecture is divided into four major components:
 
-* **Frontend (Next.js + React + Tailwind CSS)**  
+* **Frontend (Next.js + Tailwind CSS)**  
   Modern single-page application providing interactive dashboards, filtering tools,
   charts, and alert exploration.
 
 * **Backend (FastAPI + SQLAlchemy + psycopg3)**  
-  REST API responsible for database access, aggregated query serving, ETL execution,
-  and communication with both data sources.
+  REST API responsible for database access and communication with both data sources.
 
 * **Dual-Database Layer (Production DB + Aggregation DB)**  
   Large-scale sensor data (321M+ rows) processed into a smaller, query-optimized 

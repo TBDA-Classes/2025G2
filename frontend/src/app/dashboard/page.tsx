@@ -111,10 +111,6 @@ export default async function Dashboard({
                       <p className="text-slate-500 text-sm">Total Time</p>
                       <p className="text-xl font-bold text-slate-800">{totalHours}h {totalMinutes}min</p>
                     </div>
-                    <div>
-                      <p className="text-slate-500 text-sm">Active</p>
-                      <p className="text-xl font-bold text-slate-800">{totalPrograms} / {totalPrograms}</p>
-                    </div>
                   </div>
                 </div>
               </>

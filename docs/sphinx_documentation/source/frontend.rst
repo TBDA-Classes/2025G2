@@ -36,7 +36,7 @@ Project Structure
    │   └── types/
    │       ├── DateState.ts
    │       ├── Temperature.ts
-   │       └── period.ts
+   │       └── 
    └── README.md
 
 

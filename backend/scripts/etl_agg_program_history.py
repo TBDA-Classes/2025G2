@@ -138,6 +138,7 @@ def extract_data(start_date=None, end_date=None):
                 ROUND(SUM(EXTRACT(EPOCH FROM (fin_real - inicio_real))), 2) AS duracion_segundos
             FROM CortePorDias
             WHERE fin_real > inicio_real
+              AND EXISTS (SELECT 1 FROM LogsRango)  -- Only return data if actual logs exist in range
             GROUP BY 1, 2
             ORDER BY fecha, duracion_segundos DESC;
             '''

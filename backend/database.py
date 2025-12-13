@@ -1,5 +1,5 @@
 # This file handles connecting to the PostgreSQL database
-# Manages connections to both production (read-only) and aggregation (local) databases
+# Manages connections to both production (read-only) and aggregation database
 
 import os
 from sqlalchemy import create_engine, text
@@ -50,7 +50,7 @@ AGG_DATABASE_URL = f'postgresql+psycopg://{agg_db_user}:{agg_db_password}@{agg_d
 
 agg_engine = create_engine(
     AGG_DATABASE_URL,
-    pool_size=5,           # Smaller pool for local DB
+    pool_size=5,
     max_overflow=10,
     pool_pre_ping=True
 )

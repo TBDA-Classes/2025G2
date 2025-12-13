@@ -8,8 +8,8 @@
     "start": "next start",
     "lint": "eslint"
   },
-    "resolutions": {
-      "@types/react": "^18.0.0"
+  "resolutions": {
+    "@types/react": "^18.0.0"
   },
   "dependencies": {
     "@emotion/react": "^11.14.0",
@@ -19,6 +19,7 @@
     "@nivo/bar": "^0.99.0",
     "@nivo/boxplot": "^0.99.0",
     "@nivo/calendar": "^0.99.0",
+    "@nivo/line": "^0.99.0",
     "axios": "^1.7.9",
     "date-fns": "^4.1.0",
     "dayjs": "^1.11.19",
