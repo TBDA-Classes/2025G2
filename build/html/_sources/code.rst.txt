@@ -37,7 +37,13 @@ database.
 
 ---
 
-**Daily Machine Activity Aggregation**
+**Sample Aggregated Tables**
+
+The following examples illustrate the structure of the aggregation tables.
+All tables follow a similar pattern with date-based primary keys and
+computed/derived metrics.
+
+*Daily Machine Activity:*
 
 .. code-block:: sql
    :linenos:
@@ -58,9 +64,7 @@ database.
        last_updated_at TIMESTAMP DEFAULT NOW()
    );
 
----
-
-**Aggregated Sensor Statistics**
+*Aggregated Sensor Statistics:*
 
 .. code-block:: sql
    :linenos:
@@ -77,661 +81,160 @@ database.
        PRIMARY KEY (sensor_name, dt)
    );
 
----
+   CREATE INDEX IF NOT EXISTS idx_sensor_date 
+       ON agg_sensor_stats(sensor_name, CAST(dt AS DATE));
 
-**Alerts and Utilization Tables**
-
-.. code-block:: sql
-   :linenos:
-
-   CREATE TABLE IF NOT EXISTS alerts_daily_count(
-       day DATE NOT NULL,
-       alert_type VARCHAR(20) NOT NULL
-           CHECK(alert_type IN ('emergency', 'error', 'warning', 'other')),
-       amount INT NOT NULL,
-       PRIMARY KEY (day, alert_type)
-   );
-
-   CREATE TABLE IF NOT EXISTS alerts_detail(
-       id SERIAL PRIMARY KEY,
-       dt TIMESTAMP NOT NULL,
-       day DATE GENERATED ALWAYS AS (dt::date) STORED,
-       alert_type VARCHAR(20) NOT NULL
-           CHECK(alert_type IN ('emergency', 'error', 'warning', 'other')),
-       alarm_code TEXT,
-       alarm_description TEXT,
-       raw_elem_json JSONB
-   );
-
----
-
-**Views**
-
-.. code-block:: sql
-   :linenos:
-
-   CREATE OR REPLACE VIEW v_data_status AS
-   SELECT
-       'agg_sensor_stats' AS table_name,
-       MIN(dt) AS first_date,
-       MAX(dt) AS last_date,
-       COUNT(*) AS total_records,
-       COUNT(DISTINCT sensor_name) AS number_of_sensors,
-       MAX(last_updated_at) AS last_updated
-   FROM agg_sensor_stats;
+Additional tables created by this script include: ``alerts_daily_count``,
+``alerts_detail``, ``machine_program_data``, and ``energy_consumption_hourly``.
 
 ---
 
 
-Alerts Aggregation ETL Script
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ETL Scripts Overview
+~~~~~~~~~~~~~~~~~~~~
 
+The project includes five ETL scripts, all following a consistent pattern:
 
-**File:** ``etl_agg_alerts.py``
+1. **Extract**: Query raw data from the production database
+2. **Transform**: Aggregate or reshape data as needed
+3. **Load**: Store results in the aggregation database using upsert semantics
 
-This script performs an **ETL (Extract, Transform, Load)** process for machine
-alerts data. It extracts raw alert information from the production database,
-processes and categorizes it, and loads both aggregated and detailed results
-into the aggregation database.
+**Available ETL Scripts:**
 
-It populates the following tables:
+- ``etl_agg_alerts.py`` – Aggregates daily alert counts and stores critical alert details
+- ``etl_agg_program_history.py`` – Computes program execution durations per day
+- ``etl_agg_sensor_stats.py`` – Calculates hourly sensor statistics (min, max, avg, std_dev)
+- ``etl_agg_utilization.py`` – Derives daily machine running hours vs. downtime
+- ``etl_agg_energy_daily.py`` – Calculates hourly energy consumption from motor utilization
 
-- ``alerts_daily_count`` – daily alert counts grouped by type
-- ``alerts_detail`` – detailed records for critical alerts (emergency and error)
-
-**Execution examples**:
+All scripts support three execution modes:
 
 .. code-block:: bash
 
+   # Single day
    python -m backend.scripts.etl_agg_alerts 2022-02-23
+
+   # Date range
    python -m backend.scripts.etl_agg_alerts 2022-02-01 2022-02-28
 
-If no dates are provided, the script performs a full historical backfill.
+   # Full historical backfill (no arguments)
+   python -m backend.scripts.etl_agg_alerts
 
 ---
 
-**Alert Type Mapping**
+**Representative ETL Example: Alerts Aggregation**
 
-Alert descriptions are normalized into standardized alert categories.
+The following snippets from ``etl_agg_alerts.py`` illustrate the common ETL
+pattern used across all scripts.
 
-.. code-block:: python
-   :linenos:
-
-   ALERT_TYPE_MAP = {
-       'Emergency': 'emergency',
-       'Error': 'error',
-       'Alert': 'warning',
-       'Other': 'other',
-   }
-
----
-
-**Date Range Resolution (Full Backfill)**
-
-When no dates are provided, the script queries the source database to determine
-the minimum and maximum available dates.
-
-.. code-block:: python
-   :linenos:
-
-   def get_date_range():
-       with prod_engine.connect() as conn:
-           query = '''
-           SELECT 
-               MIN(to_timestamp(date / 1000))::date AS min_date,
-               MAX(to_timestamp(date / 1000))::date AS max_date
-           FROM variable_log_string
-           WHERE id_var = 447
-             AND value IS NOT NULL
-             AND value != '[]'
-           '''
-           result = conn.execute(text(query))
-           row = result.fetchone()
-           if row and row.min_date and row.max_date:
-               return str(row.min_date), str(row.max_date)
-           return None, None
-
----
-
-**Daily Alert Count Extraction**
-
-Extracts daily alert counts grouped by alert type from the production database.
+*Extraction – Daily Alert Counts:*
 
 .. code-block:: python
    :linenos:
 
    def extract_daily_count(target_date):
-       with prod_engine.connect() as conn:
-           query = ''' SQL QUERY OMITTED FOR BREVITY '''
-           result = conn.execute(text(query), {'target_date': target_date})
-           rows = result.fetchall()
+       try:
+           with prod_engine.connect() as conn:
+               query = ''' SQL QUERY OMITTED FOR BREVITY '''
+               result = conn.execute(text(query), {'target_date': target_date})
+               rows = result.fetchall()
 
-           return [
-               {
-                   'day': target_date,
-                   'alert_type': ALERT_TYPE_MAP.get(row.alert_type),
-                   'amount': row.total_occurrences
-               }
-               for row in rows
-               if row.alert_type in ALERT_TYPE_MAP
-           ]
+               return [
+                   {
+                       'day': target_date,
+                       'alert_type': ALERT_TYPE_MAP.get(row.alert_type),
+                       'amount': row.total_occurrences
+                   }
+                   for row in rows
+                   if row.alert_type in ALERT_TYPE_MAP
+               ]
+       except Exception as e:
+           logger.error(f"Failed to extract daily count: {str(e)}")
+           raise
 
----
-
-**Alert Details Extraction**
-
-Extracts detailed alert records for **Emergency** and **Error** alerts only.
-
-.. code-block:: python
-   :linenos:
-
-   def extract_details(target_date):
-       with prod_engine.connect() as conn:
-           query = ''' SQL QUERY OMITTED FOR BREVITY '''
-           result = conn.execute(text(query), {'target_date': target_date})
-           rows = result.fetchall()
-
-           return [
-               {
-                   'dt': row.ts,
-                   'alert_type': ALERT_TYPE_MAP.get(row.alert_type),
-                   'alarm_code': row.alarm_code,
-                   'alarm_description': row.alarm_description,
-                   'raw_elem_json': json.loads(row.raw_elem_json)
-                   if row.raw_elem_json else None
-               }
-               for row in rows
-               if row.alert_type in ALERT_TYPE_MAP
-           ]
-
----
-
-**Load – Daily Alert Counts**
-
-Stores aggregated daily alert counts in the destination database using
-**upsert** semantics.
+*Load – Using Upsert Semantics:*
 
 .. code-block:: python
    :linenos:
 
    def load_daily_count(data):
+       if not data:
+           return 0
+
        session = Session(agg_engine)
        try:
            for record in data:
-               session.merge(AlertsDailyCount(**record))
+               alert_count = AlertsDailyCount(
+                   day=record['day'],
+                   alert_type=record['alert_type'],
+                   amount=record['amount']
+               )
+               session.merge(alert_count)
+
            session.commit()
            return len(data)
+
+       except Exception as e:
+           session.rollback()
+           logger.error(f"Load of daily count failed: {str(e)}")
+           raise
+
        finally:
            session.close()
 
----
-
-**Load – Alert Details**
-
-Stores detailed alert records in the aggregation database.
-
-.. code-block:: python
-   :linenos:
-
-   def load_details(data):
-       session = Session(agg_engine)
-       try:
-           for record in data:
-               session.add(AlertsDetail(**record))
-           session.commit()
-           return len(data)
-       finally:
-           session.close()
-
----
-
-**ETL Orchestration**
-
-Coordinates extraction, transformation, and loading over a date range.
+*ETL Orchestration:*
 
 .. code-block:: python
    :linenos:
 
    def run_etl(start_date=None, end_date=None):
-       # Determines date range
-       # Iterates day by day
-       # Executes extract + load steps
-       # Logs progress and failures
+       # For full backfill, get min/max dates from source data
+       if start_date is None and end_date is None:
+           logger.info("No dates provided, querying date range for full backfill...")
+           start_date, end_date = get_date_range()
+
+       # Process each date in the range
+       current_date = datetime.strptime(start_date, '%Y-%m-%d')
+       end_dt = datetime.strptime(end_date, '%Y-%m-%d')
+
+       while current_date <= end_dt:
+           date_str = current_date.strftime('%Y-%m-%d')
+           daily_count_data = extract_daily_count(date_str)
+           if daily_count_data:
+               load_daily_count(daily_count_data)
+           current_date += timedelta(days=1)
 
 ---
 
-**Command-Line Entry Point**
 
-Allows execution as a standalone script or module.
+Daily ETL Runner Script
+~~~~~~~~~~~~~~~~~~~~~~~
+
+
+**File:** ``etl_daily_runner.py``
+
+This script orchestrates daily execution of all ETL scripts. It queries
+``v_data_status`` for the latest processed date and runs all ETL scripts
+from that date to the current date.
 
 .. code-block:: python
    :linenos:
 
-   if __name__ == "__main__":
-       logging.basicConfig(level=logging.INFO)
-       logger = logging.getLogger(__name__)
-
-       if len(sys.argv) == 2:
-           run_etl(sys.argv[1])
-       elif len(sys.argv) == 3:
-           run_etl(sys.argv[1], sys.argv[2])
-       else:
-           run_etl()
-
----
-
-
-Machine Program History ETL Script
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-**File:** ``etl_agg_program_history.py``
-
-This script performs an **ETL (Extract, Transform, Load)** process to compute
-machine program execution history. It extracts raw machine state changes from
-the production database and calculates the execution duration of each program
-per day.
-
-The results are stored in the aggregation database table:
-
-- ``machine_program_data`` 
-
-The script supports single-day execution**, date ranges**, and full
-historical backfills.
-
-**Execution examples**:
-
-.. code-block:: bash
-
-   python -m backend.scripts.etl_agg_program_history 2021-01-07
-   python -m backend.scripts.etl_agg_program_history 2021-01-01 2021-01-31
-
----
-
-**Date Range Resolution (Full Backfill)**
-
-When no dates are provided, the script determines the minimum and maximum
-available dates directly from the source data.
-
-.. code-block:: python
-   :linenos:
-
-   def get_date_range():
-       with prod_engine.connect() as conn:
-           query = '''
-           SELECT 
-               MIN(to_timestamp(trunc(cast(date AS bigint)/1000)))::date AS min_date,
-               MAX(to_timestamp(trunc(cast(date AS bigint)/1000)))::date AS max_date
-           FROM variable_log_float
-           WHERE id_var = 581
-             AND value >= 0 AND value < 1000
-           '''
-           result = conn.execute(text(query))
-           row = result.fetchone()
-           if row and row.min_date and row.max_date:
-               return str(row.min_date), str(row.max_date)
-           return None, None
-
----
-
-**Program History Extraction**
-
-Extracts machine program execution intervals and computes the total duration
-(in seconds) of each program per day.
-
-.. code-block:: python
-   :linenos:
-
-   def extract_data(start_date=None, end_date=None):
-       with prod_engine.connect() as conn:
-           query = ''' SQL QUERY OMITTED FOR BREVITY '''
-           params = {
-               'start_date': start_date,
-               'end_date': end_date if end_date else start_date
-           }
-           result = conn.execute(text(query), params)
-           rows = result.fetchall()
-
-           return [
-               {
-                   'dt': row.fecha,
-                   'program': row.estado_numerico,
-                   'duration_seconds': int(row.duracion_segundos)
-               }
-               for row in rows
-           ]
-
----
-
-**Load – Machine Program Data**
-
-Stores aggregated program execution durations into the aggregation database.
-
-.. code-block:: python
-   :linenos:
-
-   def load_data(transformed_data):
-       session = Session(agg_engine)
-       try:
-           for record in transformed_data:
-               program_data = MachineProgramData(
-                   dt=record['dt'],
-                   program=record['program'],
-                   duration_seconds=record['duration_seconds']
-               )
-               session.add(program_data)
-           session.commit()
-       finally:
-           session.close()
-
----
-
-**ETL Orchestration**
-
-Coordinates extraction and loading steps for the selected date range.
-
-.. code-block:: python
-   :linenos:
-
-   def run_etl(start_date=None, end_date=None):
-       # Resolves date range
-       # Extracts raw program history
-       # Loads aggregated results
-       # Logs progress and errors
-
----
-
-**Command-Line Entry Point**
-
-Allows execution as a standalone script or module.
-
-.. code-block:: python
-   :linenos:
-
-   if __name__ == "__main__":
-       logging.basicConfig(level=logging.INFO)
-       logger = logging.getLogger(__name__)
-
-       if len(sys.argv) == 2:
-           run_etl(sys.argv[1])
-       elif len(sys.argv) == 3:
-           run_etl(sys.argv[1], sys.argv[2])
-       else:
-           run_etl()
-
----
-
-
-Sensor Statistics ETL Script
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-**File:** ``etl_agg_sensor_stats.py``
-
-This script performs an **ETL (Extract, Transform, Load)** process to compute
-hourly statistics for a specific machine sensor, currently configured for
-``TEMPERATURA_BASE``.
-
-Raw high-frequency sensor readings are extracted from the production database,
-aggregated on an hourly basis, and stored in the aggregation database table:
-
-- ``agg_sensor_stats`` 
-
-The script supports single-day execution, date ranges, and full
-historical backfills.
-
-**Execution examples**:
-
-.. code-block:: bash
-
-   python -m backend.scripts.etl_agg_sensor_stats 2021-01-07
-   python -m backend.scripts.etl_agg_sensor_stats 2021-01-01 2021-01-31
-
----
-
-**Sensor Configuration**
-
-The ETL process is parameterized by a single sensor name. At present, the
-script focuses on the base temperature sensor.
-
-.. code-block:: python
-   :linenos:
-
-   SENSOR_OF_CHOICE = 'TEMPERATURA_BASE'
-
----
-
-**Sensor Data Extraction**
-
-Extracts raw sensor readings (timestamp and value) from the production
-database, optionally filtered by date or date range.
-
-.. code-block:: python
-   :linenos:
-
-   def extract_data(start_date, end_date):
-       with prod_engine.connect() as conn:
-           query = '''
-           SELECT vlf.value,
-                  TO_TIMESTAMP(vlf.date/1000) AS ts
-           FROM variable_log_float vlf
-           LEFT JOIN variable v ON vlf.id_var = v.id
-           WHERE v.name = :sensor_name
-           '''
-           # Optional date filters applied dynamically
-
----
-
-**Data Transformation (Hourly Aggregation)**
-
-Groups raw sensor readings by hour and computes statistical metrics for each
-hourly interval.
-
-The following values are calculated:
-
-- minimum value
-- maximum value
-- average value
-- standard deviation
-- number of valid readings
-
-Invalid or non-finite sensor values are discarded.
-
-.. code-block:: python
-   :linenos:
-
-   def transform_data(raw_data):
-       hourly_data = defaultdict(list)
-
-       for record in raw_data:
-           value = record['value']
-           if value is None or value == 0 or not math.isfinite(value):
-               continue
-
-           hour = record['ts'].replace(minute=0, second=0, microsecond=0)
-           hourly_data[hour].append(record['value'] / 100)
-
----
-
-**Load – Aggregated Sensor Statistics**
-
-Stores the computed hourly statistics into the aggregation database using
-**upsert semantics** to avoid duplicate entries.
-
-.. code-block:: python
-   :linenos:
-
-   def load_data(transformed_data):
-       session = Session(agg_engine)
-       try:
-           for record in transformed_data:
-               sensor_stat = AggSensorStats(
-                   sensor_name=SENSOR_OF_CHOICE,
-                   dt=record['dt'],
-                   min_value=record['min_value'],
-                   avg_value=record['avg_value'],
-                   max_value=record['max_value'],
-                   std_dev=record['std_dev'],
-                   readings_count=record['readings_count'],
-                   last_updated_at=datetime.now()
-               )
-               session.merge(sensor_stat)
-           session.commit()
-       finally:
-           session.close()
-
----
-
-**ETL Orchestration**
-
-Coordinates the extract, transform, and load steps for the selected date range
-and logs progress and errors.
-
-.. code-block:: python
-   :linenos:
-
-   def run_etl(start_date=None, end_date=None):
-       # Determines date range description
-       # Extracts raw sensor readings
-       # Aggregates values per hour
-       # Loads results into aggregation DB
-
----
-
-**Command-Line Entry Point**
-
-Allows execution as a standalone script or module.
-
-.. code-block:: python
-   :linenos:
-
-   if __name__ == "__main__":
-       logging.basicConfig(level=logging.INFO)
-       logger = logging.getLogger(__name__)
-
-       if len(sys.argv) == 2:
-           run_etl(sys.argv[1])
-       elif len(sys.argv) == 3:
-           run_etl(sys.argv[1], sys.argv[2])
-       else:
-           run_etl()
-
----
-
-
-Machine Utilization ETL Script
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-
-**File:** ``etl_agg_utilization.py``
-
-This script performs an **ETL (Extract, Transform, Load)** process to calculate
-daily machine utilization metrics. It analyzes machine activity logs to derive
-the total number of **running hours** and **downtime hours** per day.
-
-The computed metrics are stored in the aggregation database table:
-
-- ``agg_machine_activity_daily``
-
-The script supports single-day execution, date ranges, and full
-historical backfills.
-
-**Execution examples**:
-
-.. code-block:: bash
-
-   python -m backend.scripts.etl_agg_utilization 2021-01-15
-   python -m backend.scripts.etl_agg_utilization 2021-01-01 2021-01-31
-
----
-
-**Utilization Data Extraction**
-
-Extracts raw machine activity timestamps from both numeric and string variable
-logs, combines them into a unified timeline, and calculates daily operation
-intervals.
-
-Running time is derived by grouping activity into sessions, separated by
-inactivity gaps greater than 10 minutes.
-
-.. code-block:: python
-   :linenos:
-
-   def extract_data(from_date=None, to_date=None):
-       with prod_engine.connect() as conn:
-           query = ''' SQL QUERY OMITTED FOR BREVITY '''
-           params = {
-               'from_date': from_date,
-               'to_date': to_date
-           }
-           results = conn.execute(text(query), params)
-
-           return [
-               {
-                   'dt': r.dia,
-                   'running_hours': r.running_horas,
-                   'down_hours': r.down_horas
-               }
-               for r in results
-           ]
-
----
-
-**Load – Daily Machine Utilization**
-
-Stores daily machine utilization metrics in the aggregation database. The script
-uses **upsert semantics** to ensure idempotent execution.
-
-.. code-block:: python
-   :linenos:
-
-   def load_data(transformed_data):
-       session = Session(agg_engine)
-       try:
-           for record in transformed_data:
-               session_object = AggMachineActivityDaily(
-                   dt=record['dt'],
-                   state_planned_down=record['down_hours'],
-                   state_running=record['running_hours']
-               )
-               session.merge(session_object)
-           session.commit()
-       finally:
-           session.close()
-
----
-
-**ETL Orchestration**
-
-Determines the execution mode (single date, date range, or full backfill),
-coordinates extraction and loading steps, and logs execution progress.
-
-.. code-block:: python
-   :linenos:
-
-   def run_etl():
-       if len(sys.argv) > 1:
-           if len(sys.argv) == 3:
-               raw_data = extract_data(sys.argv[1], sys.argv[2])
+   ETL_MODULES = [
+       "backend.scripts.etl_agg_sensor_stats",
+       "backend.scripts.etl_agg_utilization",
+       "backend.scripts.etl_agg_program_history",
+       "backend.scripts.etl_agg_alerts",
+       "backend.scripts.etl_agg_energy_daily",
+   ]
+
+   def run_all_etls(from_date: date, to_date: date):
+       for module in ETL_MODULES:
+           result = subprocess.run(["python", "-m", module, str(from_date), str(to_date)])
+           if result.returncode == 0:
+               print(f"✓ {module} completed")
            else:
-               raw_data = extract_data(sys.argv[1])
-       else:
-           raw_data = extract_data()
-
-       load_data(raw_data)
-
----
-
-**Command-Line Entry Point**
-
-Allows execution as a standalone script or module.
-
-.. code-block:: python
-   :linenos:
-
-   if __name__ == "__main__":
-       logger = logging.getLogger(__name__)
-       run_etl()
+               print(f"✗ {module} failed")
 
 ---
 
@@ -741,8 +244,7 @@ Core Backend Code
 
 
 This section documents reusable backend modules that define database access,
-ORM models, and shared infrastructure. These files are imported by API services
-and backend scripts.
+ORM models, and shared infrastructure.
 
 ---
 
@@ -753,17 +255,9 @@ Database Connection Layer
 
 **File:** ``database.py``
 
-This module centralizes all database connection logic used by the backend. It
-manages connections to:
-
-- A **production database** (read-only, raw data)
-- An **aggregation database** (derived analytical data)
-
-It is designed to be compatible with **FastAPI dependency injection**.
-
----
-
-**Production Database Connection**
+This module centralizes all database connection logic. It manages connections to
+a **production database** (read-only, raw data) and an **aggregation database**
+(derived analytical data), and is designed for **FastAPI dependency injection**.
 
 .. code-block:: python
    :linenos:
@@ -774,15 +268,10 @@ It is designed to be compatible with **FastAPI dependency injection**.
    from dotenv import load_dotenv
    load_dotenv()
 
-   db_user = os.getenv("DB_USER")
-   db_password = os.getenv("DB_PASSWORD")
-   db_host = os.getenv("DB_HOST")
-   db_name = os.getenv("DB_NAME")
-   db_port = os.getenv("DB_PORT", "2345")
-
+   # Production Database
    PROD_DATABASE_URL = (
-       f"postgresql+psycopg://{db_user}:{db_password}"
-       f"@{db_host}:{db_port}/{db_name}"
+       f"postgresql+psycopg://{os.getenv('DB_USER')}:{os.getenv('DB_PASSWORD')}"
+       f"@{os.getenv('DB_HOST')}:{os.getenv('DB_PORT', '2345')}/{os.getenv('DB_NAME')}"
    )
 
    prod_engine = create_engine(
@@ -793,52 +282,17 @@ It is designed to be compatible with **FastAPI dependency injection**.
        pool_recycle=1800
    )
 
-   ProductionSession = sessionmaker(
-       autocommit=False,
-       autoflush=False,
-       bind=prod_engine
-   )
+   ProductionSession = sessionmaker(autocommit=False, autoflush=False, bind=prod_engine)
 
    def get_prod_db():
+       """Dependency for FastAPI endpoints that read from production database"""
        db = ProductionSession()
        try:
            yield db
        finally:
            db.close()
 
----
-
-**Aggregation Database Connection**
-
-.. code-block:: python
-   :linenos:
-
-   agg_db_name = os.getenv("AGG_DB_NAME")
-
-   AGG_DATABASE_URL = (
-       f"postgresql+psycopg://{db_user}:{db_password}"
-       f"@{db_host}:{db_port}/{agg_db_name}"
-   )
-
-   agg_engine = create_engine(
-       AGG_DATABASE_URL,
-       pool_size=5,
-       max_overflow=10,
-       pool_pre_ping=True
-   )
-
-   AggregationSession = sessionmaker(
-       autocommit=False,
-       autoflush=False,
-       bind=agg_engine
-   )
-
-   def get_agg_db():
-       db = AggregationSession()
-       try:
-           yield db
-       finally:
-           db.close()
+   # Aggregation Database follows the same pattern with AGG_DB_NAME
 
 ---
 
@@ -849,24 +303,9 @@ ORM Models
 
 **File:** ``models.py``
 
-This module defines SQLAlchemy ORM models that map Python classes to database
-tables and views, using SQLAlchemy 2.0 typed mappings.
+Defines SQLAlchemy ORM models using SQLAlchemy 2.0 typed mappings.
 
----
-
-**Declarative Base**
-
-.. code-block:: python
-   :linenos:
-
-   from sqlalchemy.orm import DeclarativeBase
-
-   class Base(DeclarativeBase):
-       pass
-
----
-
-**Production Database Models**
+*Production Database Models:*
 
 .. code-block:: python
    :linenos:
@@ -878,14 +317,27 @@ tables and views, using SQLAlchemy 2.0 typed mappings.
        name: Mapped[str]
        datatype: Mapped[str]
 
----
+       variable_log_floats: Mapped[list["VariableLogFloat"]] = relationship(back_populates="variable")
+       variable_log_strings: Mapped[list["VariableLogString"]] = relationship(back_populates="variable")
 
-**Aggregation Database Models**
+*Sample Aggregation Models:*
 
 .. code-block:: python
    :linenos:
 
+   class AggMachineActivityDaily(Base):
+       """Daily machine utilization: running hours vs. downtime hours."""
+       __tablename__ = "agg_machine_activity_daily"
+
+       dt: Mapped[date] = mapped_column(primary_key=True)
+       state_planned_down: Mapped[float]
+       state_running: Mapped[float]
+       state_unplanned_down: Mapped[float]
+       last_updated_at: Mapped[Optional[datetime]]
+
+
    class AggSensorStats(Base):
+       """Hourly aggregated sensor statistics."""
        __tablename__ = "agg_sensor_stats"
 
        sensor_name: Mapped[str] = mapped_column(primary_key=True)
@@ -893,7 +345,12 @@ tables and views, using SQLAlchemy 2.0 typed mappings.
        min_value: Mapped[Optional[float]]
        avg_value: Mapped[Optional[float]]
        max_value: Mapped[Optional[float]]
+       std_dev: Mapped[Optional[float]]
        readings_count: Mapped[Optional[int]]
+       last_updated_at: Mapped[Optional[datetime]]
+
+Additional models include: ``MachineProgramData``, ``AlertsDailyCount``,
+``AlertsDetail``, and ``EnergyConsumptionHourly``.
 
 ---
 
@@ -904,26 +361,11 @@ API Application Entry Point
 
 **File:** ``main.py``
 
-This module defines the **FastAPI application entry point** and exposes all
-public REST endpoints used by the frontend and external consumers.
+Defines the **FastAPI application** with REST endpoints for analytics and
+monitoring. Provides read-only access to both the production and aggregation
+databases.
 
-It is responsible for:
-
-- Creating and configuring the FastAPI application
-- Defining response schemas using **Pydantic**
-- Registering API routes for analytics and monitoring
-- Managing database dependencies through SQLAlchemy sessions
-- Handling errors and HTTP responses consistently
-
-The API provides read-only access to both the production database and the
-aggregation database.
-
----
-
-**Application Setup**
-
-Initializes the FastAPI application with metadata and configures **CORS** to
-allow requests from the frontend application.
+*Application Setup:*
 
 .. code-block:: python
    :linenos:
@@ -931,10 +373,7 @@ allow requests from the frontend application.
    from fastapi import FastAPI
    from fastapi.middleware.cors import CORSMiddleware
 
-   app = FastAPI(
-       title="Variable Monitoring API",
-       version="1.0.0"
-   )
+   app = FastAPI(title="Variable Monitoring API", version="1.0.0")
 
    app.add_middleware(
        CORSMiddleware,
@@ -943,17 +382,10 @@ allow requests from the frontend application.
        allow_headers=["*"],
    )
 
----
-
-**Response Models (Pydantic Schemas)**
-
-Defines response schemas used to validate and serialize API responses.
+*Sample Response Models:*
 
 .. code-block:: python
    :linenos:
-
-   from pydantic import BaseModel
-   from typing import Optional
 
    class SensorStatsOut(BaseModel):
        dt: str
@@ -963,35 +395,14 @@ Defines response schemas used to validate and serialize API responses.
        std_dev: Optional[float]
        readings_count: Optional[int]
 
----
+   class MachineUtilOut(BaseModel):
+       dt: str
+       state_running: Optional[float]
+       state_planned_down: Optional[float]
+       running_percentage: Optional[float]
+       down_percentage: Optional[float]
 
-**Health Check Endpoint**
-
-Simple endpoint to verify that the API and database connection are operational.
-
-.. code-block:: python
-   :linenos:
-
-   @app.get("/")
-   def home():
-       return {"message": "Hello! The API is working!"}
-
-   @app.get("/api/status")
-   def status():
-       with prod_engine.connect() as connection:
-           result = connection.execute(text("SELECT version()"))
-           version = result.fetchone()
-           return {
-               "status": "API is running",
-               "database": "Connected",
-               "version": str(version)
-           }
-
----
-
-**Aggregated Sensor Statistics Endpoint**
-
-Returns hourly aggregated sensor statistics for a given date and sensor.
+*Sample Endpoint:*
 
 .. code-block:: python
    :linenos:
@@ -1003,96 +414,22 @@ Returns hourly aggregated sensor statistics for a given date and sensor.
        db: Session = Depends(get_agg_db)
    ):
        query = text("""
-           SELECT
-               dt,
-               min_value,
-               avg_value,
-               max_value,
-               std_dev,
-               readings_count
+           SELECT dt, min_value, avg_value, max_value, std_dev, readings_count
            FROM agg_sensor_stats
-           WHERE dt::date = :target_date
-             AND sensor_name = :sensor_name
+           WHERE dt::date = :target_date AND sensor_name = :sensor_name
            ORDER BY dt ASC
        """)
+       # ...
 
----
+**Available API Endpoints:**
 
-**Machine Utilization Endpoint**
-
-Exposes daily machine utilization metrics derived from the aggregation
-database.
-
-.. code-block:: python
-   :linenos:
-
-   @app.get("/api/v1/machine_util", response_model=List[MachineUtilOut])
-   def get_machine_util(
-       target_date: DateType,
-       db: Session = Depends(get_agg_db)
-   ):
-       query = text("""
-           SELECT
-               dt,
-               state_planned_down,
-               state_running,
-               running_percentage,
-               down_percentage
-           FROM agg_machine_activity_daily
-           WHERE dt = :target_date
-           ORDER BY dt ASC
-       """)
-
----
-
-**Alerts Endpoints**
-
-Provides both **raw** and **aggregated** alert information.
-
-- Aggregated daily counts
-- Detailed alert records
-- On-demand alert categorization from raw data
-
-.. code-block:: python
-   :linenos:
-
-   @app.get("/api/v1/alerts_daily_count", response_model=List[AlertsDailyCountOut])
-   def get_alerts_daily_count(
-       target_date: DateType,
-       db: Session = Depends(get_agg_db)
-   ):
-       query = text("""
-           SELECT
-               day,
-               alert_type,
-               amount
-           FROM alerts_daily_count
-           WHERE day = :target_date
-           ORDER BY amount DESC
-       """)
-
----
-
-**Machine Program Usage Endpoint**
-
-Returns program execution duration per day from the aggregation database.
-
-.. code-block:: python
-   :linenos:
-
-   @app.get("/api/v1/machine_program", response_model=List[MachineProgramOut])
-   def get_machine_program(
-       target_date: DateType,
-       db: Session = Depends(get_agg_db)
-   ):
-       query = text("""
-           SELECT
-               dt,
-               program,
-               duration_seconds
-           FROM machine_program_data
-           WHERE dt = :target_date
-           ORDER BY duration_seconds DESC
-       """)
+- ``GET /api/status`` – Health check and database connection status
+- ``GET /api/v1/temperature`` – Hourly sensor statistics
+- ``GET /api/v1/machine_util`` – Daily machine utilization metrics
+- ``GET /api/v1/data_status`` – Overview of available data
+- ``GET /api/v1/alerts_daily_count`` – Aggregated daily alert counts
+- ``GET /api/v1/alerts_detail`` – Detailed alert records
+- ``GET /api/v1/machine_program`` – Program execution durations
+- ``GET /api/v1/energy_consumption`` – Hourly energy consumption
 
 ---

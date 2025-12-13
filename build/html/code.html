@@ -58,7 +58,7 @@
 <li class="toctree-l2"><a class="reference internal" href="architecture.html#system-architecture-diagram">System Architecture Diagram</a></li>
 <li class="toctree-l2"><a class="reference internal" href="architecture.html#dual-database-strategy">Dual-Database Strategy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="architecture.html#frontendbackend-interaction">Frontend–Backend Interaction</a></li>
-<li class="toctree-l2"><a class="reference internal" href="architecture.html#user-interface-flow-integration">User Interface Flow Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#dashboard-data-requirements">Dashboard Data Requirements</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="backend.html">BACKEND OVERVIEW</a><ul>
@@ -67,20 +67,14 @@
 <li class="toctree-l2"><a class="reference internal" href="backend.html#database-driver">Database Driver</a></li>
 <li class="toctree-l2"><a class="reference internal" href="backend.html#environment-variables">Environment Variables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="backend.html#running-the-backend">Running the Backend</a></li>
-<li class="toctree-l2"><a class="reference internal" href="backend.html#data-aggregation-strategy">Data Aggregation Strategy</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="backend.html#indexing-strategy">Indexing Strategy</a></li>
-<li class="toctree-l3"><a class="reference internal" href="backend.html#views">Views</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="backend.html#connecting-to-postgresql">Connecting to PostgreSQL</a></li>
-<li class="toctree-l2"><a class="reference internal" href="backend.html#backend-endpoints-simplified">Backend Endpoints (Simplified)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backend.html#api-endpoints">API Endpoints</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="frontend.html">FRONTEND OVERVIEW</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="frontend.html#introduction">Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="frontend.html#project-structure">Project Structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="frontend.html#setup-instructions">Setup Instructions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="frontend.html#pages-and-routing">Pages and Routing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frontend.html#routes-implemented">Routes implemented</a></li>
 <li class="toctree-l2"><a class="reference internal" href="frontend.html#ui-components">UI Components</a></li>
 <li class="toctree-l2"><a class="reference internal" href="frontend.html#data-flow">Data Flow</a></li>
 </ul>
@@ -89,8 +83,13 @@
 <li class="toctree-l2"><a class="reference internal" href="db_sql.html#introduction">Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="db_sql.html#cnc-machine-status-semantics">CNC Machine Status Semantics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="db_sql.html#data-extraction-strategy">Data Extraction Strategy</a></li>
-<li class="toctree-l2"><a class="reference internal" href="db_sql.html#aggregation-database-schema">Aggregation Database Schema</a></li>
-<li class="toctree-l2"><a class="reference internal" href="db_sql.html#shift-based-interpretation">Shift-Based Interpretation</a></li>
+<li class="toctree-l2"><a class="reference internal" href="db_sql.html#data-aggregation-strategy">Data Aggregation Strategy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="db_sql.html#indexing-strategy">Indexing Strategy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="db_sql.html#views">Views</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="db_sql.html#connecting-to-postgresql">Connecting to PostgreSQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="db_sql.html#json-and-sql-operations">JSON and SQL Operations</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="ui_ux.html">UI / UX DESIGN</a><ul>
@@ -112,11 +111,14 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="devops.html">DEVOPS &amp; DEPLOYMENT</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="devops.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devops.html#deployment-architecture">Deployment Architecture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="devops.html#frontend-deployment-vercel">Frontend Deployment (Vercel)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="devops.html#backend-deployment">Backend Deployment</a></li>
-<li class="toctree-l2"><a class="reference internal" href="devops.html#environment-variables">Environment Variables</a></li>
-<li class="toctree-l2"><a class="reference internal" href="devops.html#vpn-and-database-access">VPN and Database Access</a></li>
-<li class="toctree-l2"><a class="reference internal" href="devops.html#logs-and-monitoring">Logs and Monitoring</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devops.html#backend-environment-configuration">Backend Environment Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devops.html#etl-scripts-execution">ETL Scripts Execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devops.html#database-deployment-considerations">Database Deployment Considerations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devops.html#operational-workflow-summary">Operational Workflow Summary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devops.html#logging-and-monitoring">Logging and Monitoring</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="requirements.html">PROJECT REQUIREMENTS &amp; COMPLIANCE</a><ul>
@@ -127,10 +129,8 @@
 <li class="toctree-l1 current"><a class="current reference internal" href="#">CODE REFERENCE</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#backend-scripts">Backend Scripts</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="#aggregation-database-creation-script">Aggregation Database Creation Script</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#alerts-aggregation-etl-script">Alerts Aggregation ETL Script</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#machine-program-history-etl-script">Machine Program History ETL Script</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#sensor-statistics-etl-script">Sensor Statistics ETL Script</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#machine-utilization-etl-script">Machine Utilization ETL Script</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#etl-scripts-overview">ETL Scripts Overview</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#daily-etl-runner-script">Daily ETL Runner Script</a></li>
 </ul>
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#core-backend-code">Core Backend Code</a><ul>
@@ -221,7 +221,11 @@ database.</p>
 </pre></div>
 </div>
 <p>—</p>
-<p><strong>Daily Machine Activity Aggregation</strong></p>
+<p><strong>Sample Aggregated Tables</strong></p>
+<p>The following examples illustrate the structure of the aggregation tables.
+All tables follow a similar pattern with date-based primary keys and
+computed/derived metrics.</p>
+<p><em>Daily Machine Activity:</em></p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="k">IF</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">EXISTS</span><span class="w"> </span><span class="n">agg_machine_activity_daily</span><span class="w"> </span><span class="p">(</span>
 <span class="linenos"> 2</span><span class="w">    </span><span class="n">dt</span><span class="w"> </span><span class="nb">DATE</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span>
 <span class="linenos"> 3</span><span class="w">    </span><span class="n">state_planned_down</span><span class="w"> </span><span class="nb">NUMERIC</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
@@ -239,8 +243,7 @@ database.</p>
 <span class="linenos">15</span><span class="p">);</span>
 </pre></div>
 </div>
-<p>—</p>
-<p><strong>Aggregated Sensor Statistics</strong></p>
+<p><em>Aggregated Sensor Statistics:</em></p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="k">IF</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">EXISTS</span><span class="w"> </span><span class="n">agg_sensor_stats</span><span class="w"> </span><span class="p">(</span>
 <span class="linenos"> 2</span><span class="w">    </span><span class="n">sensor_name</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>
 <span class="linenos"> 3</span><span class="w">    </span><span class="n">dt</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="p">,</span>
@@ -252,505 +255,137 @@ database.</p>
 <span class="linenos"> 9</span><span class="w">    </span><span class="n">last_updated_at</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="n">NOW</span><span class="p">(),</span>
 <span class="linenos">10</span><span class="w">    </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="n">sensor_name</span><span class="p">,</span><span class="w"> </span><span class="n">dt</span><span class="p">)</span>
 <span class="linenos">11</span><span class="p">);</span>
+<span class="linenos">12</span>
+<span class="linenos">13</span><span class="k">CREATE</span><span class="w"> </span><span class="k">INDEX</span><span class="w"> </span><span class="k">IF</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">EXISTS</span><span class="w"> </span><span class="n">idx_sensor_date</span>
+<span class="linenos">14</span><span class="w">    </span><span class="k">ON</span><span class="w"> </span><span class="n">agg_sensor_stats</span><span class="p">(</span><span class="n">sensor_name</span><span class="p">,</span><span class="w"> </span><span class="k">CAST</span><span class="p">(</span><span class="n">dt</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="nb">DATE</span><span class="p">));</span>
 </pre></div>
 </div>
-<p>—</p>
-<p><strong>Alerts and Utilization Tables</strong></p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="k">IF</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">EXISTS</span><span class="w"> </span><span class="n">alerts_daily_count</span><span class="p">(</span>
-<span class="linenos"> 2</span><span class="w">    </span><span class="k">day</span><span class="w"> </span><span class="nb">DATE</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
-<span class="linenos"> 3</span><span class="w">    </span><span class="n">alert_type</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span>
-<span class="linenos"> 4</span><span class="w">        </span><span class="k">CHECK</span><span class="p">(</span><span class="n">alert_type</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;emergency&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;error&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;warning&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;other&#39;</span><span class="p">)),</span>
-<span class="linenos"> 5</span><span class="w">    </span><span class="n">amount</span><span class="w"> </span><span class="nb">INT</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
-<span class="linenos"> 6</span><span class="w">    </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="w"> </span><span class="p">(</span><span class="k">day</span><span class="p">,</span><span class="w"> </span><span class="n">alert_type</span><span class="p">)</span>
-<span class="linenos"> 7</span><span class="p">);</span>
-<span class="linenos"> 8</span>
-<span class="linenos"> 9</span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="k">IF</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">EXISTS</span><span class="w"> </span><span class="n">alerts_detail</span><span class="p">(</span>
-<span class="linenos">10</span><span class="w">    </span><span class="n">id</span><span class="w"> </span><span class="nb">SERIAL</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span>
-<span class="linenos">11</span><span class="w">    </span><span class="n">dt</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
-<span class="linenos">12</span><span class="w">    </span><span class="k">day</span><span class="w"> </span><span class="nb">DATE</span><span class="w"> </span><span class="k">GENERATED</span><span class="w"> </span><span class="n">ALWAYS</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span><span class="n">dt</span><span class="p">::</span><span class="nb">date</span><span class="p">)</span><span class="w"> </span><span class="n">STORED</span><span class="p">,</span>
-<span class="linenos">13</span><span class="w">    </span><span class="n">alert_type</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span>
-<span class="linenos">14</span><span class="w">        </span><span class="k">CHECK</span><span class="p">(</span><span class="n">alert_type</span><span class="w"> </span><span class="k">IN</span><span class="w"> </span><span class="p">(</span><span class="s1">&#39;emergency&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;error&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;warning&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;other&#39;</span><span class="p">)),</span>
-<span class="linenos">15</span><span class="w">    </span><span class="n">alarm_code</span><span class="w"> </span><span class="nb">TEXT</span><span class="p">,</span>
-<span class="linenos">16</span><span class="w">    </span><span class="n">alarm_description</span><span class="w"> </span><span class="nb">TEXT</span><span class="p">,</span>
-<span class="linenos">17</span><span class="w">    </span><span class="n">raw_elem_json</span><span class="w"> </span><span class="n">JSONB</span>
-<span class="linenos">18</span><span class="p">);</span>
-</pre></div>
-</div>
-<p>—</p>
-<p><strong>Views</strong></p>
-<div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="k">CREATE</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">VIEW</span><span class="w"> </span><span class="n">v_data_status</span><span class="w"> </span><span class="k">AS</span>
-<span class="linenos">2</span><span class="k">SELECT</span>
-<span class="linenos">3</span><span class="w">    </span><span class="s1">&#39;agg_sensor_stats&#39;</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">table_name</span><span class="p">,</span>
-<span class="linenos">4</span><span class="w">    </span><span class="k">MIN</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">first_date</span><span class="p">,</span>
-<span class="linenos">5</span><span class="w">    </span><span class="k">MAX</span><span class="p">(</span><span class="n">dt</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">last_date</span><span class="p">,</span>
-<span class="linenos">6</span><span class="w">    </span><span class="k">COUNT</span><span class="p">(</span><span class="o">*</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">total_records</span><span class="p">,</span>
-<span class="linenos">7</span><span class="w">    </span><span class="k">COUNT</span><span class="p">(</span><span class="k">DISTINCT</span><span class="w"> </span><span class="n">sensor_name</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">number_of_sensors</span><span class="p">,</span>
-<span class="linenos">8</span><span class="w">    </span><span class="k">MAX</span><span class="p">(</span><span class="n">last_updated_at</span><span class="p">)</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">last_updated</span>
-<span class="linenos">9</span><span class="k">FROM</span><span class="w"> </span><span class="n">agg_sensor_stats</span><span class="p">;</span>
-</pre></div>
-</div>
+<p>Additional tables created by this script include: <code class="docutils literal notranslate"><span class="pre">alerts_daily_count</span></code>,
+<code class="docutils literal notranslate"><span class="pre">alerts_detail</span></code>, <code class="docutils literal notranslate"><span class="pre">machine_program_data</span></code>, and <code class="docutils literal notranslate"><span class="pre">energy_consumption_hourly</span></code>.</p>
 <p>—</p>
 </section>
-<section id="alerts-aggregation-etl-script">
-<h3>Alerts Aggregation ETL Script<a class="headerlink" href="#alerts-aggregation-etl-script" title="Link to this heading"></a></h3>
-<p><strong>File:</strong> <code class="docutils literal notranslate"><span class="pre">etl_agg_alerts.py</span></code></p>
-<p>This script performs an <strong>ETL (Extract, Transform, Load)</strong> process for machine
-alerts data. It extracts raw alert information from the production database,
-processes and categorizes it, and loads both aggregated and detailed results
-into the aggregation database.</p>
-<p>It populates the following tables:</p>
+<section id="etl-scripts-overview">
+<h3>ETL Scripts Overview<a class="headerlink" href="#etl-scripts-overview" title="Link to this heading"></a></h3>
+<p>The project includes five ETL scripts, all following a consistent pattern:</p>
+<ol class="arabic simple">
+<li><p><strong>Extract</strong>: Query raw data from the production database</p></li>
+<li><p><strong>Transform</strong>: Aggregate or reshape data as needed</p></li>
+<li><p><strong>Load</strong>: Store results in the aggregation database using upsert semantics</p></li>
+</ol>
+<p><strong>Available ETL Scripts:</strong></p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">alerts_daily_count</span></code> – daily alert counts grouped by type</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">alerts_detail</span></code> – detailed records for critical alerts (emergency and error)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">etl_agg_alerts.py</span></code> – Aggregates daily alert counts and stores critical alert details</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">etl_agg_program_history.py</span></code> – Computes program execution durations per day</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">etl_agg_sensor_stats.py</span></code> – Calculates hourly sensor statistics (min, max, avg, std_dev)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">etl_agg_utilization.py</span></code> – Derives daily machine running hours vs. downtime</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">etl_agg_energy_daily.py</span></code> – Calculates hourly energy consumption from motor utilization</p></li>
 </ul>
-<p><strong>Execution examples</strong>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>backend.scripts.etl_agg_alerts<span class="w"> </span><span class="m">2022</span>-02-23
+<p>All scripts support three execution modes:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># Single day</span>
+python<span class="w"> </span>-m<span class="w"> </span>backend.scripts.etl_agg_alerts<span class="w"> </span><span class="m">2022</span>-02-23
+
+<span class="c1"># Date range</span>
 python<span class="w"> </span>-m<span class="w"> </span>backend.scripts.etl_agg_alerts<span class="w"> </span><span class="m">2022</span>-02-01<span class="w"> </span><span class="m">2022</span>-02-28
-</pre></div>
-</div>
-<p>If no dates are provided, the script performs a full historical backfill.</p>
-<p>—</p>
-<p><strong>Alert Type Mapping</strong></p>
-<p>Alert descriptions are normalized into standardized alert categories.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">ALERT_TYPE_MAP</span> <span class="o">=</span> <span class="p">{</span>
-<span class="linenos">2</span>    <span class="s1">&#39;Emergency&#39;</span><span class="p">:</span> <span class="s1">&#39;emergency&#39;</span><span class="p">,</span>
-<span class="linenos">3</span>    <span class="s1">&#39;Error&#39;</span><span class="p">:</span> <span class="s1">&#39;error&#39;</span><span class="p">,</span>
-<span class="linenos">4</span>    <span class="s1">&#39;Alert&#39;</span><span class="p">:</span> <span class="s1">&#39;warning&#39;</span><span class="p">,</span>
-<span class="linenos">5</span>    <span class="s1">&#39;Other&#39;</span><span class="p">:</span> <span class="s1">&#39;other&#39;</span><span class="p">,</span>
-<span class="linenos">6</span><span class="p">}</span>
+
+<span class="c1"># Full historical backfill (no arguments)</span>
+python<span class="w"> </span>-m<span class="w"> </span>backend.scripts.etl_agg_alerts
 </pre></div>
 </div>
 <p>—</p>
-<p><strong>Date Range Resolution (Full Backfill)</strong></p>
-<p>When no dates are provided, the script queries the source database to determine
-the minimum and maximum available dates.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">def</span><span class="w"> </span><span class="nf">get_date_range</span><span class="p">():</span>
-<span class="linenos"> 2</span>    <span class="k">with</span> <span class="n">prod_engine</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
-<span class="linenos"> 3</span>        <span class="n">query</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
-<span class="linenos"> 4</span><span class="s1">        SELECT</span>
-<span class="linenos"> 5</span><span class="s1">            MIN(to_timestamp(date / 1000))::date AS min_date,</span>
-<span class="linenos"> 6</span><span class="s1">            MAX(to_timestamp(date / 1000))::date AS max_date</span>
-<span class="linenos"> 7</span><span class="s1">        FROM variable_log_string</span>
-<span class="linenos"> 8</span><span class="s1">        WHERE id_var = 447</span>
-<span class="linenos"> 9</span><span class="s1">          AND value IS NOT NULL</span>
-<span class="linenos">10</span><span class="s1">          AND value != &#39;[]&#39;</span>
-<span class="linenos">11</span><span class="s1">        &#39;&#39;&#39;</span>
-<span class="linenos">12</span>        <span class="n">result</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">text</span><span class="p">(</span><span class="n">query</span><span class="p">))</span>
-<span class="linenos">13</span>        <span class="n">row</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
-<span class="linenos">14</span>        <span class="k">if</span> <span class="n">row</span> <span class="ow">and</span> <span class="n">row</span><span class="o">.</span><span class="n">min_date</span> <span class="ow">and</span> <span class="n">row</span><span class="o">.</span><span class="n">max_date</span><span class="p">:</span>
-<span class="linenos">15</span>            <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">min_date</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">max_date</span><span class="p">)</span>
-<span class="linenos">16</span>        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
-</pre></div>
-</div>
-<p>—</p>
-<p><strong>Daily Alert Count Extraction</strong></p>
-<p>Extracts daily alert counts grouped by alert type from the production database.</p>
+<p><strong>Representative ETL Example: Alerts Aggregation</strong></p>
+<p>The following snippets from <code class="docutils literal notranslate"><span class="pre">etl_agg_alerts.py</span></code> illustrate the common ETL
+pattern used across all scripts.</p>
+<p><em>Extraction – Daily Alert Counts:</em></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">def</span><span class="w"> </span><span class="nf">extract_daily_count</span><span class="p">(</span><span class="n">target_date</span><span class="p">):</span>
-<span class="linenos"> 2</span>    <span class="k">with</span> <span class="n">prod_engine</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
-<span class="linenos"> 3</span>        <span class="n">query</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39; SQL QUERY OMITTED FOR BREVITY &#39;&#39;&#39;</span>
-<span class="linenos"> 4</span>        <span class="n">result</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">text</span><span class="p">(</span><span class="n">query</span><span class="p">),</span> <span class="p">{</span><span class="s1">&#39;target_date&#39;</span><span class="p">:</span> <span class="n">target_date</span><span class="p">})</span>
-<span class="linenos"> 5</span>        <span class="n">rows</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
-<span class="linenos"> 6</span>
-<span class="linenos"> 7</span>        <span class="k">return</span> <span class="p">[</span>
-<span class="linenos"> 8</span>            <span class="p">{</span>
-<span class="linenos"> 9</span>                <span class="s1">&#39;day&#39;</span><span class="p">:</span> <span class="n">target_date</span><span class="p">,</span>
-<span class="linenos">10</span>                <span class="s1">&#39;alert_type&#39;</span><span class="p">:</span> <span class="n">ALERT_TYPE_MAP</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">alert_type</span><span class="p">),</span>
-<span class="linenos">11</span>                <span class="s1">&#39;amount&#39;</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">total_occurrences</span>
-<span class="linenos">12</span>            <span class="p">}</span>
-<span class="linenos">13</span>            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span>
-<span class="linenos">14</span>            <span class="k">if</span> <span class="n">row</span><span class="o">.</span><span class="n">alert_type</span> <span class="ow">in</span> <span class="n">ALERT_TYPE_MAP</span>
-<span class="linenos">15</span>        <span class="p">]</span>
+<span class="linenos"> 2</span>    <span class="k">try</span><span class="p">:</span>
+<span class="linenos"> 3</span>        <span class="k">with</span> <span class="n">prod_engine</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
+<span class="linenos"> 4</span>            <span class="n">query</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39; SQL QUERY OMITTED FOR BREVITY &#39;&#39;&#39;</span>
+<span class="linenos"> 5</span>            <span class="n">result</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">text</span><span class="p">(</span><span class="n">query</span><span class="p">),</span> <span class="p">{</span><span class="s1">&#39;target_date&#39;</span><span class="p">:</span> <span class="n">target_date</span><span class="p">})</span>
+<span class="linenos"> 6</span>            <span class="n">rows</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+<span class="linenos"> 7</span>
+<span class="linenos"> 8</span>            <span class="k">return</span> <span class="p">[</span>
+<span class="linenos"> 9</span>                <span class="p">{</span>
+<span class="linenos">10</span>                    <span class="s1">&#39;day&#39;</span><span class="p">:</span> <span class="n">target_date</span><span class="p">,</span>
+<span class="linenos">11</span>                    <span class="s1">&#39;alert_type&#39;</span><span class="p">:</span> <span class="n">ALERT_TYPE_MAP</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">alert_type</span><span class="p">),</span>
+<span class="linenos">12</span>                    <span class="s1">&#39;amount&#39;</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">total_occurrences</span>
+<span class="linenos">13</span>                <span class="p">}</span>
+<span class="linenos">14</span>                <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span>
+<span class="linenos">15</span>                <span class="k">if</span> <span class="n">row</span><span class="o">.</span><span class="n">alert_type</span> <span class="ow">in</span> <span class="n">ALERT_TYPE_MAP</span>
+<span class="linenos">16</span>            <span class="p">]</span>
+<span class="linenos">17</span>    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+<span class="linenos">18</span>        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Failed to extract daily count: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="linenos">19</span>        <span class="k">raise</span>
 </pre></div>
 </div>
-<p>—</p>
-<p><strong>Alert Details Extraction</strong></p>
-<p>Extracts detailed alert records for <strong>Emergency</strong> and <strong>Error</strong> alerts only.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">def</span><span class="w"> </span><span class="nf">extract_details</span><span class="p">(</span><span class="n">target_date</span><span class="p">):</span>
-<span class="linenos"> 2</span>    <span class="k">with</span> <span class="n">prod_engine</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
-<span class="linenos"> 3</span>        <span class="n">query</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39; SQL QUERY OMITTED FOR BREVITY &#39;&#39;&#39;</span>
-<span class="linenos"> 4</span>        <span class="n">result</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">text</span><span class="p">(</span><span class="n">query</span><span class="p">),</span> <span class="p">{</span><span class="s1">&#39;target_date&#39;</span><span class="p">:</span> <span class="n">target_date</span><span class="p">})</span>
-<span class="linenos"> 5</span>        <span class="n">rows</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
-<span class="linenos"> 6</span>
-<span class="linenos"> 7</span>        <span class="k">return</span> <span class="p">[</span>
-<span class="linenos"> 8</span>            <span class="p">{</span>
-<span class="linenos"> 9</span>                <span class="s1">&#39;dt&#39;</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">ts</span><span class="p">,</span>
-<span class="linenos">10</span>                <span class="s1">&#39;alert_type&#39;</span><span class="p">:</span> <span class="n">ALERT_TYPE_MAP</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">alert_type</span><span class="p">),</span>
-<span class="linenos">11</span>                <span class="s1">&#39;alarm_code&#39;</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">alarm_code</span><span class="p">,</span>
-<span class="linenos">12</span>                <span class="s1">&#39;alarm_description&#39;</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">alarm_description</span><span class="p">,</span>
-<span class="linenos">13</span>                <span class="s1">&#39;raw_elem_json&#39;</span><span class="p">:</span> <span class="n">json</span><span class="o">.</span><span class="n">loads</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">raw_elem_json</span><span class="p">)</span>
-<span class="linenos">14</span>                <span class="k">if</span> <span class="n">row</span><span class="o">.</span><span class="n">raw_elem_json</span> <span class="k">else</span> <span class="kc">None</span>
-<span class="linenos">15</span>            <span class="p">}</span>
-<span class="linenos">16</span>            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span>
-<span class="linenos">17</span>            <span class="k">if</span> <span class="n">row</span><span class="o">.</span><span class="n">alert_type</span> <span class="ow">in</span> <span class="n">ALERT_TYPE_MAP</span>
-<span class="linenos">18</span>        <span class="p">]</span>
-</pre></div>
-</div>
-<p>—</p>
-<p><strong>Load – Daily Alert Counts</strong></p>
-<p>Stores aggregated daily alert counts in the destination database using
-<strong>upsert</strong> semantics.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="k">def</span><span class="w"> </span><span class="nf">load_daily_count</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-<span class="linenos">2</span>    <span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">(</span><span class="n">agg_engine</span><span class="p">)</span>
-<span class="linenos">3</span>    <span class="k">try</span><span class="p">:</span>
-<span class="linenos">4</span>        <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
-<span class="linenos">5</span>            <span class="n">session</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">AlertsDailyCount</span><span class="p">(</span><span class="o">**</span><span class="n">record</span><span class="p">))</span>
-<span class="linenos">6</span>        <span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
-<span class="linenos">7</span>        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-<span class="linenos">8</span>    <span class="k">finally</span><span class="p">:</span>
-<span class="linenos">9</span>        <span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</pre></div>
-</div>
-<p>—</p>
-<p><strong>Load – Alert Details</strong></p>
-<p>Stores detailed alert records in the aggregation database.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="k">def</span><span class="w"> </span><span class="nf">load_details</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
-<span class="linenos">2</span>    <span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">(</span><span class="n">agg_engine</span><span class="p">)</span>
-<span class="linenos">3</span>    <span class="k">try</span><span class="p">:</span>
-<span class="linenos">4</span>        <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
-<span class="linenos">5</span>            <span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">AlertsDetail</span><span class="p">(</span><span class="o">**</span><span class="n">record</span><span class="p">))</span>
-<span class="linenos">6</span>        <span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
-<span class="linenos">7</span>        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
-<span class="linenos">8</span>    <span class="k">finally</span><span class="p">:</span>
-<span class="linenos">9</span>        <span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</pre></div>
-</div>
-<p>—</p>
-<p><strong>ETL Orchestration</strong></p>
-<p>Coordinates extraction, transformation, and loading over a date range.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="k">def</span><span class="w"> </span><span class="nf">run_etl</span><span class="p">(</span><span class="n">start_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="linenos">2</span>    <span class="c1"># Determines date range</span>
-<span class="linenos">3</span>    <span class="c1"># Iterates day by day</span>
-<span class="linenos">4</span>    <span class="c1"># Executes extract + load steps</span>
-<span class="linenos">5</span>    <span class="c1"># Logs progress and failures</span>
-</pre></div>
-</div>
-<p>—</p>
-<p><strong>Command-Line Entry Point</strong></p>
-<p>Allows execution as a standalone script or module.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-<span class="linenos"> 2</span>    <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
-<span class="linenos"> 3</span>    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+<p><em>Load – Using Upsert Semantics:</em></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">def</span><span class="w"> </span><span class="nf">load_daily_count</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
+<span class="linenos"> 2</span>    <span class="k">if</span> <span class="ow">not</span> <span class="n">data</span><span class="p">:</span>
+<span class="linenos"> 3</span>        <span class="k">return</span> <span class="mi">0</span>
 <span class="linenos"> 4</span>
-<span class="linenos"> 5</span>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-<span class="linenos"> 6</span>        <span class="n">run_etl</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-<span class="linenos"> 7</span>    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
-<span class="linenos"> 8</span>        <span class="n">run_etl</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-<span class="linenos"> 9</span>    <span class="k">else</span><span class="p">:</span>
-<span class="linenos">10</span>        <span class="n">run_etl</span><span class="p">()</span>
+<span class="linenos"> 5</span>    <span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">(</span><span class="n">agg_engine</span><span class="p">)</span>
+<span class="linenos"> 6</span>    <span class="k">try</span><span class="p">:</span>
+<span class="linenos"> 7</span>        <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">data</span><span class="p">:</span>
+<span class="linenos"> 8</span>            <span class="n">alert_count</span> <span class="o">=</span> <span class="n">AlertsDailyCount</span><span class="p">(</span>
+<span class="linenos"> 9</span>                <span class="n">day</span><span class="o">=</span><span class="n">record</span><span class="p">[</span><span class="s1">&#39;day&#39;</span><span class="p">],</span>
+<span class="linenos">10</span>                <span class="n">alert_type</span><span class="o">=</span><span class="n">record</span><span class="p">[</span><span class="s1">&#39;alert_type&#39;</span><span class="p">],</span>
+<span class="linenos">11</span>                <span class="n">amount</span><span class="o">=</span><span class="n">record</span><span class="p">[</span><span class="s1">&#39;amount&#39;</span><span class="p">]</span>
+<span class="linenos">12</span>            <span class="p">)</span>
+<span class="linenos">13</span>            <span class="n">session</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">alert_count</span><span class="p">)</span>
+<span class="linenos">14</span>
+<span class="linenos">15</span>        <span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+<span class="linenos">16</span>        <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span>
+<span class="linenos">17</span>
+<span class="linenos">18</span>    <span class="k">except</span> <span class="ne">Exception</span> <span class="k">as</span> <span class="n">e</span><span class="p">:</span>
+<span class="linenos">19</span>        <span class="n">session</span><span class="o">.</span><span class="n">rollback</span><span class="p">()</span>
+<span class="linenos">20</span>        <span class="n">logger</span><span class="o">.</span><span class="n">error</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Load of daily count failed: </span><span class="si">{</span><span class="nb">str</span><span class="p">(</span><span class="n">e</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="linenos">21</span>        <span class="k">raise</span>
+<span class="linenos">22</span>
+<span class="linenos">23</span>    <span class="k">finally</span><span class="p">:</span>
+<span class="linenos">24</span>        <span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
 </pre></div>
 </div>
-<p>—</p>
-</section>
-<section id="machine-program-history-etl-script">
-<h3>Machine Program History ETL Script<a class="headerlink" href="#machine-program-history-etl-script" title="Link to this heading"></a></h3>
-<p><strong>File:</strong> <code class="docutils literal notranslate"><span class="pre">etl_agg_program_history.py</span></code></p>
-<p>This script performs an <strong>ETL (Extract, Transform, Load)</strong> process to compute
-machine program execution history. It extracts raw machine state changes from
-the production database and calculates the execution duration of each program
-per day.</p>
-<p>The results are stored in the aggregation database table:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">machine_program_data</span></code></p></li>
-</ul>
-<p>The script supports single-day execution**, date ranges**, and full
-historical backfills.</p>
-<p><strong>Execution examples</strong>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>backend.scripts.etl_agg_program_history<span class="w"> </span><span class="m">2021</span>-01-07
-python<span class="w"> </span>-m<span class="w"> </span>backend.scripts.etl_agg_program_history<span class="w"> </span><span class="m">2021</span>-01-01<span class="w"> </span><span class="m">2021</span>-01-31
-</pre></div>
-</div>
-<p>—</p>
-<p><strong>Date Range Resolution (Full Backfill)</strong></p>
-<p>When no dates are provided, the script determines the minimum and maximum
-available dates directly from the source data.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">def</span><span class="w"> </span><span class="nf">get_date_range</span><span class="p">():</span>
-<span class="linenos"> 2</span>    <span class="k">with</span> <span class="n">prod_engine</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
-<span class="linenos"> 3</span>        <span class="n">query</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
-<span class="linenos"> 4</span><span class="s1">        SELECT</span>
-<span class="linenos"> 5</span><span class="s1">            MIN(to_timestamp(trunc(cast(date AS bigint)/1000)))::date AS min_date,</span>
-<span class="linenos"> 6</span><span class="s1">            MAX(to_timestamp(trunc(cast(date AS bigint)/1000)))::date AS max_date</span>
-<span class="linenos"> 7</span><span class="s1">        FROM variable_log_float</span>
-<span class="linenos"> 8</span><span class="s1">        WHERE id_var = 581</span>
-<span class="linenos"> 9</span><span class="s1">          AND value &gt;= 0 AND value &lt; 1000</span>
-<span class="linenos">10</span><span class="s1">        &#39;&#39;&#39;</span>
-<span class="linenos">11</span>        <span class="n">result</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">text</span><span class="p">(</span><span class="n">query</span><span class="p">))</span>
-<span class="linenos">12</span>        <span class="n">row</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
-<span class="linenos">13</span>        <span class="k">if</span> <span class="n">row</span> <span class="ow">and</span> <span class="n">row</span><span class="o">.</span><span class="n">min_date</span> <span class="ow">and</span> <span class="n">row</span><span class="o">.</span><span class="n">max_date</span><span class="p">:</span>
-<span class="linenos">14</span>            <span class="k">return</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">min_date</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">max_date</span><span class="p">)</span>
-<span class="linenos">15</span>        <span class="k">return</span> <span class="kc">None</span><span class="p">,</span> <span class="kc">None</span>
-</pre></div>
-</div>
-<p>—</p>
-<p><strong>Program History Extraction</strong></p>
-<p>Extracts machine program execution intervals and computes the total duration
-(in seconds) of each program per day.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">def</span><span class="w"> </span><span class="nf">extract_data</span><span class="p">(</span><span class="n">start_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="linenos"> 2</span>    <span class="k">with</span> <span class="n">prod_engine</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
-<span class="linenos"> 3</span>        <span class="n">query</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39; SQL QUERY OMITTED FOR BREVITY &#39;&#39;&#39;</span>
-<span class="linenos"> 4</span>        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
-<span class="linenos"> 5</span>            <span class="s1">&#39;start_date&#39;</span><span class="p">:</span> <span class="n">start_date</span><span class="p">,</span>
-<span class="linenos"> 6</span>            <span class="s1">&#39;end_date&#39;</span><span class="p">:</span> <span class="n">end_date</span> <span class="k">if</span> <span class="n">end_date</span> <span class="k">else</span> <span class="n">start_date</span>
-<span class="linenos"> 7</span>        <span class="p">}</span>
-<span class="linenos"> 8</span>        <span class="n">result</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">text</span><span class="p">(</span><span class="n">query</span><span class="p">),</span> <span class="n">params</span><span class="p">)</span>
-<span class="linenos"> 9</span>        <span class="n">rows</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">fetchall</span><span class="p">()</span>
+<p><em>ETL Orchestration:</em></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">def</span><span class="w"> </span><span class="nf">run_etl</span><span class="p">(</span><span class="n">start_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+<span class="linenos"> 2</span>    <span class="c1"># For full backfill, get min/max dates from source data</span>
+<span class="linenos"> 3</span>    <span class="k">if</span> <span class="n">start_date</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">and</span> <span class="n">end_date</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+<span class="linenos"> 4</span>        <span class="n">logger</span><span class="o">.</span><span class="n">info</span><span class="p">(</span><span class="s2">&quot;No dates provided, querying date range for full backfill...&quot;</span><span class="p">)</span>
+<span class="linenos"> 5</span>        <span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span> <span class="o">=</span> <span class="n">get_date_range</span><span class="p">()</span>
+<span class="linenos"> 6</span>
+<span class="linenos"> 7</span>    <span class="c1"># Process each date in the range</span>
+<span class="linenos"> 8</span>    <span class="n">current_date</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">start_date</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="linenos"> 9</span>    <span class="n">end_dt</span> <span class="o">=</span> <span class="n">datetime</span><span class="o">.</span><span class="n">strptime</span><span class="p">(</span><span class="n">end_date</span><span class="p">,</span> <span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
 <span class="linenos">10</span>
-<span class="linenos">11</span>        <span class="k">return</span> <span class="p">[</span>
-<span class="linenos">12</span>            <span class="p">{</span>
-<span class="linenos">13</span>                <span class="s1">&#39;dt&#39;</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">fecha</span><span class="p">,</span>
-<span class="linenos">14</span>                <span class="s1">&#39;program&#39;</span><span class="p">:</span> <span class="n">row</span><span class="o">.</span><span class="n">estado_numerico</span><span class="p">,</span>
-<span class="linenos">15</span>                <span class="s1">&#39;duration_seconds&#39;</span><span class="p">:</span> <span class="nb">int</span><span class="p">(</span><span class="n">row</span><span class="o">.</span><span class="n">duracion_segundos</span><span class="p">)</span>
-<span class="linenos">16</span>            <span class="p">}</span>
-<span class="linenos">17</span>            <span class="k">for</span> <span class="n">row</span> <span class="ow">in</span> <span class="n">rows</span>
-<span class="linenos">18</span>        <span class="p">]</span>
-</pre></div>
-</div>
-<p>—</p>
-<p><strong>Load – Machine Program Data</strong></p>
-<p>Stores aggregated program execution durations into the aggregation database.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">def</span><span class="w"> </span><span class="nf">load_data</span><span class="p">(</span><span class="n">transformed_data</span><span class="p">):</span>
-<span class="linenos"> 2</span>    <span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">(</span><span class="n">agg_engine</span><span class="p">)</span>
-<span class="linenos"> 3</span>    <span class="k">try</span><span class="p">:</span>
-<span class="linenos"> 4</span>        <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">transformed_data</span><span class="p">:</span>
-<span class="linenos"> 5</span>            <span class="n">program_data</span> <span class="o">=</span> <span class="n">MachineProgramData</span><span class="p">(</span>
-<span class="linenos"> 6</span>                <span class="n">dt</span><span class="o">=</span><span class="n">record</span><span class="p">[</span><span class="s1">&#39;dt&#39;</span><span class="p">],</span>
-<span class="linenos"> 7</span>                <span class="n">program</span><span class="o">=</span><span class="n">record</span><span class="p">[</span><span class="s1">&#39;program&#39;</span><span class="p">],</span>
-<span class="linenos"> 8</span>                <span class="n">duration_seconds</span><span class="o">=</span><span class="n">record</span><span class="p">[</span><span class="s1">&#39;duration_seconds&#39;</span><span class="p">]</span>
-<span class="linenos"> 9</span>            <span class="p">)</span>
-<span class="linenos">10</span>            <span class="n">session</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">program_data</span><span class="p">)</span>
-<span class="linenos">11</span>        <span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
-<span class="linenos">12</span>    <span class="k">finally</span><span class="p">:</span>
-<span class="linenos">13</span>        <span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</pre></div>
-</div>
-<p>—</p>
-<p><strong>ETL Orchestration</strong></p>
-<p>Coordinates extraction and loading steps for the selected date range.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="k">def</span><span class="w"> </span><span class="nf">run_etl</span><span class="p">(</span><span class="n">start_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="linenos">2</span>    <span class="c1"># Resolves date range</span>
-<span class="linenos">3</span>    <span class="c1"># Extracts raw program history</span>
-<span class="linenos">4</span>    <span class="c1"># Loads aggregated results</span>
-<span class="linenos">5</span>    <span class="c1"># Logs progress and errors</span>
-</pre></div>
-</div>
-<p>—</p>
-<p><strong>Command-Line Entry Point</strong></p>
-<p>Allows execution as a standalone script or module.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-<span class="linenos"> 2</span>    <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
-<span class="linenos"> 3</span>    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
-<span class="linenos"> 4</span>
-<span class="linenos"> 5</span>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-<span class="linenos"> 6</span>        <span class="n">run_etl</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-<span class="linenos"> 7</span>    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
-<span class="linenos"> 8</span>        <span class="n">run_etl</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-<span class="linenos"> 9</span>    <span class="k">else</span><span class="p">:</span>
-<span class="linenos">10</span>        <span class="n">run_etl</span><span class="p">()</span>
+<span class="linenos">11</span>    <span class="k">while</span> <span class="n">current_date</span> <span class="o">&lt;=</span> <span class="n">end_dt</span><span class="p">:</span>
+<span class="linenos">12</span>        <span class="n">date_str</span> <span class="o">=</span> <span class="n">current_date</span><span class="o">.</span><span class="n">strftime</span><span class="p">(</span><span class="s1">&#39;%Y-%m-</span><span class="si">%d</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="linenos">13</span>        <span class="n">daily_count_data</span> <span class="o">=</span> <span class="n">extract_daily_count</span><span class="p">(</span><span class="n">date_str</span><span class="p">)</span>
+<span class="linenos">14</span>        <span class="k">if</span> <span class="n">daily_count_data</span><span class="p">:</span>
+<span class="linenos">15</span>            <span class="n">load_daily_count</span><span class="p">(</span><span class="n">daily_count_data</span><span class="p">)</span>
+<span class="linenos">16</span>        <span class="n">current_date</span> <span class="o">+=</span> <span class="n">timedelta</span><span class="p">(</span><span class="n">days</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>—</p>
 </section>
-<section id="sensor-statistics-etl-script">
-<h3>Sensor Statistics ETL Script<a class="headerlink" href="#sensor-statistics-etl-script" title="Link to this heading"></a></h3>
-<p><strong>File:</strong> <code class="docutils literal notranslate"><span class="pre">etl_agg_sensor_stats.py</span></code></p>
-<p>This script performs an <strong>ETL (Extract, Transform, Load)</strong> process to compute
-hourly statistics for a specific machine sensor, currently configured for
-<code class="docutils literal notranslate"><span class="pre">TEMPERATURA_BASE</span></code>.</p>
-<p>Raw high-frequency sensor readings are extracted from the production database,
-aggregated on an hourly basis, and stored in the aggregation database table:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">agg_sensor_stats</span></code></p></li>
-</ul>
-<p>The script supports single-day execution, date ranges, and full
-historical backfills.</p>
-<p><strong>Execution examples</strong>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>backend.scripts.etl_agg_sensor_stats<span class="w"> </span><span class="m">2021</span>-01-07
-python<span class="w"> </span>-m<span class="w"> </span>backend.scripts.etl_agg_sensor_stats<span class="w"> </span><span class="m">2021</span>-01-01<span class="w"> </span><span class="m">2021</span>-01-31
-</pre></div>
-</div>
-<p>—</p>
-<p><strong>Sensor Configuration</strong></p>
-<p>The ETL process is parameterized by a single sensor name. At present, the
-script focuses on the base temperature sensor.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">SENSOR_OF_CHOICE</span> <span class="o">=</span> <span class="s1">&#39;TEMPERATURA_BASE&#39;</span>
-</pre></div>
-</div>
-<p>—</p>
-<p><strong>Sensor Data Extraction</strong></p>
-<p>Extracts raw sensor readings (timestamp and value) from the production
-database, optionally filtered by date or date range.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">def</span><span class="w"> </span><span class="nf">extract_data</span><span class="p">(</span><span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">):</span>
-<span class="linenos"> 2</span>    <span class="k">with</span> <span class="n">prod_engine</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
-<span class="linenos"> 3</span>        <span class="n">query</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39;</span>
-<span class="linenos"> 4</span><span class="s1">        SELECT vlf.value,</span>
-<span class="linenos"> 5</span><span class="s1">               TO_TIMESTAMP(vlf.date/1000) AS ts</span>
-<span class="linenos"> 6</span><span class="s1">        FROM variable_log_float vlf</span>
-<span class="linenos"> 7</span><span class="s1">        LEFT JOIN variable v ON vlf.id_var = v.id</span>
-<span class="linenos"> 8</span><span class="s1">        WHERE v.name = :sensor_name</span>
-<span class="linenos"> 9</span><span class="s1">        &#39;&#39;&#39;</span>
-<span class="linenos">10</span>        <span class="c1"># Optional date filters applied dynamically</span>
-</pre></div>
-</div>
-<p>—</p>
-<p><strong>Data Transformation (Hourly Aggregation)</strong></p>
-<p>Groups raw sensor readings by hour and computes statistical metrics for each
-hourly interval.</p>
-<p>The following values are calculated:</p>
-<ul class="simple">
-<li><p>minimum value</p></li>
-<li><p>maximum value</p></li>
-<li><p>average value</p></li>
-<li><p>standard deviation</p></li>
-<li><p>number of valid readings</p></li>
-</ul>
-<p>Invalid or non-finite sensor values are discarded.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">def</span><span class="w"> </span><span class="nf">transform_data</span><span class="p">(</span><span class="n">raw_data</span><span class="p">):</span>
-<span class="linenos"> 2</span>    <span class="n">hourly_data</span> <span class="o">=</span> <span class="n">defaultdict</span><span class="p">(</span><span class="nb">list</span><span class="p">)</span>
-<span class="linenos"> 3</span>
-<span class="linenos"> 4</span>    <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">raw_data</span><span class="p">:</span>
-<span class="linenos"> 5</span>        <span class="n">value</span> <span class="o">=</span> <span class="n">record</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span>
-<span class="linenos"> 6</span>        <span class="k">if</span> <span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span> <span class="ow">or</span> <span class="n">value</span> <span class="o">==</span> <span class="mi">0</span> <span class="ow">or</span> <span class="ow">not</span> <span class="n">math</span><span class="o">.</span><span class="n">isfinite</span><span class="p">(</span><span class="n">value</span><span class="p">):</span>
-<span class="linenos"> 7</span>            <span class="k">continue</span>
+<section id="daily-etl-runner-script">
+<h3>Daily ETL Runner Script<a class="headerlink" href="#daily-etl-runner-script" title="Link to this heading"></a></h3>
+<p><strong>File:</strong> <code class="docutils literal notranslate"><span class="pre">etl_daily_runner.py</span></code></p>
+<p>This script orchestrates daily execution of all ETL scripts. It queries
+<code class="docutils literal notranslate"><span class="pre">v_data_status</span></code> for the latest processed date and runs all ETL scripts
+from that date to the current date.</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="n">ETL_MODULES</span> <span class="o">=</span> <span class="p">[</span>
+<span class="linenos"> 2</span>    <span class="s2">&quot;backend.scripts.etl_agg_sensor_stats&quot;</span><span class="p">,</span>
+<span class="linenos"> 3</span>    <span class="s2">&quot;backend.scripts.etl_agg_utilization&quot;</span><span class="p">,</span>
+<span class="linenos"> 4</span>    <span class="s2">&quot;backend.scripts.etl_agg_program_history&quot;</span><span class="p">,</span>
+<span class="linenos"> 5</span>    <span class="s2">&quot;backend.scripts.etl_agg_alerts&quot;</span><span class="p">,</span>
+<span class="linenos"> 6</span>    <span class="s2">&quot;backend.scripts.etl_agg_energy_daily&quot;</span><span class="p">,</span>
+<span class="linenos"> 7</span><span class="p">]</span>
 <span class="linenos"> 8</span>
-<span class="linenos"> 9</span>        <span class="n">hour</span> <span class="o">=</span> <span class="n">record</span><span class="p">[</span><span class="s1">&#39;ts&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">replace</span><span class="p">(</span><span class="n">minute</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">second</span><span class="o">=</span><span class="mi">0</span><span class="p">,</span> <span class="n">microsecond</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
-<span class="linenos">10</span>        <span class="n">hourly_data</span><span class="p">[</span><span class="n">hour</span><span class="p">]</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">record</span><span class="p">[</span><span class="s1">&#39;value&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="mi">100</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>—</p>
-<p><strong>Load – Aggregated Sensor Statistics</strong></p>
-<p>Stores the computed hourly statistics into the aggregation database using
-<strong>upsert semantics</strong> to avoid duplicate entries.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">def</span><span class="w"> </span><span class="nf">load_data</span><span class="p">(</span><span class="n">transformed_data</span><span class="p">):</span>
-<span class="linenos"> 2</span>    <span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">(</span><span class="n">agg_engine</span><span class="p">)</span>
-<span class="linenos"> 3</span>    <span class="k">try</span><span class="p">:</span>
-<span class="linenos"> 4</span>        <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">transformed_data</span><span class="p">:</span>
-<span class="linenos"> 5</span>            <span class="n">sensor_stat</span> <span class="o">=</span> <span class="n">AggSensorStats</span><span class="p">(</span>
-<span class="linenos"> 6</span>                <span class="n">sensor_name</span><span class="o">=</span><span class="n">SENSOR_OF_CHOICE</span><span class="p">,</span>
-<span class="linenos"> 7</span>                <span class="n">dt</span><span class="o">=</span><span class="n">record</span><span class="p">[</span><span class="s1">&#39;dt&#39;</span><span class="p">],</span>
-<span class="linenos"> 8</span>                <span class="n">min_value</span><span class="o">=</span><span class="n">record</span><span class="p">[</span><span class="s1">&#39;min_value&#39;</span><span class="p">],</span>
-<span class="linenos"> 9</span>                <span class="n">avg_value</span><span class="o">=</span><span class="n">record</span><span class="p">[</span><span class="s1">&#39;avg_value&#39;</span><span class="p">],</span>
-<span class="linenos">10</span>                <span class="n">max_value</span><span class="o">=</span><span class="n">record</span><span class="p">[</span><span class="s1">&#39;max_value&#39;</span><span class="p">],</span>
-<span class="linenos">11</span>                <span class="n">std_dev</span><span class="o">=</span><span class="n">record</span><span class="p">[</span><span class="s1">&#39;std_dev&#39;</span><span class="p">],</span>
-<span class="linenos">12</span>                <span class="n">readings_count</span><span class="o">=</span><span class="n">record</span><span class="p">[</span><span class="s1">&#39;readings_count&#39;</span><span class="p">],</span>
-<span class="linenos">13</span>                <span class="n">last_updated_at</span><span class="o">=</span><span class="n">datetime</span><span class="o">.</span><span class="n">now</span><span class="p">()</span>
-<span class="linenos">14</span>            <span class="p">)</span>
-<span class="linenos">15</span>            <span class="n">session</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">sensor_stat</span><span class="p">)</span>
-<span class="linenos">16</span>        <span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
-<span class="linenos">17</span>    <span class="k">finally</span><span class="p">:</span>
-<span class="linenos">18</span>        <span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</pre></div>
-</div>
-<p>—</p>
-<p><strong>ETL Orchestration</strong></p>
-<p>Coordinates the extract, transform, and load steps for the selected date range
-and logs progress and errors.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="k">def</span><span class="w"> </span><span class="nf">run_etl</span><span class="p">(</span><span class="n">start_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="linenos">2</span>    <span class="c1"># Determines date range description</span>
-<span class="linenos">3</span>    <span class="c1"># Extracts raw sensor readings</span>
-<span class="linenos">4</span>    <span class="c1"># Aggregates values per hour</span>
-<span class="linenos">5</span>    <span class="c1"># Loads results into aggregation DB</span>
-</pre></div>
-</div>
-<p>—</p>
-<p><strong>Command-Line Entry Point</strong></p>
-<p>Allows execution as a standalone script or module.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-<span class="linenos"> 2</span>    <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
-<span class="linenos"> 3</span>    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
-<span class="linenos"> 4</span>
-<span class="linenos"> 5</span>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">==</span> <span class="mi">2</span><span class="p">:</span>
-<span class="linenos"> 6</span>        <span class="n">run_etl</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-<span class="linenos"> 7</span>    <span class="k">elif</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
-<span class="linenos"> 8</span>        <span class="n">run_etl</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-<span class="linenos"> 9</span>    <span class="k">else</span><span class="p">:</span>
-<span class="linenos">10</span>        <span class="n">run_etl</span><span class="p">()</span>
-</pre></div>
-</div>
-<p>—</p>
-</section>
-<section id="machine-utilization-etl-script">
-<h3>Machine Utilization ETL Script<a class="headerlink" href="#machine-utilization-etl-script" title="Link to this heading"></a></h3>
-<p><strong>File:</strong> <code class="docutils literal notranslate"><span class="pre">etl_agg_utilization.py</span></code></p>
-<p>This script performs an <strong>ETL (Extract, Transform, Load)</strong> process to calculate
-daily machine utilization metrics. It analyzes machine activity logs to derive
-the total number of <strong>running hours</strong> and <strong>downtime hours</strong> per day.</p>
-<p>The computed metrics are stored in the aggregation database table:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">agg_machine_activity_daily</span></code></p></li>
-</ul>
-<p>The script supports single-day execution, date ranges, and full
-historical backfills.</p>
-<p><strong>Execution examples</strong>:</p>
-<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>backend.scripts.etl_agg_utilization<span class="w"> </span><span class="m">2021</span>-01-15
-python<span class="w"> </span>-m<span class="w"> </span>backend.scripts.etl_agg_utilization<span class="w"> </span><span class="m">2021</span>-01-01<span class="w"> </span><span class="m">2021</span>-01-31
-</pre></div>
-</div>
-<p>—</p>
-<p><strong>Utilization Data Extraction</strong></p>
-<p>Extracts raw machine activity timestamps from both numeric and string variable
-logs, combines them into a unified timeline, and calculates daily operation
-intervals.</p>
-<p>Running time is derived by grouping activity into sessions, separated by
-inactivity gaps greater than 10 minutes.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">def</span><span class="w"> </span><span class="nf">extract_data</span><span class="p">(</span><span class="n">from_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">to_date</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
-<span class="linenos"> 2</span>    <span class="k">with</span> <span class="n">prod_engine</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
-<span class="linenos"> 3</span>        <span class="n">query</span> <span class="o">=</span> <span class="s1">&#39;&#39;&#39; SQL QUERY OMITTED FOR BREVITY &#39;&#39;&#39;</span>
-<span class="linenos"> 4</span>        <span class="n">params</span> <span class="o">=</span> <span class="p">{</span>
-<span class="linenos"> 5</span>            <span class="s1">&#39;from_date&#39;</span><span class="p">:</span> <span class="n">from_date</span><span class="p">,</span>
-<span class="linenos"> 6</span>            <span class="s1">&#39;to_date&#39;</span><span class="p">:</span> <span class="n">to_date</span>
-<span class="linenos"> 7</span>        <span class="p">}</span>
-<span class="linenos"> 8</span>        <span class="n">results</span> <span class="o">=</span> <span class="n">conn</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">text</span><span class="p">(</span><span class="n">query</span><span class="p">),</span> <span class="n">params</span><span class="p">)</span>
-<span class="linenos"> 9</span>
-<span class="linenos">10</span>        <span class="k">return</span> <span class="p">[</span>
-<span class="linenos">11</span>            <span class="p">{</span>
-<span class="linenos">12</span>                <span class="s1">&#39;dt&#39;</span><span class="p">:</span> <span class="n">r</span><span class="o">.</span><span class="n">dia</span><span class="p">,</span>
-<span class="linenos">13</span>                <span class="s1">&#39;running_hours&#39;</span><span class="p">:</span> <span class="n">r</span><span class="o">.</span><span class="n">running_horas</span><span class="p">,</span>
-<span class="linenos">14</span>                <span class="s1">&#39;down_hours&#39;</span><span class="p">:</span> <span class="n">r</span><span class="o">.</span><span class="n">down_horas</span>
-<span class="linenos">15</span>            <span class="p">}</span>
-<span class="linenos">16</span>            <span class="k">for</span> <span class="n">r</span> <span class="ow">in</span> <span class="n">results</span>
-<span class="linenos">17</span>        <span class="p">]</span>
-</pre></div>
-</div>
-<p>—</p>
-<p><strong>Load – Daily Machine Utilization</strong></p>
-<p>Stores daily machine utilization metrics in the aggregation database. The script
-uses <strong>upsert semantics</strong> to ensure idempotent execution.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">def</span><span class="w"> </span><span class="nf">load_data</span><span class="p">(</span><span class="n">transformed_data</span><span class="p">):</span>
-<span class="linenos"> 2</span>    <span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">(</span><span class="n">agg_engine</span><span class="p">)</span>
-<span class="linenos"> 3</span>    <span class="k">try</span><span class="p">:</span>
-<span class="linenos"> 4</span>        <span class="k">for</span> <span class="n">record</span> <span class="ow">in</span> <span class="n">transformed_data</span><span class="p">:</span>
-<span class="linenos"> 5</span>            <span class="n">session_object</span> <span class="o">=</span> <span class="n">AggMachineActivityDaily</span><span class="p">(</span>
-<span class="linenos"> 6</span>                <span class="n">dt</span><span class="o">=</span><span class="n">record</span><span class="p">[</span><span class="s1">&#39;dt&#39;</span><span class="p">],</span>
-<span class="linenos"> 7</span>                <span class="n">state_planned_down</span><span class="o">=</span><span class="n">record</span><span class="p">[</span><span class="s1">&#39;down_hours&#39;</span><span class="p">],</span>
-<span class="linenos"> 8</span>                <span class="n">state_running</span><span class="o">=</span><span class="n">record</span><span class="p">[</span><span class="s1">&#39;running_hours&#39;</span><span class="p">]</span>
-<span class="linenos"> 9</span>            <span class="p">)</span>
-<span class="linenos">10</span>            <span class="n">session</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">session_object</span><span class="p">)</span>
-<span class="linenos">11</span>        <span class="n">session</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
-<span class="linenos">12</span>    <span class="k">finally</span><span class="p">:</span>
-<span class="linenos">13</span>        <span class="n">session</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</pre></div>
-</div>
-<p>—</p>
-<p><strong>ETL Orchestration</strong></p>
-<p>Determines the execution mode (single date, date range, or full backfill),
-coordinates extraction and loading steps, and logs execution progress.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">def</span><span class="w"> </span><span class="nf">run_etl</span><span class="p">():</span>
-<span class="linenos"> 2</span>    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">:</span>
-<span class="linenos"> 3</span>        <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">)</span> <span class="o">==</span> <span class="mi">3</span><span class="p">:</span>
-<span class="linenos"> 4</span>            <span class="n">raw_data</span> <span class="o">=</span> <span class="n">extract_data</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
-<span class="linenos"> 5</span>        <span class="k">else</span><span class="p">:</span>
-<span class="linenos"> 6</span>            <span class="n">raw_data</span> <span class="o">=</span> <span class="n">extract_data</span><span class="p">(</span><span class="n">sys</span><span class="o">.</span><span class="n">argv</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
-<span class="linenos"> 7</span>    <span class="k">else</span><span class="p">:</span>
-<span class="linenos"> 8</span>        <span class="n">raw_data</span> <span class="o">=</span> <span class="n">extract_data</span><span class="p">()</span>
-<span class="linenos"> 9</span>
-<span class="linenos">10</span>    <span class="n">load_data</span><span class="p">(</span><span class="n">raw_data</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>—</p>
-<p><strong>Command-Line Entry Point</strong></p>
-<p>Allows execution as a standalone script or module.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
-<span class="linenos">2</span>    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
-<span class="linenos">3</span>    <span class="n">run_etl</span><span class="p">()</span>
+<span class="linenos"> 9</span><span class="k">def</span><span class="w"> </span><span class="nf">run_all_etls</span><span class="p">(</span><span class="n">from_date</span><span class="p">:</span> <span class="n">date</span><span class="p">,</span> <span class="n">to_date</span><span class="p">:</span> <span class="n">date</span><span class="p">):</span>
+<span class="linenos">10</span>    <span class="k">for</span> <span class="n">module</span> <span class="ow">in</span> <span class="n">ETL_MODULES</span><span class="p">:</span>
+<span class="linenos">11</span>        <span class="n">result</span> <span class="o">=</span> <span class="n">subprocess</span><span class="o">.</span><span class="n">run</span><span class="p">([</span><span class="s2">&quot;python&quot;</span><span class="p">,</span> <span class="s2">&quot;-m&quot;</span><span class="p">,</span> <span class="n">module</span><span class="p">,</span> <span class="nb">str</span><span class="p">(</span><span class="n">from_date</span><span class="p">),</span> <span class="nb">str</span><span class="p">(</span><span class="n">to_date</span><span class="p">)])</span>
+<span class="linenos">12</span>        <span class="k">if</span> <span class="n">result</span><span class="o">.</span><span class="n">returncode</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+<span class="linenos">13</span>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✓ </span><span class="si">{</span><span class="n">module</span><span class="si">}</span><span class="s2"> completed&quot;</span><span class="p">)</span>
+<span class="linenos">14</span>        <span class="k">else</span><span class="p">:</span>
+<span class="linenos">15</span>            <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;✗ </span><span class="si">{</span><span class="n">module</span><span class="si">}</span><span class="s2"> failed&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
 <p>—</p>
@@ -759,88 +394,45 @@ coordinates extraction and loading steps, and logs execution progress.</p>
 <section id="core-backend-code">
 <h2>Core Backend Code<a class="headerlink" href="#core-backend-code" title="Link to this heading"></a></h2>
 <p>This section documents reusable backend modules that define database access,
-ORM models, and shared infrastructure. These files are imported by API services
-and backend scripts.</p>
+ORM models, and shared infrastructure.</p>
 <p>—</p>
 <section id="database-connection-layer">
 <h3>Database Connection Layer<a class="headerlink" href="#database-connection-layer" title="Link to this heading"></a></h3>
 <p><strong>File:</strong> <code class="docutils literal notranslate"><span class="pre">database.py</span></code></p>
-<p>This module centralizes all database connection logic used by the backend. It
-manages connections to:</p>
-<ul class="simple">
-<li><p>A <strong>production database</strong> (read-only, raw data)</p></li>
-<li><p>An <strong>aggregation database</strong> (derived analytical data)</p></li>
-</ul>
-<p>It is designed to be compatible with <strong>FastAPI dependency injection</strong>.</p>
-<p>—</p>
-<p><strong>Production Database Connection</strong></p>
+<p>This module centralizes all database connection logic. It manages connections to
+a <strong>production database</strong> (read-only, raw data) and an <strong>aggregation database</strong>
+(derived analytical data), and is designed for <strong>FastAPI dependency injection</strong>.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="linenos"> 2</span><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_engine</span>
 <span class="linenos"> 3</span><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="n">sessionmaker</span>
 <span class="linenos"> 4</span><span class="kn">from</span><span class="w"> </span><span class="nn">dotenv</span><span class="w"> </span><span class="kn">import</span> <span class="n">load_dotenv</span>
 <span class="linenos"> 5</span><span class="n">load_dotenv</span><span class="p">()</span>
 <span class="linenos"> 6</span>
-<span class="linenos"> 7</span><span class="n">db_user</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;DB_USER&quot;</span><span class="p">)</span>
-<span class="linenos"> 8</span><span class="n">db_password</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;DB_PASSWORD&quot;</span><span class="p">)</span>
-<span class="linenos"> 9</span><span class="n">db_host</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;DB_HOST&quot;</span><span class="p">)</span>
-<span class="linenos">10</span><span class="n">db_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;DB_NAME&quot;</span><span class="p">)</span>
-<span class="linenos">11</span><span class="n">db_port</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;DB_PORT&quot;</span><span class="p">,</span> <span class="s2">&quot;2345&quot;</span><span class="p">)</span>
+<span class="linenos"> 7</span><span class="c1"># Production Database</span>
+<span class="linenos"> 8</span><span class="n">PROD_DATABASE_URL</span> <span class="o">=</span> <span class="p">(</span>
+<span class="linenos"> 9</span>    <span class="sa">f</span><span class="s2">&quot;postgresql+psycopg://</span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;DB_USER&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;DB_PASSWORD&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="linenos">10</span>    <span class="sa">f</span><span class="s2">&quot;@</span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;DB_HOST&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;DB_PORT&#39;</span><span class="p">,</span><span class="w"> </span><span class="s1">&#39;2345&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s1">&#39;DB_NAME&#39;</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span>
+<span class="linenos">11</span><span class="p">)</span>
 <span class="linenos">12</span>
-<span class="linenos">13</span><span class="n">PROD_DATABASE_URL</span> <span class="o">=</span> <span class="p">(</span>
-<span class="linenos">14</span>    <span class="sa">f</span><span class="s2">&quot;postgresql+psycopg://</span><span class="si">{</span><span class="n">db_user</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">db_password</span><span class="si">}</span><span class="s2">&quot;</span>
-<span class="linenos">15</span>    <span class="sa">f</span><span class="s2">&quot;@</span><span class="si">{</span><span class="n">db_host</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">db_port</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">db_name</span><span class="si">}</span><span class="s2">&quot;</span>
-<span class="linenos">16</span><span class="p">)</span>
-<span class="linenos">17</span>
-<span class="linenos">18</span><span class="n">prod_engine</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span>
-<span class="linenos">19</span>    <span class="n">PROD_DATABASE_URL</span><span class="p">,</span>
-<span class="linenos">20</span>    <span class="n">pool_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-<span class="linenos">21</span>    <span class="n">max_overflow</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
-<span class="linenos">22</span>    <span class="n">pool_pre_ping</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
-<span class="linenos">23</span>    <span class="n">pool_recycle</span><span class="o">=</span><span class="mi">1800</span>
-<span class="linenos">24</span><span class="p">)</span>
-<span class="linenos">25</span>
-<span class="linenos">26</span><span class="n">ProductionSession</span> <span class="o">=</span> <span class="n">sessionmaker</span><span class="p">(</span>
-<span class="linenos">27</span>    <span class="n">autocommit</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-<span class="linenos">28</span>    <span class="n">autoflush</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-<span class="linenos">29</span>    <span class="n">bind</span><span class="o">=</span><span class="n">prod_engine</span>
-<span class="linenos">30</span><span class="p">)</span>
-<span class="linenos">31</span>
-<span class="linenos">32</span><span class="k">def</span><span class="w"> </span><span class="nf">get_prod_db</span><span class="p">():</span>
-<span class="linenos">33</span>    <span class="n">db</span> <span class="o">=</span> <span class="n">ProductionSession</span><span class="p">()</span>
-<span class="linenos">34</span>    <span class="k">try</span><span class="p">:</span>
-<span class="linenos">35</span>        <span class="k">yield</span> <span class="n">db</span>
-<span class="linenos">36</span>    <span class="k">finally</span><span class="p">:</span>
-<span class="linenos">37</span>        <span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
-</pre></div>
-</div>
-<p>—</p>
-<p><strong>Aggregation Database Connection</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="n">agg_db_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;AGG_DB_NAME&quot;</span><span class="p">)</span>
-<span class="linenos"> 2</span>
-<span class="linenos"> 3</span><span class="n">AGG_DATABASE_URL</span> <span class="o">=</span> <span class="p">(</span>
-<span class="linenos"> 4</span>    <span class="sa">f</span><span class="s2">&quot;postgresql+psycopg://</span><span class="si">{</span><span class="n">db_user</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">db_password</span><span class="si">}</span><span class="s2">&quot;</span>
-<span class="linenos"> 5</span>    <span class="sa">f</span><span class="s2">&quot;@</span><span class="si">{</span><span class="n">db_host</span><span class="si">}</span><span class="s2">:</span><span class="si">{</span><span class="n">db_port</span><span class="si">}</span><span class="s2">/</span><span class="si">{</span><span class="n">agg_db_name</span><span class="si">}</span><span class="s2">&quot;</span>
-<span class="linenos"> 6</span><span class="p">)</span>
-<span class="linenos"> 7</span>
-<span class="linenos"> 8</span><span class="n">agg_engine</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span>
-<span class="linenos"> 9</span>    <span class="n">AGG_DATABASE_URL</span><span class="p">,</span>
-<span class="linenos">10</span>    <span class="n">pool_size</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span>
-<span class="linenos">11</span>    <span class="n">max_overflow</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
-<span class="linenos">12</span>    <span class="n">pool_pre_ping</span><span class="o">=</span><span class="kc">True</span>
-<span class="linenos">13</span><span class="p">)</span>
-<span class="linenos">14</span>
-<span class="linenos">15</span><span class="n">AggregationSession</span> <span class="o">=</span> <span class="n">sessionmaker</span><span class="p">(</span>
-<span class="linenos">16</span>    <span class="n">autocommit</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-<span class="linenos">17</span>    <span class="n">autoflush</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span>
-<span class="linenos">18</span>    <span class="n">bind</span><span class="o">=</span><span class="n">agg_engine</span>
+<span class="linenos">13</span><span class="n">prod_engine</span> <span class="o">=</span> <span class="n">create_engine</span><span class="p">(</span>
+<span class="linenos">14</span>    <span class="n">PROD_DATABASE_URL</span><span class="p">,</span>
+<span class="linenos">15</span>    <span class="n">pool_size</span><span class="o">=</span><span class="mi">10</span><span class="p">,</span>
+<span class="linenos">16</span>    <span class="n">max_overflow</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span>
+<span class="linenos">17</span>    <span class="n">pool_pre_ping</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+<span class="linenos">18</span>    <span class="n">pool_recycle</span><span class="o">=</span><span class="mi">1800</span>
 <span class="linenos">19</span><span class="p">)</span>
 <span class="linenos">20</span>
-<span class="linenos">21</span><span class="k">def</span><span class="w"> </span><span class="nf">get_agg_db</span><span class="p">():</span>
-<span class="linenos">22</span>    <span class="n">db</span> <span class="o">=</span> <span class="n">AggregationSession</span><span class="p">()</span>
-<span class="linenos">23</span>    <span class="k">try</span><span class="p">:</span>
-<span class="linenos">24</span>        <span class="k">yield</span> <span class="n">db</span>
-<span class="linenos">25</span>    <span class="k">finally</span><span class="p">:</span>
-<span class="linenos">26</span>        <span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="linenos">21</span><span class="n">ProductionSession</span> <span class="o">=</span> <span class="n">sessionmaker</span><span class="p">(</span><span class="n">autocommit</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">autoflush</span><span class="o">=</span><span class="kc">False</span><span class="p">,</span> <span class="n">bind</span><span class="o">=</span><span class="n">prod_engine</span><span class="p">)</span>
+<span class="linenos">22</span>
+<span class="linenos">23</span><span class="k">def</span><span class="w"> </span><span class="nf">get_prod_db</span><span class="p">():</span>
+<span class="linenos">24</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Dependency for FastAPI endpoints that read from production database&quot;&quot;&quot;</span>
+<span class="linenos">25</span>    <span class="n">db</span> <span class="o">=</span> <span class="n">ProductionSession</span><span class="p">()</span>
+<span class="linenos">26</span>    <span class="k">try</span><span class="p">:</span>
+<span class="linenos">27</span>        <span class="k">yield</span> <span class="n">db</span>
+<span class="linenos">28</span>    <span class="k">finally</span><span class="p">:</span>
+<span class="linenos">29</span>        <span class="n">db</span><span class="o">.</span><span class="n">close</span><span class="p">()</span>
+<span class="linenos">30</span>
+<span class="linenos">31</span><span class="c1"># Aggregation Database follows the same pattern with AGG_DB_NAME</span>
 </pre></div>
 </div>
 <p>—</p>
@@ -848,113 +440,87 @@ manages connections to:</p>
 <section id="orm-models">
 <h3>ORM Models<a class="headerlink" href="#orm-models" title="Link to this heading"></a></h3>
 <p><strong>File:</strong> <code class="docutils literal notranslate"><span class="pre">models.py</span></code></p>
-<p>This module defines SQLAlchemy ORM models that map Python classes to database
-tables and views, using SQLAlchemy 2.0 typed mappings.</p>
-<p>—</p>
-<p><strong>Declarative Base</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="n">DeclarativeBase</span>
-<span class="linenos">2</span>
-<span class="linenos">3</span><span class="k">class</span><span class="w"> </span><span class="nc">Base</span><span class="p">(</span><span class="n">DeclarativeBase</span><span class="p">):</span>
-<span class="linenos">4</span>    <span class="k">pass</span>
-</pre></div>
-</div>
-<p>—</p>
-<p><strong>Production Database Models</strong></p>
+<p>Defines SQLAlchemy ORM models using SQLAlchemy 2.0 typed mappings.</p>
+<p><em>Production Database Models:</em></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="k">class</span><span class="w"> </span><span class="nc">Variable</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
 <span class="linenos">2</span>    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;variable&quot;</span>
 <span class="linenos">3</span>
 <span class="linenos">4</span>    <span class="nb">id</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">(</span><span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
 <span class="linenos">5</span>    <span class="n">name</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
 <span class="linenos">6</span>    <span class="n">datatype</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span>
+<span class="linenos">7</span>
+<span class="linenos">8</span>    <span class="n">variable_log_floats</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="s2">&quot;VariableLogFloat&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="n">back_populates</span><span class="o">=</span><span class="s2">&quot;variable&quot;</span><span class="p">)</span>
+<span class="linenos">9</span>    <span class="n">variable_log_strings</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">list</span><span class="p">[</span><span class="s2">&quot;VariableLogString&quot;</span><span class="p">]]</span> <span class="o">=</span> <span class="n">relationship</span><span class="p">(</span><span class="n">back_populates</span><span class="o">=</span><span class="s2">&quot;variable&quot;</span><span class="p">)</span>
 </pre></div>
 </div>
-<p>—</p>
-<p><strong>Aggregation Database Models</strong></p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="k">class</span><span class="w"> </span><span class="nc">AggSensorStats</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
-<span class="linenos">2</span>    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;agg_sensor_stats&quot;</span>
-<span class="linenos">3</span>
-<span class="linenos">4</span>    <span class="n">sensor_name</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">(</span><span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="linenos">5</span>    <span class="n">dt</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">(</span><span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
-<span class="linenos">6</span>    <span class="n">min_value</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span>
-<span class="linenos">7</span>    <span class="n">avg_value</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span>
-<span class="linenos">8</span>    <span class="n">max_value</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span>
-<span class="linenos">9</span>    <span class="n">readings_count</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span>
+<p><em>Sample Aggregation Models:</em></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">class</span><span class="w"> </span><span class="nc">AggMachineActivityDaily</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+<span class="linenos"> 2</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Daily machine utilization: running hours vs. downtime hours.&quot;&quot;&quot;</span>
+<span class="linenos"> 3</span>    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;agg_machine_activity_daily&quot;</span>
+<span class="linenos"> 4</span>
+<span class="linenos"> 5</span>    <span class="n">dt</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="n">date</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">(</span><span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="linenos"> 6</span>    <span class="n">state_planned_down</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+<span class="linenos"> 7</span>    <span class="n">state_running</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+<span class="linenos"> 8</span>    <span class="n">state_unplanned_down</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+<span class="linenos"> 9</span>    <span class="n">last_updated_at</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]]</span>
+<span class="linenos">10</span>
+<span class="linenos">11</span>
+<span class="linenos">12</span><span class="k">class</span><span class="w"> </span><span class="nc">AggSensorStats</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+<span class="linenos">13</span><span class="w">    </span><span class="sd">&quot;&quot;&quot;Hourly aggregated sensor statistics.&quot;&quot;&quot;</span>
+<span class="linenos">14</span>    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;agg_sensor_stats&quot;</span>
+<span class="linenos">15</span>
+<span class="linenos">16</span>    <span class="n">sensor_name</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="nb">str</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">(</span><span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="linenos">17</span>    <span class="n">dt</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="n">datetime</span><span class="p">]</span> <span class="o">=</span> <span class="n">mapped_column</span><span class="p">(</span><span class="n">primary_key</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="linenos">18</span>    <span class="n">min_value</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span>
+<span class="linenos">19</span>    <span class="n">avg_value</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span>
+<span class="linenos">20</span>    <span class="n">max_value</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span>
+<span class="linenos">21</span>    <span class="n">std_dev</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]]</span>
+<span class="linenos">22</span>    <span class="n">readings_count</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]]</span>
+<span class="linenos">23</span>    <span class="n">last_updated_at</span><span class="p">:</span> <span class="n">Mapped</span><span class="p">[</span><span class="n">Optional</span><span class="p">[</span><span class="n">datetime</span><span class="p">]]</span>
 </pre></div>
 </div>
+<p>Additional models include: <code class="docutils literal notranslate"><span class="pre">MachineProgramData</span></code>, <code class="docutils literal notranslate"><span class="pre">AlertsDailyCount</span></code>,
+<code class="docutils literal notranslate"><span class="pre">AlertsDetail</span></code>, and <code class="docutils literal notranslate"><span class="pre">EnergyConsumptionHourly</span></code>.</p>
 <p>—</p>
 </section>
 <section id="api-application-entry-point">
 <h3>API Application Entry Point<a class="headerlink" href="#api-application-entry-point" title="Link to this heading"></a></h3>
 <p><strong>File:</strong> <code class="docutils literal notranslate"><span class="pre">main.py</span></code></p>
-<p>This module defines the <strong>FastAPI application entry point</strong> and exposes all
-public REST endpoints used by the frontend and external consumers.</p>
-<p>It is responsible for:</p>
-<ul class="simple">
-<li><p>Creating and configuring the FastAPI application</p></li>
-<li><p>Defining response schemas using <strong>Pydantic</strong></p></li>
-<li><p>Registering API routes for analytics and monitoring</p></li>
-<li><p>Managing database dependencies through SQLAlchemy sessions</p></li>
-<li><p>Handling errors and HTTP responses consistently</p></li>
-</ul>
-<p>The API provides read-only access to both the production database and the
-aggregation database.</p>
-<p>—</p>
-<p><strong>Application Setup</strong></p>
-<p>Initializes the FastAPI application with metadata and configures <strong>CORS</strong> to
-allow requests from the frontend application.</p>
+<p>Defines the <strong>FastAPI application</strong> with REST endpoints for analytics and
+monitoring. Provides read-only access to both the production and aggregation
+databases.</p>
+<p><em>Application Setup:</em></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">from</span><span class="w"> </span><span class="nn">fastapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">FastAPI</span>
 <span class="linenos"> 2</span><span class="kn">from</span><span class="w"> </span><span class="nn">fastapi.middleware.cors</span><span class="w"> </span><span class="kn">import</span> <span class="n">CORSMiddleware</span>
 <span class="linenos"> 3</span>
-<span class="linenos"> 4</span><span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">(</span>
-<span class="linenos"> 5</span>    <span class="n">title</span><span class="o">=</span><span class="s2">&quot;Variable Monitoring API&quot;</span><span class="p">,</span>
-<span class="linenos"> 6</span>    <span class="n">version</span><span class="o">=</span><span class="s2">&quot;1.0.0&quot;</span>
-<span class="linenos"> 7</span><span class="p">)</span>
+<span class="linenos"> 4</span><span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">(</span><span class="n">title</span><span class="o">=</span><span class="s2">&quot;Variable Monitoring API&quot;</span><span class="p">,</span> <span class="n">version</span><span class="o">=</span><span class="s2">&quot;1.0.0&quot;</span><span class="p">)</span>
+<span class="linenos"> 5</span>
+<span class="linenos"> 6</span><span class="n">app</span><span class="o">.</span><span class="n">add_middleware</span><span class="p">(</span>
+<span class="linenos"> 7</span>    <span class="n">CORSMiddleware</span><span class="p">,</span>
+<span class="linenos"> 8</span>    <span class="n">allow_origins</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;http://localhost:3000&quot;</span><span class="p">],</span>
+<span class="linenos"> 9</span>    <span class="n">allow_methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">],</span>
+<span class="linenos">10</span>    <span class="n">allow_headers</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">],</span>
+<span class="linenos">11</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><em>Sample Response Models:</em></p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">class</span><span class="w"> </span><span class="nc">SensorStatsOut</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="linenos"> 2</span>    <span class="n">dt</span><span class="p">:</span> <span class="nb">str</span>
+<span class="linenos"> 3</span>    <span class="n">min_value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+<span class="linenos"> 4</span>    <span class="n">avg_value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+<span class="linenos"> 5</span>    <span class="n">max_value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+<span class="linenos"> 6</span>    <span class="n">std_dev</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+<span class="linenos"> 7</span>    <span class="n">readings_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
 <span class="linenos"> 8</span>
-<span class="linenos"> 9</span><span class="n">app</span><span class="o">.</span><span class="n">add_middleware</span><span class="p">(</span>
-<span class="linenos">10</span>    <span class="n">CORSMiddleware</span><span class="p">,</span>
-<span class="linenos">11</span>    <span class="n">allow_origins</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;http://localhost:3000&quot;</span><span class="p">],</span>
-<span class="linenos">12</span>    <span class="n">allow_methods</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;GET&quot;</span><span class="p">],</span>
-<span class="linenos">13</span>    <span class="n">allow_headers</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;*&quot;</span><span class="p">],</span>
-<span class="linenos">14</span><span class="p">)</span>
+<span class="linenos"> 9</span><span class="k">class</span><span class="w"> </span><span class="nc">MachineUtilOut</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+<span class="linenos">10</span>    <span class="n">dt</span><span class="p">:</span> <span class="nb">str</span>
+<span class="linenos">11</span>    <span class="n">state_running</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+<span class="linenos">12</span>    <span class="n">state_planned_down</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+<span class="linenos">13</span>    <span class="n">running_percentage</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
+<span class="linenos">14</span>    <span class="n">down_percentage</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
 </pre></div>
 </div>
-<p>—</p>
-<p><strong>Response Models (Pydantic Schemas)</strong></p>
-<p>Defines response schemas used to validate and serialize API responses.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span>
-<span class="linenos"> 2</span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
-<span class="linenos"> 3</span>
-<span class="linenos"> 4</span><span class="k">class</span><span class="w"> </span><span class="nc">SensorStatsOut</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
-<span class="linenos"> 5</span>    <span class="n">dt</span><span class="p">:</span> <span class="nb">str</span>
-<span class="linenos"> 6</span>    <span class="n">min_value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
-<span class="linenos"> 7</span>    <span class="n">avg_value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
-<span class="linenos"> 8</span>    <span class="n">max_value</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
-<span class="linenos"> 9</span>    <span class="n">std_dev</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">float</span><span class="p">]</span>
-<span class="linenos">10</span>    <span class="n">readings_count</span><span class="p">:</span> <span class="n">Optional</span><span class="p">[</span><span class="nb">int</span><span class="p">]</span>
-</pre></div>
-</div>
-<p>—</p>
-<p><strong>Health Check Endpoint</strong></p>
-<p>Simple endpoint to verify that the API and database connection are operational.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
-<span class="linenos"> 2</span><span class="k">def</span><span class="w"> </span><span class="nf">home</span><span class="p">():</span>
-<span class="linenos"> 3</span>    <span class="k">return</span> <span class="p">{</span><span class="s2">&quot;message&quot;</span><span class="p">:</span> <span class="s2">&quot;Hello! The API is working!&quot;</span><span class="p">}</span>
-<span class="linenos"> 4</span>
-<span class="linenos"> 5</span><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/api/status&quot;</span><span class="p">)</span>
-<span class="linenos"> 6</span><span class="k">def</span><span class="w"> </span><span class="nf">status</span><span class="p">():</span>
-<span class="linenos"> 7</span>    <span class="k">with</span> <span class="n">prod_engine</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span> <span class="k">as</span> <span class="n">connection</span><span class="p">:</span>
-<span class="linenos"> 8</span>        <span class="n">result</span> <span class="o">=</span> <span class="n">connection</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">text</span><span class="p">(</span><span class="s2">&quot;SELECT version()&quot;</span><span class="p">))</span>
-<span class="linenos"> 9</span>        <span class="n">version</span> <span class="o">=</span> <span class="n">result</span><span class="o">.</span><span class="n">fetchone</span><span class="p">()</span>
-<span class="linenos">10</span>        <span class="k">return</span> <span class="p">{</span>
-<span class="linenos">11</span>            <span class="s2">&quot;status&quot;</span><span class="p">:</span> <span class="s2">&quot;API is running&quot;</span><span class="p">,</span>
-<span class="linenos">12</span>            <span class="s2">&quot;database&quot;</span><span class="p">:</span> <span class="s2">&quot;Connected&quot;</span><span class="p">,</span>
-<span class="linenos">13</span>            <span class="s2">&quot;version&quot;</span><span class="p">:</span> <span class="nb">str</span><span class="p">(</span><span class="n">version</span><span class="p">)</span>
-<span class="linenos">14</span>        <span class="p">}</span>
-</pre></div>
-</div>
-<p>—</p>
-<p><strong>Aggregated Sensor Statistics Endpoint</strong></p>
-<p>Returns hourly aggregated sensor statistics for a given date and sensor.</p>
+<p><em>Sample Endpoint:</em></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/api/v1/temperature&quot;</span><span class="p">,</span> <span class="n">response_model</span><span class="o">=</span><span class="n">List</span><span class="p">[</span><span class="n">SensorStatsOut</span><span class="p">])</span>
 <span class="linenos"> 2</span><span class="k">def</span><span class="w"> </span><span class="nf">get_temperature_stats</span><span class="p">(</span>
 <span class="linenos"> 3</span>    <span class="n">target_date</span><span class="p">:</span> <span class="n">DateType</span><span class="p">,</span>
@@ -962,85 +528,25 @@ allow requests from the frontend application.</p>
 <span class="linenos"> 5</span>    <span class="n">db</span><span class="p">:</span> <span class="n">Session</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">get_agg_db</span><span class="p">)</span>
 <span class="linenos"> 6</span><span class="p">):</span>
 <span class="linenos"> 7</span>    <span class="n">query</span> <span class="o">=</span> <span class="n">text</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
-<span class="linenos"> 8</span><span class="s2">        SELECT</span>
-<span class="linenos"> 9</span><span class="s2">            dt,</span>
-<span class="linenos">10</span><span class="s2">            min_value,</span>
-<span class="linenos">11</span><span class="s2">            avg_value,</span>
-<span class="linenos">12</span><span class="s2">            max_value,</span>
-<span class="linenos">13</span><span class="s2">            std_dev,</span>
-<span class="linenos">14</span><span class="s2">            readings_count</span>
-<span class="linenos">15</span><span class="s2">        FROM agg_sensor_stats</span>
-<span class="linenos">16</span><span class="s2">        WHERE dt::date = :target_date</span>
-<span class="linenos">17</span><span class="s2">          AND sensor_name = :sensor_name</span>
-<span class="linenos">18</span><span class="s2">        ORDER BY dt ASC</span>
-<span class="linenos">19</span><span class="s2">    &quot;&quot;&quot;</span><span class="p">)</span>
+<span class="linenos"> 8</span><span class="s2">        SELECT dt, min_value, avg_value, max_value, std_dev, readings_count</span>
+<span class="linenos"> 9</span><span class="s2">        FROM agg_sensor_stats</span>
+<span class="linenos">10</span><span class="s2">        WHERE dt::date = :target_date AND sensor_name = :sensor_name</span>
+<span class="linenos">11</span><span class="s2">        ORDER BY dt ASC</span>
+<span class="linenos">12</span><span class="s2">    &quot;&quot;&quot;</span><span class="p">)</span>
+<span class="linenos">13</span>    <span class="c1"># ...</span>
 </pre></div>
 </div>
-<p>—</p>
-<p><strong>Machine Utilization Endpoint</strong></p>
-<p>Exposes daily machine utilization metrics derived from the aggregation
-database.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/api/v1/machine_util&quot;</span><span class="p">,</span> <span class="n">response_model</span><span class="o">=</span><span class="n">List</span><span class="p">[</span><span class="n">MachineUtilOut</span><span class="p">])</span>
-<span class="linenos"> 2</span><span class="k">def</span><span class="w"> </span><span class="nf">get_machine_util</span><span class="p">(</span>
-<span class="linenos"> 3</span>    <span class="n">target_date</span><span class="p">:</span> <span class="n">DateType</span><span class="p">,</span>
-<span class="linenos"> 4</span>    <span class="n">db</span><span class="p">:</span> <span class="n">Session</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">get_agg_db</span><span class="p">)</span>
-<span class="linenos"> 5</span><span class="p">):</span>
-<span class="linenos"> 6</span>    <span class="n">query</span> <span class="o">=</span> <span class="n">text</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
-<span class="linenos"> 7</span><span class="s2">        SELECT</span>
-<span class="linenos"> 8</span><span class="s2">            dt,</span>
-<span class="linenos"> 9</span><span class="s2">            state_planned_down,</span>
-<span class="linenos">10</span><span class="s2">            state_running,</span>
-<span class="linenos">11</span><span class="s2">            running_percentage,</span>
-<span class="linenos">12</span><span class="s2">            down_percentage</span>
-<span class="linenos">13</span><span class="s2">        FROM agg_machine_activity_daily</span>
-<span class="linenos">14</span><span class="s2">        WHERE dt = :target_date</span>
-<span class="linenos">15</span><span class="s2">        ORDER BY dt ASC</span>
-<span class="linenos">16</span><span class="s2">    &quot;&quot;&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>—</p>
-<p><strong>Alerts Endpoints</strong></p>
-<p>Provides both <strong>raw</strong> and <strong>aggregated</strong> alert information.</p>
+<p><strong>Available API Endpoints:</strong></p>
 <ul class="simple">
-<li><p>Aggregated daily counts</p></li>
-<li><p>Detailed alert records</p></li>
-<li><p>On-demand alert categorization from raw data</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/status</span></code> – Health check and database connection status</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/v1/temperature</span></code> – Hourly sensor statistics</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/v1/machine_util</span></code> – Daily machine utilization metrics</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/v1/data_status</span></code> – Overview of available data</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/v1/alerts_daily_count</span></code> – Aggregated daily alert counts</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/v1/alerts_detail</span></code> – Detailed alert records</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/v1/machine_program</span></code> – Program execution durations</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">GET</span> <span class="pre">/api/v1/energy_consumption</span></code> – Hourly energy consumption</p></li>
 </ul>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/api/v1/alerts_daily_count&quot;</span><span class="p">,</span> <span class="n">response_model</span><span class="o">=</span><span class="n">List</span><span class="p">[</span><span class="n">AlertsDailyCountOut</span><span class="p">])</span>
-<span class="linenos"> 2</span><span class="k">def</span><span class="w"> </span><span class="nf">get_alerts_daily_count</span><span class="p">(</span>
-<span class="linenos"> 3</span>    <span class="n">target_date</span><span class="p">:</span> <span class="n">DateType</span><span class="p">,</span>
-<span class="linenos"> 4</span>    <span class="n">db</span><span class="p">:</span> <span class="n">Session</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">get_agg_db</span><span class="p">)</span>
-<span class="linenos"> 5</span><span class="p">):</span>
-<span class="linenos"> 6</span>    <span class="n">query</span> <span class="o">=</span> <span class="n">text</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
-<span class="linenos"> 7</span><span class="s2">        SELECT</span>
-<span class="linenos"> 8</span><span class="s2">            day,</span>
-<span class="linenos"> 9</span><span class="s2">            alert_type,</span>
-<span class="linenos">10</span><span class="s2">            amount</span>
-<span class="linenos">11</span><span class="s2">        FROM alerts_daily_count</span>
-<span class="linenos">12</span><span class="s2">        WHERE day = :target_date</span>
-<span class="linenos">13</span><span class="s2">        ORDER BY amount DESC</span>
-<span class="linenos">14</span><span class="s2">    &quot;&quot;&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
-<p>—</p>
-<p><strong>Machine Program Usage Endpoint</strong></p>
-<p>Returns program execution duration per day from the aggregation database.</p>
-<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/api/v1/machine_program&quot;</span><span class="p">,</span> <span class="n">response_model</span><span class="o">=</span><span class="n">List</span><span class="p">[</span><span class="n">MachineProgramOut</span><span class="p">])</span>
-<span class="linenos"> 2</span><span class="k">def</span><span class="w"> </span><span class="nf">get_machine_program</span><span class="p">(</span>
-<span class="linenos"> 3</span>    <span class="n">target_date</span><span class="p">:</span> <span class="n">DateType</span><span class="p">,</span>
-<span class="linenos"> 4</span>    <span class="n">db</span><span class="p">:</span> <span class="n">Session</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">get_agg_db</span><span class="p">)</span>
-<span class="linenos"> 5</span><span class="p">):</span>
-<span class="linenos"> 6</span>    <span class="n">query</span> <span class="o">=</span> <span class="n">text</span><span class="p">(</span><span class="s2">&quot;&quot;&quot;</span>
-<span class="linenos"> 7</span><span class="s2">        SELECT</span>
-<span class="linenos"> 8</span><span class="s2">            dt,</span>
-<span class="linenos"> 9</span><span class="s2">            program,</span>
-<span class="linenos">10</span><span class="s2">            duration_seconds</span>
-<span class="linenos">11</span><span class="s2">        FROM machine_program_data</span>
-<span class="linenos">12</span><span class="s2">        WHERE dt = :target_date</span>
-<span class="linenos">13</span><span class="s2">        ORDER BY duration_seconds DESC</span>
-<span class="linenos">14</span><span class="s2">    &quot;&quot;&quot;</span><span class="p">)</span>
-</pre></div>
-</div>
 <p>—</p>
 </section>
 </section>
