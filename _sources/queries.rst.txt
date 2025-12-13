@@ -12,9 +12,11 @@ These queries were used to:
 
 ---
 
-## Machine Utilization Queries
+Machine Utilization Queries
+---------------------------
 
-### Machine Utilization (Percentages)
+Machine Utilization (Percentages)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 This query calculates **daily machine utilization percentages** by classifying
 10-minute activity blocks into operational states and aggregating them per day.
@@ -114,9 +116,11 @@ This query calculates **daily machine utilization percentages** by classifying
 
 ---
 
-## Program History Queries
+Program History Queries
+-----------------------
 
-### Program History (24 Hours)
+Program History (24 Hours)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Computes **daily program execution durations** by reconstructing program state
 intervals and cutting them by calendar day.
@@ -162,9 +166,11 @@ intervals and cutting them by calendar day.
 
 ---
 
-## Temperature Queries
+Temperature Queries
+-------------------
 
-### Temperature History (24 Hours)
+Temperature History (24 Hours)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Retrieves **raw temperature sensor readings** for a set of temperature-related
 variables over a given time window.
@@ -190,9 +196,11 @@ variables over a given time window.
 
 ---
 
-## Energy Consumption Queries
+Energy Consumption Queries
+--------------------------
 
-### Hourly Consumption
+Hourly Consumption
+~~~~~~~~~~~~~~~~~~
 
 Computes **hourly energy consumption (kWh)** based on motor utilization
 percentages and nominal power.
@@ -209,7 +217,8 @@ percentages and nominal power.
 
 ---
 
-### Energy by Shift
+Energy by Shift
+~~~~~~~~~~~~~~~
 
 Aggregates energy consumption by **production shift** (Day, Swing, Night).
 
@@ -225,9 +234,11 @@ Aggregates energy consumption by **production shift** (Day, Swing, Night).
 
 ---
 
-## Alarm Queries
+Alarm Queries
+-----------------
 
-### Alarm Count by Category
+Alarm Count by Category
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Counts alarms grouped by **severity category**.
 
@@ -242,7 +253,8 @@ Counts alarms grouped by **severity category**.
 
 ---
 
-### Alarm Count by Shift and Category
+Alarm Count by Shift and Category
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Counts alarms per **shift** and **severity category**.
 
@@ -258,7 +270,8 @@ Counts alarms per **shift** and **severity category**.
 
 ---
 
-### Full List of Alerts
+Full List of Alerts
+~~~~~~~~~~~~~~~~~~~
 
 Retrieves a **chronological list of alarms** with classification.
 
@@ -274,7 +287,8 @@ Retrieves a **chronological list of alarms** with classification.
 
 ---
 
-### Alarm Detail for a Specific Code
+Alarm Detail for a Specific Code
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Filters alarms for a **specific alarm code and date**.
 

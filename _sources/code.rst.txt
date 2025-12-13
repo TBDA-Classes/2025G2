@@ -22,10 +22,11 @@ aggregation database. These scripts are typically executed manually or through
 scheduled jobs and are not part of the request–response API flow.
 
 
-### Aggregation Database Creation Script
+Aggregation Database Creation Script
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 
-#### File: ``create_agg_database.sql``
+**File:** ``create_agg_database.sql``
 
 This script creates all tables, indexes, and views required for the aggregation
 database.
@@ -38,7 +39,7 @@ database.
 
 ---
 
-##### Daily Machine Activity Aggregation
+**Daily Machine Activity Aggregation**
 
 .. code-block:: sql
    :linenos:
@@ -61,7 +62,7 @@ database.
 
 ---
 
-##### Aggregated Sensor Statistics
+**Aggregated Sensor Statistics**
 
 .. code-block:: sql
    :linenos:
@@ -80,7 +81,7 @@ database.
 
 ---
 
-##### Alerts and Utilization Tables
+**Alerts and Utilization Tables**
 
 .. code-block:: sql
    :linenos:
@@ -106,7 +107,7 @@ database.
 
 ---
 
-##### Views
+**Views**
 
 .. code-block:: sql
    :linenos:
@@ -122,9 +123,9 @@ database.
    FROM agg_sensor_stats;
 
 ---
-### Alerts Aggregation ETL Script
+- Alerts Aggregation ETL Script**
 
-#### File: ``etl_agg_alerts.py``
+**File:** ``etl_agg_alerts.py``
 
 This script performs an **ETL (Extract, Transform, Load)** process for machine
 alerts data. It extracts raw alert information from the production database,
@@ -147,7 +148,7 @@ If no dates are provided, the script performs a full historical backfill.
 
 ---
 
-##### Alert Type Mapping
+**Alert Type Mapping**
 
 Alert descriptions are normalized into standardized alert categories.
 
@@ -163,7 +164,7 @@ Alert descriptions are normalized into standardized alert categories.
 
 ---
 
-##### Date Range Resolution (Full Backfill)
+**Date Range Resolution (Full Backfill)**
 
 When no dates are provided, the script queries the source database to determine
 the minimum and maximum available dates.
@@ -190,7 +191,7 @@ the minimum and maximum available dates.
 
 ---
 
-##### Daily Alert Count Extraction
+**Daily Alert Count Extraction**
 
 Extracts daily alert counts grouped by alert type from the production database.
 
@@ -215,7 +216,7 @@ Extracts daily alert counts grouped by alert type from the production database.
 
 ---
 
-##### Alert Details Extraction
+**Alert Details Extraction**
 
 Extracts detailed alert records for **Emergency** and **Error** alerts only.
 
@@ -243,7 +244,7 @@ Extracts detailed alert records for **Emergency** and **Error** alerts only.
 
 ---
 
-##### Load – Daily Alert Counts
+**Load – Daily Alert Counts**
 
 Stores aggregated daily alert counts in the destination database using
 **upsert** semantics.
@@ -263,7 +264,7 @@ Stores aggregated daily alert counts in the destination database using
 
 ---
 
-##### Load – Alert Details
+**Load – Alert Details**
 
 Stores detailed alert records in the aggregation database.
 
@@ -282,7 +283,7 @@ Stores detailed alert records in the aggregation database.
 
 ---
 
-##### ETL Orchestration
+**ETL Orchestration**
 
 Coordinates extraction, transformation, and loading over a date range.
 
@@ -297,7 +298,7 @@ Coordinates extraction, transformation, and loading over a date range.
 
 ---
 
-##### Command-Line Entry Point
+**Command-Line Entry Point**
 
 Allows execution as a standalone script or module.
 
@@ -316,9 +317,10 @@ Allows execution as a standalone script or module.
            run_etl()
 
 ---
-### Machine Program History ETL Script
+Machine Program History ETL Script
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#### File: ``etl_agg_program_history.py``
+**File:** ``etl_agg_program_history.py``
 
 This script performs an **ETL (Extract, Transform, Load)** process to compute
 machine program execution history. It extracts raw machine state changes from
@@ -327,10 +329,10 @@ per day.
 
 The results are stored in the aggregation database table:
 
-- ``machine_program_data`` – daily execution duration per program
+- ``machine_program_data`` 
 
-The script supports **single-day execution**, **date ranges**, and **full
-historical backfills**.
+The script supports single-day execution**, date ranges**, and full
+historical backfills.
 
 **Execution examples**:
 
@@ -341,7 +343,7 @@ historical backfills**.
 
 ---
 
-##### Date Range Resolution (Full Backfill)
+**Date Range Resolution (Full Backfill)**
 
 When no dates are provided, the script determines the minimum and maximum
 available dates directly from the source data.
@@ -367,7 +369,7 @@ available dates directly from the source data.
 
 ---
 
-##### Program History Extraction
+**Program History Extraction**
 
 Extracts machine program execution intervals and computes the total duration
 (in seconds) of each program per day.
@@ -396,7 +398,7 @@ Extracts machine program execution intervals and computes the total duration
 
 ---
 
-##### Load – Machine Program Data
+**Load – Machine Program Data**
 
 Stores aggregated program execution durations into the aggregation database.
 
@@ -419,7 +421,7 @@ Stores aggregated program execution durations into the aggregation database.
 
 ---
 
-##### ETL Orchestration
+**ETL Orchestration**
 
 Coordinates extraction and loading steps for the selected date range.
 
@@ -434,7 +436,7 @@ Coordinates extraction and loading steps for the selected date range.
 
 ---
 
-##### Command-Line Entry Point
+**Command-Line Entry Point**
 
 Allows execution as a standalone script or module.
 
@@ -452,9 +454,10 @@ Allows execution as a standalone script or module.
        else:
            run_etl()
 ---
-### Sensor Statistics ETL Script
+Sensor Statistics ETL Script
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#### File: ``etl_agg_sensor_stats.py``
+**File:** ``etl_agg_sensor_stats.py``
 
 This script performs an **ETL (Extract, Transform, Load)** process to compute
 hourly statistics for a specific machine sensor, currently configured for
@@ -463,11 +466,10 @@ hourly statistics for a specific machine sensor, currently configured for
 Raw high-frequency sensor readings are extracted from the production database,
 aggregated on an hourly basis, and stored in the aggregation database table:
 
-- ``agg_sensor_stats`` – hourly min, max, average, standard deviation and
-  number of readings per sensor
+- ``agg_sensor_stats`` 
 
-The script supports **single-day execution**, **date ranges**, and **full
-historical backfills**.
+The script supports single-day execution, date ranges, and full
+historical backfills.
 
 **Execution examples**:
 
@@ -478,7 +480,7 @@ historical backfills**.
 
 ---
 
-##### Sensor Configuration
+**Sensor Configuration**
 
 The ETL process is parameterized by a single sensor name. At present, the
 script focuses on the base temperature sensor.
@@ -490,7 +492,7 @@ script focuses on the base temperature sensor.
 
 ---
 
-##### Sensor Data Extraction
+**Sensor Data Extraction**
 
 Extracts raw sensor readings (timestamp and value) from the production
 database, optionally filtered by date or date range.
@@ -511,7 +513,7 @@ database, optionally filtered by date or date range.
 
 ---
 
-##### Data Transformation (Hourly Aggregation)
+**Data Transformation (Hourly Aggregation)**
 
 Groups raw sensor readings by hour and computes statistical metrics for each
 hourly interval.
@@ -542,7 +544,7 @@ Invalid or non-finite sensor values are discarded.
 
 ---
 
-##### Load – Aggregated Sensor Statistics
+**Load – Aggregated Sensor Statistics**
 
 Stores the computed hourly statistics into the aggregation database using
 **upsert semantics** to avoid duplicate entries.
@@ -571,7 +573,7 @@ Stores the computed hourly statistics into the aggregation database using
 
 ---
 
-##### ETL Orchestration
+**ETL Orchestration**
 
 Coordinates the extract, transform, and load steps for the selected date range
 and logs progress and errors.
@@ -587,7 +589,7 @@ and logs progress and errors.
 
 ---
 
-##### Command-Line Entry Point
+**Command-Line Entry Point**
 
 Allows execution as a standalone script or module.
 
@@ -605,9 +607,10 @@ Allows execution as a standalone script or module.
        else:
            run_etl()
 ---
-### Machine Utilization ETL Script
+Machine Utilization ETL Script
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#### File: ``etl_agg_utilization.py``
+**File:** ``etl_agg_utilization.py``
 
 This script performs an **ETL (Extract, Transform, Load)** process to calculate
 daily machine utilization metrics. It analyzes machine activity logs to derive
@@ -615,10 +618,10 @@ the total number of **running hours** and **downtime hours** per day.
 
 The computed metrics are stored in the aggregation database table:
 
-- ``agg_machine_activity_daily`` – daily machine utilization summary
+- ``agg_machine_activity_daily``
 
-The script supports **single-day execution**, **date ranges**, and **full
-historical backfills**.
+The script supports single-day execution, date ranges, and full
+historical backfills.
 
 **Execution examples**:
 
@@ -629,7 +632,7 @@ historical backfills**.
 
 ---
 
-##### Utilization Data Extraction
+**Utilization Data Extraction**
 
 Extracts raw machine activity timestamps from both numeric and string variable
 logs, combines them into a unified timeline, and calculates daily operation
@@ -661,7 +664,7 @@ inactivity gaps greater than 10 minutes.
 
 ---
 
-##### Load – Daily Machine Utilization
+**Load – Daily Machine Utilization**
 
 Stores daily machine utilization metrics in the aggregation database. The script
 uses **upsert semantics** to ensure idempotent execution.
@@ -685,7 +688,7 @@ uses **upsert semantics** to ensure idempotent execution.
 
 ---
 
-##### ETL Orchestration
+**ETL Orchestration**
 
 Determines the execution mode (single date, date range, or full backfill),
 coordinates extraction and loading steps, and logs execution progress.
@@ -706,7 +709,7 @@ coordinates extraction and loading steps, and logs execution progress.
 
 ---
 
-##### Command-Line Entry Point
+**Command-Line Entry Point**
 
 Allows execution as a standalone script or module.
 
@@ -726,9 +729,10 @@ and backend scripts.
 
 ---
 
-### Database Connection Layer
+Database Connection Layer
+~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#### File: ``database.py``
+**File:** ``database.py``
 
 This module centralizes all database connection logic used by the backend. It
 manages connections to:
@@ -740,7 +744,7 @@ It is designed to be compatible with **FastAPI dependency injection**.
 
 ---
 
-##### Production Database Connection
+**Production Database Connection**
 
 .. code-block:: python
    :linenos:
@@ -785,7 +789,7 @@ It is designed to be compatible with **FastAPI dependency injection**.
 
 ---
 
-##### Aggregation Database Connection
+**Aggregation Database Connection**
 
 .. code-block:: python
    :linenos:
@@ -819,16 +823,17 @@ It is designed to be compatible with **FastAPI dependency injection**.
 
 ---
 
-### ORM Models
+ORM Models
+~~~~~~~~~~
 
-#### File: ``models.py``
+**File:** ``models.py``
 
-This module defines **SQLAlchemy ORM models** that map Python classes to database
+This module defines SQLAlchemy ORM models that map Python classes to database
 tables and views, using SQLAlchemy 2.0 typed mappings.
 
 ---
 
-##### Declarative Base
+**Declarative Base**
 
 .. code-block:: python
    :linenos:
@@ -840,7 +845,7 @@ tables and views, using SQLAlchemy 2.0 typed mappings.
 
 ---
 
-##### Production Database Models
+**Production Database Models**
 
 .. code-block:: python
    :linenos:
@@ -854,7 +859,7 @@ tables and views, using SQLAlchemy 2.0 typed mappings.
 
 ---
 
-##### Aggregation Database Models
+**Aggregation Database Models**
 
 .. code-block:: python
    :linenos:
@@ -869,9 +874,10 @@ tables and views, using SQLAlchemy 2.0 typed mappings.
        max_value: Mapped[Optional[float]]
        readings_count: Mapped[Optional[int]]
 ---
-### API Application Entry Point
+API Application Entry Point
+~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-#### File: ``main.py``
+**File:** ``main.py``
 
 This module defines the **FastAPI application entry point** and exposes all
 public REST endpoints used by the frontend and external consumers.
@@ -884,12 +890,12 @@ It is responsible for:
 - Managing database dependencies through SQLAlchemy sessions
 - Handling errors and HTTP responses consistently
 
-The API provides read-only access to both the **production database** and the
-**aggregation database**.
+The API provides read-only access to both the production database and the
+aggregation database.
 
 ---
 
-##### Application Setup
+**Application Setup**
 
 Initializes the FastAPI application with metadata and configures **CORS** to
 allow requests from the frontend application.
@@ -914,7 +920,7 @@ allow requests from the frontend application.
 
 ---
 
-##### Response Models (Pydantic Schemas)
+**Response Models (Pydantic Schemas)**
 
 Defines response schemas used to validate and serialize API responses.
 
@@ -934,7 +940,7 @@ Defines response schemas used to validate and serialize API responses.
 
 ---
 
-##### Health Check Endpoint
+**Health Check Endpoint**
 
 Simple endpoint to verify that the API and database connection are operational.
 
@@ -958,7 +964,7 @@ Simple endpoint to verify that the API and database connection are operational.
 
 ---
 
-##### Aggregated Sensor Statistics Endpoint
+**Aggregated Sensor Statistics Endpoint**
 
 Returns hourly aggregated sensor statistics for a given date and sensor.
 
@@ -987,7 +993,7 @@ Returns hourly aggregated sensor statistics for a given date and sensor.
 
 ---
 
-##### Machine Utilization Endpoint
+**Machine Utilization Endpoint**
 
 Exposes daily machine utilization metrics derived from the aggregation
 database.
@@ -1014,7 +1020,7 @@ database.
 
 ---
 
-##### Alerts Endpoints
+**Alerts Endpoints**
 
 Provides both **raw** and **aggregated** alert information.
 
@@ -1042,7 +1048,7 @@ Provides both **raw** and **aggregated** alert information.
 
 ---
 
-##### Machine Program Usage Endpoint
+**Machine Program Usage Endpoint**
 
 Returns program execution duration per day from the aggregation database.
 
@@ -1063,14 +1069,5 @@ Returns program execution duration per day from the aggregation database.
            WHERE dt = :target_date
            ORDER BY duration_seconds DESC
        """)
-
----
-
-##### Design Notes
-
-- All endpoints are **read-only**
-- SQL is written explicitly using ``text()`` for clarity and performance
-- Dependency injection ensures safe session lifecycle management
-- Errors are translated into proper HTTP responses using ``HTTPException``
 
 ---

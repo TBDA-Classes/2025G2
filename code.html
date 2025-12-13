@@ -125,10 +125,41 @@
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">CODE REFERENCE</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="#backend-scripts">Backend Scripts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#backend-scripts">Backend Scripts</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#aggregation-database-creation-script">Aggregation Database Creation Script</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#database-connection-layer">Database Connection Layer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#orm-models">ORM Models</a></li>
 </ul>
 </li>
-<li class="toctree-l1"><a class="reference internal" href="queries.html">MAIN QUERIES</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="queries.html">MAIN QUERIES</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="queries.html#machine-utilization-queries">Machine Utilization Queries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="queries.html#machine-utilization-percentages">Machine Utilization (Percentages)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="queries.html#program-history-queries">Program History Queries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="queries.html#program-history-24-hours">Program History (24 Hours)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="queries.html#temperature-queries">Temperature Queries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="queries.html#temperature-history-24-hours">Temperature History (24 Hours)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="queries.html#energy-consumption-queries">Energy Consumption Queries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="queries.html#hourly-consumption">Hourly Consumption</a></li>
+<li class="toctree-l3"><a class="reference internal" href="queries.html#energy-by-shift">Energy by Shift</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="queries.html#alarm-queries">Alarm Queries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="queries.html#alarm-count-by-category">Alarm Count by Category</a></li>
+<li class="toctree-l3"><a class="reference internal" href="queries.html#alarm-count-by-shift-and-category">Alarm Count by Shift and Category</a></li>
+<li class="toctree-l3"><a class="reference internal" href="queries.html#full-list-of-alerts">Full List of Alerts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="queries.html#alarm-detail-for-a-specific-code">Alarm Detail for a Specific Code</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 
         </div>
@@ -173,8 +204,9 @@ backend services and APIs.</p></li>
 <p>This section documents backend scripts used to populate and maintain the
 aggregation database. These scripts are typically executed manually or through
 scheduled jobs and are not part of the request–response API flow.</p>
-<p>### Aggregation Database Creation Script</p>
-<p>#### File: <code class="docutils literal notranslate"><span class="pre">create_agg_database.sql</span></code></p>
+<section id="aggregation-database-creation-script">
+<h3>Aggregation Database Creation Script<a class="headerlink" href="#aggregation-database-creation-script" title="Link to this heading"></a></h3>
+<p><strong>File:</strong> <code class="docutils literal notranslate"><span class="pre">create_agg_database.sql</span></code></p>
 <p>This script creates all tables, indexes, and views required for the aggregation
 database.</p>
 <p><strong>Execution example</strong>:</p>
@@ -182,7 +214,7 @@ database.</p>
 </pre></div>
 </div>
 <p>—</p>
-<p>##### Daily Machine Activity Aggregation</p>
+<p><strong>Daily Machine Activity Aggregation</strong></p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="k">IF</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">EXISTS</span><span class="w"> </span><span class="n">agg_machine_activity_daily</span><span class="w"> </span><span class="p">(</span>
 <span class="linenos"> 2</span><span class="w">    </span><span class="n">dt</span><span class="w"> </span><span class="nb">DATE</span><span class="w"> </span><span class="k">PRIMARY</span><span class="w"> </span><span class="k">KEY</span><span class="p">,</span>
 <span class="linenos"> 3</span><span class="w">    </span><span class="n">state_planned_down</span><span class="w"> </span><span class="nb">NUMERIC</span><span class="w"> </span><span class="k">DEFAULT</span><span class="w"> </span><span class="mi">0</span><span class="p">,</span>
@@ -201,7 +233,7 @@ database.</p>
 </pre></div>
 </div>
 <p>—</p>
-<p>##### Aggregated Sensor Statistics</p>
+<p><strong>Aggregated Sensor Statistics</strong></p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="k">IF</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">EXISTS</span><span class="w"> </span><span class="n">agg_sensor_stats</span><span class="w"> </span><span class="p">(</span>
 <span class="linenos"> 2</span><span class="w">    </span><span class="n">sensor_name</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>
 <span class="linenos"> 3</span><span class="w">    </span><span class="n">dt</span><span class="w"> </span><span class="k">TIMESTAMP</span><span class="p">,</span>
@@ -216,7 +248,7 @@ database.</p>
 </pre></div>
 </div>
 <p>—</p>
-<p>##### Alerts and Utilization Tables</p>
+<p><strong>Alerts and Utilization Tables</strong></p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">CREATE</span><span class="w"> </span><span class="k">TABLE</span><span class="w"> </span><span class="k">IF</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">EXISTS</span><span class="w"> </span><span class="n">alerts_daily_count</span><span class="p">(</span>
 <span class="linenos"> 2</span><span class="w">    </span><span class="k">day</span><span class="w"> </span><span class="nb">DATE</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span><span class="p">,</span>
 <span class="linenos"> 3</span><span class="w">    </span><span class="n">alert_type</span><span class="w"> </span><span class="nb">VARCHAR</span><span class="p">(</span><span class="mi">20</span><span class="p">)</span><span class="w"> </span><span class="k">NOT</span><span class="w"> </span><span class="k">NULL</span>
@@ -238,7 +270,7 @@ database.</p>
 </pre></div>
 </div>
 <p>—</p>
-<p>##### Views</p>
+<p><strong>Views</strong></p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="k">CREATE</span><span class="w"> </span><span class="k">OR</span><span class="w"> </span><span class="k">REPLACE</span><span class="w"> </span><span class="k">VIEW</span><span class="w"> </span><span class="n">v_data_status</span><span class="w"> </span><span class="k">AS</span>
 <span class="linenos">2</span><span class="k">SELECT</span>
 <span class="linenos">3</span><span class="w">    </span><span class="s1">&#39;agg_sensor_stats&#39;</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="k">table_name</span><span class="p">,</span>
@@ -251,8 +283,8 @@ database.</p>
 </pre></div>
 </div>
 <p>—
-### Alerts Aggregation ETL Script</p>
-<p>#### File: <code class="docutils literal notranslate"><span class="pre">etl_agg_alerts.py</span></code></p>
+- Alerts Aggregation ETL Script**</p>
+<p><strong>File:</strong> <code class="docutils literal notranslate"><span class="pre">etl_agg_alerts.py</span></code></p>
 <p>This script performs an <strong>ETL (Extract, Transform, Load)</strong> process for machine
 alerts data. It extracts raw alert information from the production database,
 processes and categorizes it, and loads both aggregated and detailed results
@@ -269,7 +301,7 @@ python<span class="w"> </span>-m<span class="w"> </span>backend.scripts.etl_agg_
 </div>
 <p>If no dates are provided, the script performs a full historical backfill.</p>
 <p>—</p>
-<p>##### Alert Type Mapping</p>
+<p><strong>Alert Type Mapping</strong></p>
 <p>Alert descriptions are normalized into standardized alert categories.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">ALERT_TYPE_MAP</span> <span class="o">=</span> <span class="p">{</span>
 <span class="linenos">2</span>    <span class="s1">&#39;Emergency&#39;</span><span class="p">:</span> <span class="s1">&#39;emergency&#39;</span><span class="p">,</span>
@@ -280,7 +312,7 @@ python<span class="w"> </span>-m<span class="w"> </span>backend.scripts.etl_agg_
 </pre></div>
 </div>
 <p>—</p>
-<p>##### Date Range Resolution (Full Backfill)</p>
+<p><strong>Date Range Resolution (Full Backfill)</strong></p>
 <p>When no dates are provided, the script queries the source database to determine
 the minimum and maximum available dates.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">def</span><span class="w"> </span><span class="nf">get_date_range</span><span class="p">():</span>
@@ -302,7 +334,7 @@ the minimum and maximum available dates.</p>
 </pre></div>
 </div>
 <p>—</p>
-<p>##### Daily Alert Count Extraction</p>
+<p><strong>Daily Alert Count Extraction</strong></p>
 <p>Extracts daily alert counts grouped by alert type from the production database.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">def</span><span class="w"> </span><span class="nf">extract_daily_count</span><span class="p">(</span><span class="n">target_date</span><span class="p">):</span>
 <span class="linenos"> 2</span>    <span class="k">with</span> <span class="n">prod_engine</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
@@ -322,7 +354,7 @@ the minimum and maximum available dates.</p>
 </pre></div>
 </div>
 <p>—</p>
-<p>##### Alert Details Extraction</p>
+<p><strong>Alert Details Extraction</strong></p>
 <p>Extracts detailed alert records for <strong>Emergency</strong> and <strong>Error</strong> alerts only.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">def</span><span class="w"> </span><span class="nf">extract_details</span><span class="p">(</span><span class="n">target_date</span><span class="p">):</span>
 <span class="linenos"> 2</span>    <span class="k">with</span> <span class="n">prod_engine</span><span class="o">.</span><span class="n">connect</span><span class="p">()</span> <span class="k">as</span> <span class="n">conn</span><span class="p">:</span>
@@ -345,7 +377,7 @@ the minimum and maximum available dates.</p>
 </pre></div>
 </div>
 <p>—</p>
-<p>##### Load – Daily Alert Counts</p>
+<p><strong>Load – Daily Alert Counts</strong></p>
 <p>Stores aggregated daily alert counts in the destination database using
 <strong>upsert</strong> semantics.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="k">def</span><span class="w"> </span><span class="nf">load_daily_count</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
@@ -360,7 +392,7 @@ the minimum and maximum available dates.</p>
 </pre></div>
 </div>
 <p>—</p>
-<p>##### Load – Alert Details</p>
+<p><strong>Load – Alert Details</strong></p>
 <p>Stores detailed alert records in the aggregation database.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="k">def</span><span class="w"> </span><span class="nf">load_details</span><span class="p">(</span><span class="n">data</span><span class="p">):</span>
 <span class="linenos">2</span>    <span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">(</span><span class="n">agg_engine</span><span class="p">)</span>
@@ -374,7 +406,7 @@ the minimum and maximum available dates.</p>
 </pre></div>
 </div>
 <p>—</p>
-<p>##### ETL Orchestration</p>
+<p><strong>ETL Orchestration</strong></p>
 <p>Coordinates extraction, transformation, and loading over a date range.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="k">def</span><span class="w"> </span><span class="nf">run_etl</span><span class="p">(</span><span class="n">start_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="linenos">2</span>    <span class="c1"># Determines date range</span>
@@ -384,7 +416,7 @@ the minimum and maximum available dates.</p>
 </pre></div>
 </div>
 <p>—</p>
-<p>##### Command-Line Entry Point</p>
+<p><strong>Command-Line Entry Point</strong></p>
 <p>Allows execution as a standalone script or module.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
 <span class="linenos"> 2</span>    <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
@@ -399,25 +431,26 @@ the minimum and maximum available dates.</p>
 </pre></div>
 </div>
 <p>—
-### Machine Program History ETL Script</p>
-<p>#### File: <code class="docutils literal notranslate"><span class="pre">etl_agg_program_history.py</span></code></p>
+Machine Program History ETL Script
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</p>
+<p><strong>File:</strong> <code class="docutils literal notranslate"><span class="pre">etl_agg_program_history.py</span></code></p>
 <p>This script performs an <strong>ETL (Extract, Transform, Load)</strong> process to compute
 machine program execution history. It extracts raw machine state changes from
 the production database and calculates the execution duration of each program
 per day.</p>
 <p>The results are stored in the aggregation database table:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">machine_program_data</span></code> – daily execution duration per program</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">machine_program_data</span></code></p></li>
 </ul>
-<p>The script supports <strong>single-day execution</strong>, <strong>date ranges</strong>, and <strong>full
-historical backfills</strong>.</p>
+<p>The script supports single-day execution**, date ranges**, and full
+historical backfills.</p>
 <p><strong>Execution examples</strong>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>backend.scripts.etl_agg_program_history<span class="w"> </span><span class="m">2021</span>-01-07
 python<span class="w"> </span>-m<span class="w"> </span>backend.scripts.etl_agg_program_history<span class="w"> </span><span class="m">2021</span>-01-01<span class="w"> </span><span class="m">2021</span>-01-31
 </pre></div>
 </div>
 <p>—</p>
-<p>##### Date Range Resolution (Full Backfill)</p>
+<p><strong>Date Range Resolution (Full Backfill)</strong></p>
 <p>When no dates are provided, the script determines the minimum and maximum
 available dates directly from the source data.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">def</span><span class="w"> </span><span class="nf">get_date_range</span><span class="p">():</span>
@@ -438,7 +471,7 @@ available dates directly from the source data.</p>
 </pre></div>
 </div>
 <p>—</p>
-<p>##### Program History Extraction</p>
+<p><strong>Program History Extraction</strong></p>
 <p>Extracts machine program execution intervals and computes the total duration
 (in seconds) of each program per day.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">def</span><span class="w"> </span><span class="nf">extract_data</span><span class="p">(</span><span class="n">start_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -462,7 +495,7 @@ available dates directly from the source data.</p>
 </pre></div>
 </div>
 <p>—</p>
-<p>##### Load – Machine Program Data</p>
+<p><strong>Load – Machine Program Data</strong></p>
 <p>Stores aggregated program execution durations into the aggregation database.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">def</span><span class="w"> </span><span class="nf">load_data</span><span class="p">(</span><span class="n">transformed_data</span><span class="p">):</span>
 <span class="linenos"> 2</span>    <span class="n">session</span> <span class="o">=</span> <span class="n">Session</span><span class="p">(</span><span class="n">agg_engine</span><span class="p">)</span>
@@ -480,7 +513,7 @@ available dates directly from the source data.</p>
 </pre></div>
 </div>
 <p>—</p>
-<p>##### ETL Orchestration</p>
+<p><strong>ETL Orchestration</strong></p>
 <p>Coordinates extraction and loading steps for the selected date range.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="k">def</span><span class="w"> </span><span class="nf">run_etl</span><span class="p">(</span><span class="n">start_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
 <span class="linenos">2</span>    <span class="c1"># Resolves date range</span>
@@ -490,7 +523,7 @@ available dates directly from the source data.</p>
 </pre></div>
 </div>
 <p>—</p>
-<p>##### Command-Line Entry Point</p>
+<p><strong>Command-Line Entry Point</strong></p>
 <p>Allows execution as a standalone script or module.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
 <span class="linenos"> 2</span>    <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
@@ -505,33 +538,33 @@ available dates directly from the source data.</p>
 </pre></div>
 </div>
 <p>—
-### Sensor Statistics ETL Script</p>
-<p>#### File: <code class="docutils literal notranslate"><span class="pre">etl_agg_sensor_stats.py</span></code></p>
+Sensor Statistics ETL Script
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~</p>
+<p><strong>File:</strong> <code class="docutils literal notranslate"><span class="pre">etl_agg_sensor_stats.py</span></code></p>
 <p>This script performs an <strong>ETL (Extract, Transform, Load)</strong> process to compute
 hourly statistics for a specific machine sensor, currently configured for
 <code class="docutils literal notranslate"><span class="pre">TEMPERATURA_BASE</span></code>.</p>
 <p>Raw high-frequency sensor readings are extracted from the production database,
 aggregated on an hourly basis, and stored in the aggregation database table:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">agg_sensor_stats</span></code> – hourly min, max, average, standard deviation and
-number of readings per sensor</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">agg_sensor_stats</span></code></p></li>
 </ul>
-<p>The script supports <strong>single-day execution</strong>, <strong>date ranges</strong>, and <strong>full
-historical backfills</strong>.</p>
+<p>The script supports single-day execution, date ranges, and full
+historical backfills.</p>
 <p><strong>Execution examples</strong>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>backend.scripts.etl_agg_sensor_stats<span class="w"> </span><span class="m">2021</span>-01-07
 python<span class="w"> </span>-m<span class="w"> </span>backend.scripts.etl_agg_sensor_stats<span class="w"> </span><span class="m">2021</span>-01-01<span class="w"> </span><span class="m">2021</span>-01-31
 </pre></div>
 </div>
 <p>—</p>
-<p>##### Sensor Configuration</p>
+<p><strong>Sensor Configuration</strong></p>
 <p>The ETL process is parameterized by a single sensor name. At present, the
 script focuses on the base temperature sensor.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="n">SENSOR_OF_CHOICE</span> <span class="o">=</span> <span class="s1">&#39;TEMPERATURA_BASE&#39;</span>
 </pre></div>
 </div>
 <p>—</p>
-<p>##### Sensor Data Extraction</p>
+<p><strong>Sensor Data Extraction</strong></p>
 <p>Extracts raw sensor readings (timestamp and value) from the production
 database, optionally filtered by date or date range.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">def</span><span class="w"> </span><span class="nf">extract_data</span><span class="p">(</span><span class="n">start_date</span><span class="p">,</span> <span class="n">end_date</span><span class="p">):</span>
@@ -547,7 +580,7 @@ database, optionally filtered by date or date range.</p>
 </pre></div>
 </div>
 <p>—</p>
-<p>##### Data Transformation (Hourly Aggregation)</p>
+<p><strong>Data Transformation (Hourly Aggregation)</strong></p>
 <p>Groups raw sensor readings by hour and computes statistical metrics for each
 hourly interval.</p>
 <p>The following values are calculated:</p>
@@ -572,7 +605,7 @@ hourly interval.</p>
 </pre></div>
 </div>
 <p>—</p>
-<p>##### Load – Aggregated Sensor Statistics</p>
+<p><strong>Load – Aggregated Sensor Statistics</strong></p>
 <p>Stores the computed hourly statistics into the aggregation database using
 <strong>upsert semantics</strong> to avoid duplicate entries.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">def</span><span class="w"> </span><span class="nf">load_data</span><span class="p">(</span><span class="n">transformed_data</span><span class="p">):</span>
@@ -596,7 +629,7 @@ hourly interval.</p>
 </pre></div>
 </div>
 <p>—</p>
-<p>##### ETL Orchestration</p>
+<p><strong>ETL Orchestration</strong></p>
 <p>Coordinates the extract, transform, and load steps for the selected date range
 and logs progress and errors.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="k">def</span><span class="w"> </span><span class="nf">run_etl</span><span class="p">(</span><span class="n">start_date</span><span class="o">=</span><span class="kc">None</span><span class="p">,</span> <span class="n">end_date</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
@@ -607,7 +640,7 @@ and logs progress and errors.</p>
 </pre></div>
 </div>
 <p>—</p>
-<p>##### Command-Line Entry Point</p>
+<p><strong>Command-Line Entry Point</strong></p>
 <p>Allows execution as a standalone script or module.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
 <span class="linenos"> 2</span>    <span class="n">logging</span><span class="o">.</span><span class="n">basicConfig</span><span class="p">(</span><span class="n">level</span><span class="o">=</span><span class="n">logging</span><span class="o">.</span><span class="n">INFO</span><span class="p">)</span>
@@ -622,24 +655,25 @@ and logs progress and errors.</p>
 </pre></div>
 </div>
 <p>—
-### Machine Utilization ETL Script</p>
-<p>#### File: <code class="docutils literal notranslate"><span class="pre">etl_agg_utilization.py</span></code></p>
+Machine Utilization ETL Script
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~</p>
+<p><strong>File:</strong> <code class="docutils literal notranslate"><span class="pre">etl_agg_utilization.py</span></code></p>
 <p>This script performs an <strong>ETL (Extract, Transform, Load)</strong> process to calculate
 daily machine utilization metrics. It analyzes machine activity logs to derive
 the total number of <strong>running hours</strong> and <strong>downtime hours</strong> per day.</p>
 <p>The computed metrics are stored in the aggregation database table:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">agg_machine_activity_daily</span></code> – daily machine utilization summary</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">agg_machine_activity_daily</span></code></p></li>
 </ul>
-<p>The script supports <strong>single-day execution</strong>, <strong>date ranges</strong>, and <strong>full
-historical backfills</strong>.</p>
+<p>The script supports single-day execution, date ranges, and full
+historical backfills.</p>
 <p><strong>Execution examples</strong>:</p>
 <div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>python<span class="w"> </span>-m<span class="w"> </span>backend.scripts.etl_agg_utilization<span class="w"> </span><span class="m">2021</span>-01-15
 python<span class="w"> </span>-m<span class="w"> </span>backend.scripts.etl_agg_utilization<span class="w"> </span><span class="m">2021</span>-01-01<span class="w"> </span><span class="m">2021</span>-01-31
 </pre></div>
 </div>
 <p>—</p>
-<p>##### Utilization Data Extraction</p>
+<p><strong>Utilization Data Extraction</strong></p>
 <p>Extracts raw machine activity timestamps from both numeric and string variable
 logs, combines them into a unified timeline, and calculates daily operation
 intervals.</p>
@@ -665,7 +699,7 @@ inactivity gaps greater than 10 minutes.</p>
 </pre></div>
 </div>
 <p>—</p>
-<p>##### Load – Daily Machine Utilization</p>
+<p><strong>Load – Daily Machine Utilization</strong></p>
 <p>Stores daily machine utilization metrics in the aggregation database. The script
 uses <strong>upsert semantics</strong> to ensure idempotent execution.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">def</span><span class="w"> </span><span class="nf">load_data</span><span class="p">(</span><span class="n">transformed_data</span><span class="p">):</span>
@@ -684,7 +718,7 @@ uses <strong>upsert semantics</strong> to ensure idempotent execution.</p>
 </pre></div>
 </div>
 <p>—</p>
-<p>##### ETL Orchestration</p>
+<p><strong>ETL Orchestration</strong></p>
 <p>Determines the execution mode (single date, date range, or full backfill),
 coordinates extraction and loading steps, and logs execution progress.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">def</span><span class="w"> </span><span class="nf">run_etl</span><span class="p">():</span>
@@ -700,7 +734,7 @@ coordinates extraction and loading steps, and logs execution progress.</p>
 </pre></div>
 </div>
 <p>—</p>
-<p>##### Command-Line Entry Point</p>
+<p><strong>Command-Line Entry Point</strong></p>
 <p>Allows execution as a standalone script or module.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
 <span class="linenos">2</span>    <span class="n">logger</span> <span class="o">=</span> <span class="n">logging</span><span class="o">.</span><span class="n">getLogger</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
@@ -714,8 +748,10 @@ Core Backend Code
 ORM models, and shared infrastructure. These files are imported by API services
 and backend scripts.</p>
 <p>—</p>
-<p>### Database Connection Layer</p>
-<p>#### File: <code class="docutils literal notranslate"><span class="pre">database.py</span></code></p>
+</section>
+<section id="database-connection-layer">
+<h3>Database Connection Layer<a class="headerlink" href="#database-connection-layer" title="Link to this heading"></a></h3>
+<p><strong>File:</strong> <code class="docutils literal notranslate"><span class="pre">database.py</span></code></p>
 <p>This module centralizes all database connection logic used by the backend. It
 manages connections to:</p>
 <ul class="simple">
@@ -724,7 +760,7 @@ manages connections to:</p>
 </ul>
 <p>It is designed to be compatible with <strong>FastAPI dependency injection</strong>.</p>
 <p>—</p>
-<p>##### Production Database Connection</p>
+<p><strong>Production Database Connection</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">import</span><span class="w"> </span><span class="nn">os</span>
 <span class="linenos"> 2</span><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy</span><span class="w"> </span><span class="kn">import</span> <span class="n">create_engine</span>
 <span class="linenos"> 3</span><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="n">sessionmaker</span>
@@ -765,7 +801,7 @@ manages connections to:</p>
 </pre></div>
 </div>
 <p>—</p>
-<p>##### Aggregation Database Connection</p>
+<p><strong>Aggregation Database Connection</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="n">agg_db_name</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">getenv</span><span class="p">(</span><span class="s2">&quot;AGG_DB_NAME&quot;</span><span class="p">)</span>
 <span class="linenos"> 2</span>
 <span class="linenos"> 3</span><span class="n">AGG_DATABASE_URL</span> <span class="o">=</span> <span class="p">(</span>
@@ -795,12 +831,14 @@ manages connections to:</p>
 </pre></div>
 </div>
 <p>—</p>
-<p>### ORM Models</p>
-<p>#### File: <code class="docutils literal notranslate"><span class="pre">models.py</span></code></p>
-<p>This module defines <strong>SQLAlchemy ORM models</strong> that map Python classes to database
+</section>
+<section id="orm-models">
+<h3>ORM Models<a class="headerlink" href="#orm-models" title="Link to this heading"></a></h3>
+<p><strong>File:</strong> <code class="docutils literal notranslate"><span class="pre">models.py</span></code></p>
+<p>This module defines SQLAlchemy ORM models that map Python classes to database
 tables and views, using SQLAlchemy 2.0 typed mappings.</p>
 <p>—</p>
-<p>##### Declarative Base</p>
+<p><strong>Declarative Base</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="kn">from</span><span class="w"> </span><span class="nn">sqlalchemy.orm</span><span class="w"> </span><span class="kn">import</span> <span class="n">DeclarativeBase</span>
 <span class="linenos">2</span>
 <span class="linenos">3</span><span class="k">class</span><span class="w"> </span><span class="nc">Base</span><span class="p">(</span><span class="n">DeclarativeBase</span><span class="p">):</span>
@@ -808,7 +846,7 @@ tables and views, using SQLAlchemy 2.0 typed mappings.</p>
 </pre></div>
 </div>
 <p>—</p>
-<p>##### Production Database Models</p>
+<p><strong>Production Database Models</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="k">class</span><span class="w"> </span><span class="nc">Variable</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
 <span class="linenos">2</span>    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;variable&quot;</span>
 <span class="linenos">3</span>
@@ -818,7 +856,7 @@ tables and views, using SQLAlchemy 2.0 typed mappings.</p>
 </pre></div>
 </div>
 <p>—</p>
-<p>##### Aggregation Database Models</p>
+<p><strong>Aggregation Database Models</strong></p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="k">class</span><span class="w"> </span><span class="nc">AggSensorStats</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
 <span class="linenos">2</span>    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s2">&quot;agg_sensor_stats&quot;</span>
 <span class="linenos">3</span>
@@ -831,8 +869,9 @@ tables and views, using SQLAlchemy 2.0 typed mappings.</p>
 </pre></div>
 </div>
 <p>—
-### API Application Entry Point</p>
-<p>#### File: <code class="docutils literal notranslate"><span class="pre">main.py</span></code></p>
+API Application Entry Point
+~~~~~~~~~~~~~~~~~~~~~~~~~~</p>
+<p><strong>File:</strong> <code class="docutils literal notranslate"><span class="pre">main.py</span></code></p>
 <p>This module defines the <strong>FastAPI application entry point</strong> and exposes all
 public REST endpoints used by the frontend and external consumers.</p>
 <p>It is responsible for:</p>
@@ -843,10 +882,10 @@ public REST endpoints used by the frontend and external consumers.</p>
 <li><p>Managing database dependencies through SQLAlchemy sessions</p></li>
 <li><p>Handling errors and HTTP responses consistently</p></li>
 </ul>
-<p>The API provides read-only access to both the <strong>production database</strong> and the
-<strong>aggregation database</strong>.</p>
+<p>The API provides read-only access to both the production database and the
+aggregation database.</p>
 <p>—</p>
-<p>##### Application Setup</p>
+<p><strong>Application Setup</strong></p>
 <p>Initializes the FastAPI application with metadata and configures <strong>CORS</strong> to
 allow requests from the frontend application.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">from</span><span class="w"> </span><span class="nn">fastapi</span><span class="w"> </span><span class="kn">import</span> <span class="n">FastAPI</span>
@@ -866,7 +905,7 @@ allow requests from the frontend application.</p>
 </pre></div>
 </div>
 <p>—</p>
-<p>##### Response Models (Pydantic Schemas)</p>
+<p><strong>Response Models (Pydantic Schemas)</strong></p>
 <p>Defines response schemas used to validate and serialize API responses.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="kn">from</span><span class="w"> </span><span class="nn">pydantic</span><span class="w"> </span><span class="kn">import</span> <span class="n">BaseModel</span>
 <span class="linenos"> 2</span><span class="kn">from</span><span class="w"> </span><span class="nn">typing</span><span class="w"> </span><span class="kn">import</span> <span class="n">Optional</span>
@@ -881,7 +920,7 @@ allow requests from the frontend application.</p>
 </pre></div>
 </div>
 <p>—</p>
-<p>##### Health Check Endpoint</p>
+<p><strong>Health Check Endpoint</strong></p>
 <p>Simple endpoint to verify that the API and database connection are operational.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/&quot;</span><span class="p">)</span>
 <span class="linenos"> 2</span><span class="k">def</span><span class="w"> </span><span class="nf">home</span><span class="p">():</span>
@@ -900,7 +939,7 @@ allow requests from the frontend application.</p>
 </pre></div>
 </div>
 <p>—</p>
-<p>##### Aggregated Sensor Statistics Endpoint</p>
+<p><strong>Aggregated Sensor Statistics Endpoint</strong></p>
 <p>Returns hourly aggregated sensor statistics for a given date and sensor.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/api/v1/temperature&quot;</span><span class="p">,</span> <span class="n">response_model</span><span class="o">=</span><span class="n">List</span><span class="p">[</span><span class="n">SensorStatsOut</span><span class="p">])</span>
 <span class="linenos"> 2</span><span class="k">def</span><span class="w"> </span><span class="nf">get_temperature_stats</span><span class="p">(</span>
@@ -924,7 +963,7 @@ allow requests from the frontend application.</p>
 </pre></div>
 </div>
 <p>—</p>
-<p>##### Machine Utilization Endpoint</p>
+<p><strong>Machine Utilization Endpoint</strong></p>
 <p>Exposes daily machine utilization metrics derived from the aggregation
 database.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/api/v1/machine_util&quot;</span><span class="p">,</span> <span class="n">response_model</span><span class="o">=</span><span class="n">List</span><span class="p">[</span><span class="n">MachineUtilOut</span><span class="p">])</span>
@@ -946,7 +985,7 @@ database.</p>
 </pre></div>
 </div>
 <p>—</p>
-<p>##### Alerts Endpoints</p>
+<p><strong>Alerts Endpoints</strong></p>
 <p>Provides both <strong>raw</strong> and <strong>aggregated</strong> alert information.</p>
 <ul class="simple">
 <li><p>Aggregated daily counts</p></li>
@@ -970,7 +1009,7 @@ database.</p>
 </pre></div>
 </div>
 <p>—</p>
-<p>##### Machine Program Usage Endpoint</p>
+<p><strong>Machine Program Usage Endpoint</strong></p>
 <p>Returns program execution duration per day from the aggregation database.</p>
 <div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="nd">@app</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s2">&quot;/api/v1/machine_program&quot;</span><span class="p">,</span> <span class="n">response_model</span><span class="o">=</span><span class="n">List</span><span class="p">[</span><span class="n">MachineProgramOut</span><span class="p">])</span>
 <span class="linenos"> 2</span><span class="k">def</span><span class="w"> </span><span class="nf">get_machine_program</span><span class="p">(</span>
@@ -989,14 +1028,7 @@ database.</p>
 </pre></div>
 </div>
 <p>—</p>
-<p>##### Design Notes</p>
-<ul class="simple">
-<li><p>All endpoints are <strong>read-only</strong></p></li>
-<li><p>SQL is written explicitly using <code class="docutils literal notranslate"><span class="pre">text()</span></code> for clarity and performance</p></li>
-<li><p>Dependency injection ensures safe session lifecycle management</p></li>
-<li><p>Errors are translated into proper HTTP responses using <code class="docutils literal notranslate"><span class="pre">HTTPException</span></code></p></li>
-</ul>
-<p>—</p>
+</section>
 </section>
 </section>
 

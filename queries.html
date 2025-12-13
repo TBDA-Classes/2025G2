@@ -124,10 +124,41 @@
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="code.html">CODE REFERENCE</a><ul>
-<li class="toctree-l2"><a class="reference internal" href="code.html#backend-scripts">Backend Scripts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="code.html#backend-scripts">Backend Scripts</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="code.html#aggregation-database-creation-script">Aggregation Database Creation Script</a></li>
+<li class="toctree-l3"><a class="reference internal" href="code.html#database-connection-layer">Database Connection Layer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="code.html#orm-models">ORM Models</a></li>
 </ul>
 </li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">MAIN QUERIES</a></li>
+</ul>
+</li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">MAIN QUERIES</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#machine-utilization-queries">Machine Utilization Queries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#machine-utilization-percentages">Machine Utilization (Percentages)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#program-history-queries">Program History Queries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#program-history-24-hours">Program History (24 Hours)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#temperature-queries">Temperature Queries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#temperature-history-24-hours">Temperature History (24 Hours)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#energy-consumption-queries">Energy Consumption Queries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#hourly-consumption">Hourly Consumption</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#energy-by-shift">Energy by Shift</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#alarm-queries">Alarm Queries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#alarm-count-by-category">Alarm Count by Category</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#alarm-count-by-shift-and-category">Alarm Count by Shift and Category</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#full-list-of-alerts">Full List of Alerts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#alarm-detail-for-a-specific-code">Alarm Detail for a Specific Code</a></li>
+</ul>
+</li>
+</ul>
+</li>
 </ul>
 
         </div>
@@ -164,8 +195,10 @@ analysis, exploration, and validation phases of the project.</p>
 - Derive utilization, energy, and alert metrics
 - Prototype aggregations later implemented in ETL scripts</p>
 <p>—</p>
-<p>## Machine Utilization Queries</p>
-<p>### Machine Utilization (Percentages)</p>
+<section id="machine-utilization-queries">
+<h2>Machine Utilization Queries<a class="headerlink" href="#machine-utilization-queries" title="Link to this heading"></a></h2>
+<section id="machine-utilization-percentages">
+<h3>Machine Utilization (Percentages)<a class="headerlink" href="#machine-utilization-percentages" title="Link to this heading"></a></h3>
 <p>This query calculates <strong>daily machine utilization percentages</strong> by classifying
 10-minute activity blocks into operational states and aggregating them per day.</p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">WITH</span><span class="w"> </span><span class="n">RangoTiempo</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
@@ -260,8 +293,12 @@ analysis, exploration, and validation phases of the project.</p>
 </pre></div>
 </div>
 <p>—</p>
-<p>## Program History Queries</p>
-<p>### Program History (24 Hours)</p>
+</section>
+</section>
+<section id="program-history-queries">
+<h2>Program History Queries<a class="headerlink" href="#program-history-queries" title="Link to this heading"></a></h2>
+<section id="program-history-24-hours">
+<h3>Program History (24 Hours)<a class="headerlink" href="#program-history-24-hours" title="Link to this heading"></a></h3>
 <p>Computes <strong>daily program execution durations</strong> by reconstructing program state
 intervals and cutting them by calendar day.</p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">WITH</span><span class="w"> </span><span class="n">RangoTiempo</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="p">(</span>
@@ -302,8 +339,12 @@ intervals and cutting them by calendar day.</p>
 </pre></div>
 </div>
 <p>—</p>
-<p>## Temperature Queries</p>
-<p>### Temperature History (24 Hours)</p>
+</section>
+</section>
+<section id="temperature-queries">
+<h2>Temperature Queries<a class="headerlink" href="#temperature-queries" title="Link to this heading"></a></h2>
+<section id="temperature-history-24-hours">
+<h3>Temperature History (24 Hours)<a class="headerlink" href="#temperature-history-24-hours" title="Link to this heading"></a></h3>
 <p>Retrieves <strong>raw temperature sensor readings</strong> for a set of temperature-related
 variables over a given time window.</p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="linenos"> 1</span><span class="k">SELECT</span>
@@ -324,8 +365,12 @@ variables over a given time window.</p>
 </pre></div>
 </div>
 <p>—</p>
-<p>## Energy Consumption Queries</p>
-<p>### Hourly Consumption</p>
+</section>
+</section>
+<section id="energy-consumption-queries">
+<h2>Energy Consumption Queries<a class="headerlink" href="#energy-consumption-queries" title="Link to this heading"></a></h2>
+<section id="hourly-consumption">
+<h3>Hourly Consumption<a class="headerlink" href="#hourly-consumption" title="Link to this heading"></a></h3>
 <p>Computes <strong>hourly energy consumption (kWh)</strong> based on motor utilization
 percentages and nominal power.</p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="k">SELECT</span>
@@ -337,7 +382,9 @@ percentages and nominal power.</p>
 </pre></div>
 </div>
 <p>—</p>
-<p>### Energy by Shift</p>
+</section>
+<section id="energy-by-shift">
+<h3>Energy by Shift<a class="headerlink" href="#energy-by-shift" title="Link to this heading"></a></h3>
 <p>Aggregates energy consumption by <strong>production shift</strong> (Day, Swing, Night).</p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="k">SELECT</span>
 <span class="linenos">2</span><span class="w">  </span><span class="n">shift_name</span><span class="p">,</span>
@@ -348,8 +395,12 @@ percentages and nominal power.</p>
 </pre></div>
 </div>
 <p>—</p>
-<p>## Alarm Queries</p>
-<p>### Alarm Count by Category</p>
+</section>
+</section>
+<section id="alarm-queries">
+<h2>Alarm Queries<a class="headerlink" href="#alarm-queries" title="Link to this heading"></a></h2>
+<section id="alarm-count-by-category">
+<h3>Alarm Count by Category<a class="headerlink" href="#alarm-count-by-category" title="Link to this heading"></a></h3>
 <p>Counts alarms grouped by <strong>severity category</strong>.</p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="k">SELECT</span>
 <span class="linenos">2</span><span class="w">    </span><span class="n">category</span><span class="p">,</span>
@@ -359,7 +410,9 @@ percentages and nominal power.</p>
 </pre></div>
 </div>
 <p>—</p>
-<p>### Alarm Count by Shift and Category</p>
+</section>
+<section id="alarm-count-by-shift-and-category">
+<h3>Alarm Count by Shift and Category<a class="headerlink" href="#alarm-count-by-shift-and-category" title="Link to this heading"></a></h3>
 <p>Counts alarms per <strong>shift</strong> and <strong>severity category</strong>.</p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="k">SELECT</span>
 <span class="linenos">2</span><span class="w">    </span><span class="n">shift</span><span class="p">,</span>
@@ -370,7 +423,9 @@ percentages and nominal power.</p>
 </pre></div>
 </div>
 <p>—</p>
-<p>### Full List of Alerts</p>
+</section>
+<section id="full-list-of-alerts">
+<h3>Full List of Alerts<a class="headerlink" href="#full-list-of-alerts" title="Link to this heading"></a></h3>
 <p>Retrieves a <strong>chronological list of alarms</strong> with classification.</p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="k">SELECT</span>
 <span class="linenos">2</span><span class="w">    </span><span class="n">category</span><span class="w"> </span><span class="k">AS</span><span class="w"> </span><span class="n">alert_type</span><span class="p">,</span>
@@ -381,7 +436,9 @@ percentages and nominal power.</p>
 </pre></div>
 </div>
 <p>—</p>
-<p>### Alarm Detail for a Specific Code</p>
+</section>
+<section id="alarm-detail-for-a-specific-code">
+<h3>Alarm Detail for a Specific Code<a class="headerlink" href="#alarm-detail-for-a-specific-code" title="Link to this heading"></a></h3>
 <p>Filters alarms for a <strong>specific alarm code and date</strong>.</p>
 <div class="highlight-sql notranslate"><div class="highlight"><pre><span></span><span class="linenos">1</span><span class="k">SELECT</span>
 <span class="linenos">2</span><span class="w">    </span><span class="n">alarm_code</span><span class="p">,</span>
@@ -392,6 +449,8 @@ percentages and nominal power.</p>
 <span class="linenos">7</span><span class="w">  </span><span class="k">AND</span><span class="w"> </span><span class="k">timestamp</span><span class="p">::</span><span class="nb">date</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="p">:</span><span class="n">target_date</span><span class="p">;</span>
 </pre></div>
 </div>
+</section>
+</section>
 </section>
 
 
