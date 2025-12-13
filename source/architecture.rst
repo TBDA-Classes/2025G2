@@ -96,7 +96,7 @@ frontend components.
 
 User Interface Flow Integration
 -------------------------------
-    The architecture was heavily shaped by the UI/UX design process:
+The architecture was heavily shaped by the UI/UX design process:
   * The Dashboard requires:
         - 24-hour machine utilization data
         - 10-minute time window timeline
@@ -116,7 +116,7 @@ User Interface Flow Integration
 Backend endpoints and aggregation tables were designed specifically to support these
 data flows efficiently.
 
-**The dashboard UI is described in detail in the :doc:`ui_ux` section**
+**The dashboard UI is described in detail in the** :doc:`ui_ux` **section**
 
 
 
