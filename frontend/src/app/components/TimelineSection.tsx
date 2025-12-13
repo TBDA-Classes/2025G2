@@ -51,7 +51,7 @@ export default function TimelineSection({ date }: TimelineSectionProps) {
       {/* Section Header with Time Picker */}
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-2xl font-semibold text-slate-900">
-          Machine Status Timeline
+          Machine Operation Timeline
         </h2>
         
         {/* Time Picker */}

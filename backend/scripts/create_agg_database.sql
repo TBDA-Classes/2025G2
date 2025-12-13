@@ -40,8 +40,12 @@ CREATE TABLE IF NOT EXISTS agg_sensor_stats (
     PRIMARY KEY (sensor_name, dt)
 );
 
--- TABLE alerts
--- Purpose: Store daily alerts (only the ones of importance)
+-- B-Tree indexes for fast date-based lookups
+-- Tailored for our request: GET sensor X's data for date Y
+CREATE INDEX IF NOT EXISTS idx_sensor_date ON agg_sensor_stats(sensor_name, CAST(dt AS DATE));
+
+-- Table: alerts_daily_count
+-- Purpose: Daily summary of alerts by category (used for the alerts summary box)
 
 CREATE TABLE IF NOT EXISTS alerts_daily_count(
     day DATE NOT NULL,
@@ -50,6 +54,10 @@ CREATE TABLE IF NOT EXISTS alerts_daily_count(
     amount INT NOT NULL,
     PRIMARY KEY (day, alert_type)
 );
+
+
+-- Table: alerts_detail
+-- Purpose: Individual alert records with timestamps (used for the alerts list)
 
 CREATE TABLE IF NOT EXISTS alerts_detail(
     id SERIAL PRIMARY KEY,
@@ -61,22 +69,11 @@ CREATE TABLE IF NOT EXISTS alerts_detail(
     alarm_description TEXT,
     raw_elem_json JSONB
 );
+
 CREATE INDEX idx_alerts_detail_day_type ON alerts_detail (day, alert_type);
 
-
-CREATE TABLE IF NOT EXISTS machine_utilization(
-    id SERIAL PRIMARY KEY,
-    
-    machine_state VARCHAR(20) NOT NULL
-        CHECK(machine_state in ('down', 'running')),
-    state_start_time TIMESTAMP NOT NULL,
-    state_end_time TIMESTAMP NOT NULL,
-    
-    dt DATE GENERATED ALWAYS AS (state_start_time::DATE) STORED,
-
-    duration INTERVAL
-        GENERATED ALWAYS AS (state_end_time - state_start_time) STORED
-);
+-- Table: machine_program_data
+-- Purpose: Program usage per day (P0, P1, etc. and their run duration)
 
 CREATE TABLE IF NOT EXISTS machine_program_data(
     id SERIAL PRIMARY KEY,
@@ -85,35 +82,47 @@ CREATE TABLE IF NOT EXISTS machine_program_data(
     duration_seconds BIGINT NOT NULL CHECK (duration_seconds >= 0)
 );
 
--- =============================================================================
--- INDEXES
--- =============================================================================
+-- Table: energy_consumption_hourly
+-- Purpose: Estimated hourly energy consumption based on motor utilization
 
--- B-Tree indexes for fast date-based lookups
--- Tailored for our request: GET sensor X's data for date Y
-CREATE INDEX IF NOT EXISTS idx_sensor_date ON agg_sensor_stats(sensor_name, CAST(dt AS DATE));
+CREATE TABLE IF NOT EXISTS energy_consumption_hourly (
+    hour_ts TIMESTAMP PRIMARY KEY,
+    energy_kwh NUMERIC NOT NULL
+);
 
 
 -- =============================================================================
 -- VIEWS
 -- =============================================================================
 
--- -----------------------------------------------------------------------------
--- View: v_data_status
--- Purpose: Quick overview of data availability. Gives summary of available data
--- -----------------------------------------------------------------------------
 
 DROP VIEW IF EXISTS v_data_status;
 
+-- Purpose: Quick overview of data availability across all aggregated tables
+-- Uses UNION ALL for efficient min/max scans on each table's date column
 CREATE OR REPLACE VIEW v_data_status AS
+WITH all_dates AS (
+    SELECT dt::date AS dt FROM agg_sensor_stats
+    UNION ALL
+    SELECT dt FROM agg_machine_activity_daily
+    UNION ALL
+    SELECT day FROM alerts_daily_count
+    UNION ALL
+    SELECT dt::date FROM alerts_detail
+    UNION ALL
+    SELECT dt FROM machine_program_data
+    UNION ALL
+    SELECT hour_ts::date FROM energy_consumption_hourly
+)
 SELECT 
-    'agg_sensor_stats' as table_name,
     MIN(dt) as first_date,
     MAX(dt) as last_date,
-    COUNT(*) as total_records,
-    COUNT(DISTINCT sensor_name) as number_of_sensors,
-    MAX(last_updated_at) as last_updated
-FROM agg_sensor_stats;
+    (SELECT COUNT(*) FROM agg_sensor_stats) as sensor_records,
+    (SELECT COUNT(*) FROM agg_machine_activity_daily) as utilization_records,
+    (SELECT COUNT(*) FROM alerts_detail) as alert_records,
+    (SELECT COUNT(*) FROM machine_program_data) as program_records,
+    (SELECT COUNT(*) FROM energy_consumption_hourly) as energy_records
+FROM all_dates;
 
 
 -- =============================================================================
@@ -125,5 +134,11 @@ BEGIN
     RAISE NOTICE 'Tables created:';
     RAISE NOTICE '  - agg_machine_activity_daily';
     RAISE NOTICE '  - agg_sensor_stats';
+    RAISE NOTICE '  - alerts_daily_count';
+    RAISE NOTICE '  - alerts_detail';
+    RAISE NOTICE '  - machine_program_data';
+    RAISE NOTICE '  - energy_consumption_hourly';
+    RAISE NOTICE 'Views created:';
+    RAISE NOTICE '  - v_data_status';
 END $$;
 

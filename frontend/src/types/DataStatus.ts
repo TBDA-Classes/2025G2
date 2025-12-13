@@ -1,7 +1,9 @@
-export interface DataStatus{
-    table_name: string;
+export interface DataStatus {
     first_date: string;
     last_date: string;
-    total_records: number;
-    number_of_sensors: number;
+    sensor_records: number;
+    utilization_records: number;
+    alert_records: number;
+    program_records: number;
+    energy_records: number;
 }

@@ -5,6 +5,11 @@ from sqlalchemy.dialects.postgresql import JSONB
 from typing import Optional, Any
 
 
+# The base/parent which our models inherits from
+class Base(DeclarativeBase):
+    pass
+
+
 # IMPORTANT: 
 
 # mapped_column(): Defines the column settings like PK, FK
@@ -13,16 +18,12 @@ from typing import Optional, Any
 # back_populates: Two-way relationship, so both sides can access each other.
 
 
-# The base/parent which our models inherits from
-class Base(DeclarativeBase):
-    pass
 
-class Period(Base):
-    __tablename__ = "periods"
+########################################################################################
+############################ MODELS FROM PRODUCTION DB #################################
+########################################################################################
 
-    id: Mapped[int] = mapped_column(primary_key=True)
-    name: Mapped[str] #Mapped[] is a type hint 
-
+# Because of the complexity of the queries, we have not used the production models as ORMs.
 
 class Variable(Base):
     __tablename__ = "variable"
@@ -67,6 +68,8 @@ class VariableLogString(Base):
 
 # See table descriptions in backend/scripts/create_agg_database.sql
 
+
+# Finding utilization
 class AggMachineActivityDaily(Base):
     """
     Example row:
@@ -101,27 +104,6 @@ class AggSensorStats(Base):
     std_dev  : Mapped[Optional[float]]
     readings_count: Mapped[Optional[int]]
     last_updated_at: Mapped[Optional[datetime]]
-
-
-
-
-class MachineUtilization(Base):
-    """
-    Machine utilization tracking - stores operation and downtime periods
-    Example row:
-    id=1, machine_state='running', state_start_time='2021-01-15 08:00:00',
-    state_end_time='2021-01-15 17:00:00'
-    Note: dt and duration are auto-generated columns
-    """
-    __tablename__ = "machine_utilization"
-    
-    id: Mapped[int] = mapped_column(primary_key=True)
-    machine_state: Mapped[str]
-    state_start_time: Mapped[datetime]
-    state_end_time: Mapped[datetime]
-    # Note: dt and duration are generated columns in the database, 
-    # so we don't need to define them here for inserts
-
 
 class DataStatus(Base):
     """
@@ -183,4 +165,13 @@ class AlertsDetail(Base):
     raw_elem_json: Mapped[Optional[Any]] = mapped_column(JSONB)  # JSONB type
 
 
-
+class EnergyConsumptionHourly(Base):
+    """
+    Hourly energy consumption aggregated from motor utilization data.
+    Example row:
+    hour_ts='2022-02-23 14:00:00', energy_kwh=12.345
+    """
+    __tablename__ = "energy_consumption_hourly"
+    
+    hour_ts: Mapped[datetime] = mapped_column(primary_key=True)
+    energy_kwh: Mapped[float]

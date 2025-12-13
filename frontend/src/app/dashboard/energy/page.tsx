@@ -1,22 +1,17 @@
+'use client'
 
+import { useSearchParams } from 'next/navigation';
+import EnergyChart from '../../components/EnergyChart';
 
+export default function Energy() {
+    const searchParams = useSearchParams();
+    const date = searchParams.get('date') || "2021-09-14";
 
-export default async function Energy(){
-    try{
-        return(
-            <div>
-
-            </div>
-        )
-    }
-    catch(error){
-        return (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-              <h1 className="text-2xl font-bold text-red-800 mb-2">Error</h1>
-              <p className="text-red-600">
-                Failed to load dashboard data. Make sure the backend is running and the API is accessible.
-              </p>
-            </div>
-          );
-    }
+    return (
+        <div className="space-y-6 p-6">
+            <h1 className="text-3xl font-bold text-slate-900">Energy Monitoring</h1>
+            
+            <EnergyChart date={date} />
+        </div>
+    );
 }
