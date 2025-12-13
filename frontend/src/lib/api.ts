@@ -5,6 +5,7 @@ import { MachineOperation } from "@/types/MachineOperation";
 import { MachineProgram } from "@/types/MachineProgram";
 import { AlertsDailyCount } from "@/types/AlertsDailyCount";
 import { AlertsDetail } from "@/types/AlertsDetail";
+import { EnergyConsumption } from "@/types/EnergyConsumption";
 
 // Create a base URL constant
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -102,7 +103,7 @@ export async function getDataStatus(){
 
         const data = await response.json();
 
-        return data[0] as DataStatus;
+        return data as DataStatus;
 
 
 
@@ -261,5 +262,42 @@ export async function getAlertsDetail(date: string): Promise<AlertsDetail[]> {
     } catch (error) {
         console.error("Error fetching alerts detail:", error);
         throw new Error(`Failed to fetch alerts detail: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
+}
+
+// Gets hourly energy consumption for a given date (from aggregated DB)
+export async function getEnergyConsumption(date: string): Promise<EnergyConsumption[]> {
+    if (!BASE_URL) {
+        throw new Error('API URL is not configured. Please check your environment variables.');
+    }
+    if (!date) {
+        throw new Error('Date parameter is required');
+    }
+
+    try {
+        const url = `${BASE_URL}/energy_consumption?target_date=${date}`;
+
+        const response = await fetch(url, {
+            method: "GET",
+            headers: {
+                "Content-Type": "application/json",
+            },
+        });
+
+        // No data exists for the date
+        if (response.status === 404) {
+            return [];
+        }
+
+        if (!response.ok) {
+            console.log(response);
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        return data as EnergyConsumption[];
+    } catch (error) {
+        console.error("Error fetching energy consumption:", error);
+        throw new Error(`Failed to fetch energy consumption: ${error instanceof Error ? error.message : 'Unknown error'}`);
     }
 }

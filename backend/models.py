@@ -163,3 +163,15 @@ class AlertsDetail(Base):
     alarm_code: Mapped[Optional[str]]
     alarm_description: Mapped[Optional[str]]
     raw_elem_json: Mapped[Optional[Any]] = mapped_column(JSONB)  # JSONB type
+
+
+class EnergyConsumptionHourly(Base):
+    """
+    Hourly energy consumption aggregated from motor utilization data.
+    Example row:
+    hour_ts='2022-02-23 14:00:00', energy_kwh=12.345
+    """
+    __tablename__ = "energy_consumption_hourly"
+    
+    hour_ts: Mapped[datetime] = mapped_column(primary_key=True)
+    energy_kwh: Mapped[float]

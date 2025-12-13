@@ -61,11 +61,11 @@ export default function BoxPlot({ data } : {data :Temperature[]}){
     return(
     <ResponsiveBoxPlot
         data={boxplotdata}
-        margin={{ top: 60, right: 20, bottom: 60, left: 40 }}
+        margin={{ top: 60, right: 20, bottom: 60, left: 60 }}
         quantiles={[0, 0.25, 0.5, 0.75, 1]}
         tooltip={CustomTooltip}
         axisBottom={{ legend: 'Time [h]', legendPosition: 'middle', legendOffset: 50 }}
-        axisLeft={{ legend: 'Temperature', legendPosition: 'middle', legendOffset: -50 }}
+        axisLeft={{ legend: 'Temperature [°C]', legendPosition: 'middle', legendOffset: -45 }}
         borderRadius={2}
         colors={{ scheme: 'spectral' }}
         legends={[

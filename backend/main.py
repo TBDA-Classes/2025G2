@@ -38,11 +38,13 @@ class MachineUtilOut(BaseModel):
     down_percentage : Optional[float]
 
 class DataStatusOut(BaseModel):
-    table_name: str
     first_date: str
     last_date: str
-    total_records: Optional[int]
-    number_of_sensors: Optional[int]
+    sensor_records: int
+    utilization_records: int
+    alert_records: int
+    program_records: int
+    energy_records: int
 
 
 class MachineChangeOut(BaseModel):
@@ -65,6 +67,11 @@ class AlertsDetailOut(BaseModel):
     alert_type: str
     alarm_code: Optional[str]
     alarm_description: Optional[str]
+
+
+class EnergyConsumptionOut(BaseModel):
+    hour_ts: str
+    energy_kwh: float
 
 # When you visit http://localhost:8000/ you'll see this message
 @app.get("/")
@@ -210,7 +217,7 @@ def get_machine_util(
 
 
 
-@app.get("/api/v1/data_status", response_model=List[DataStatusOut])
+@app.get("/api/v1/data_status", response_model=DataStatusOut)
 def get_data_status(
     db: Session = Depends(get_agg_db)
 ):
@@ -218,34 +225,34 @@ def get_data_status(
     Overview of available data across all aggregated tables.
     
     Returns:
-        Date range and record counts for each table, useful for the date picker.
+        Global date range (min/max across all tables) and record counts per table.
     """
     query = '''
     SELECT
-    table_name,
-    first_date,
-    last_date,
-    total_records,
-    number_of_sensors
+        first_date,
+        last_date,
+        sensor_records,
+        utilization_records,
+        alert_records,
+        program_records,
+        energy_records
     FROM v_data_status;
     '''
     try:
+        row = db.execute(text(query)).fetchone()
 
-        rows = db.execute(text(query)).fetchall()
-
-        if not rows:
-            raise HTTPException(status_code=404, detail=f"No data found")
+        if not row:
+            raise HTTPException(status_code=404, detail="No data found")
         
-        else:
-            return[DataStatusOut(
-                table_name= r.table_name,
-                first_date= str(r.first_date),
-                last_date= str(r.last_date),
-                total_records= r.total_records,
-                number_of_sensors= r.number_of_sensors
-            ) for r in rows
-            ]
-
+        return DataStatusOut(
+            first_date=str(row.first_date),
+            last_date=str(row.last_date),
+            sensor_records=row.sensor_records,
+            utilization_records=row.utilization_records,
+            alert_records=row.alert_records,
+            program_records=row.program_records,
+            energy_records=row.energy_records
+        )
     
     except HTTPException as e:
         raise e
@@ -431,6 +438,48 @@ def get_alerts_detail(
                 alert_type=r.alert_type,
                 alarm_code=r.alarm_code,
                 alarm_description=r.alarm_description
+            )
+            for r in rows
+        ]
+
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
+
+
+@app.get("/api/v1/energy_consumption", response_model=List[EnergyConsumptionOut])
+def get_energy_consumption(
+    target_date: DateType,
+    db: Session = Depends(get_agg_db)
+):
+    """
+    Hourly energy consumption for a given day.
+    
+    Params:
+        target_date: Date to query, e.g. "2022-02-23"
+    
+    Returns:
+        List of hourly records with timestamp and energy in kWh.
+    """
+
+    query = text("""
+        SELECT 
+            hour_ts,
+            energy_kwh
+        FROM energy_consumption_hourly
+        WHERE hour_ts::date = :target_date
+        ORDER BY hour_ts ASC;
+    """)
+
+    try:
+        rows = db.execute(query, {"target_date": str(target_date)}).fetchall()
+
+        if not rows:
+            return []
+
+        return [
+            EnergyConsumptionOut(
+                hour_ts=str(r.hour_ts),
+                energy_kwh=float(r.energy_kwh)
             )
             for r in rows
         ]

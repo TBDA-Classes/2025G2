@@ -82,6 +82,15 @@ CREATE TABLE IF NOT EXISTS machine_program_data(
     duration_seconds BIGINT NOT NULL CHECK (duration_seconds >= 0)
 );
 
+-- Table: energy_consumption_hourly
+-- Purpose: Estimated hourly energy consumption based on motor utilization
+
+CREATE TABLE IF NOT EXISTS energy_consumption_hourly (
+    hour_ts TIMESTAMP PRIMARY KEY,
+    energy_kwh NUMERIC NOT NULL
+);
+
+
 -- =============================================================================
 -- VIEWS
 -- =============================================================================
@@ -89,16 +98,31 @@ CREATE TABLE IF NOT EXISTS machine_program_data(
 
 DROP VIEW IF EXISTS v_data_status;
 
--- Purpose: Quick overview of data availability. Gives summary of available data
+-- Purpose: Quick overview of data availability across all aggregated tables
+-- Uses UNION ALL for efficient min/max scans on each table's date column
 CREATE OR REPLACE VIEW v_data_status AS
+WITH all_dates AS (
+    SELECT dt::date AS dt FROM agg_sensor_stats
+    UNION ALL
+    SELECT dt FROM agg_machine_activity_daily
+    UNION ALL
+    SELECT day FROM alerts_daily_count
+    UNION ALL
+    SELECT dt::date FROM alerts_detail
+    UNION ALL
+    SELECT dt FROM machine_program_data
+    UNION ALL
+    SELECT hour_ts::date FROM energy_consumption_hourly
+)
 SELECT 
-    'agg_sensor_stats' as table_name,
     MIN(dt) as first_date,
     MAX(dt) as last_date,
-    COUNT(*) as total_records,
-    COUNT(DISTINCT sensor_name) as number_of_sensors,
-    MAX(last_updated_at) as last_updated
-FROM agg_sensor_stats;
+    (SELECT COUNT(*) FROM agg_sensor_stats) as sensor_records,
+    (SELECT COUNT(*) FROM agg_machine_activity_daily) as utilization_records,
+    (SELECT COUNT(*) FROM alerts_detail) as alert_records,
+    (SELECT COUNT(*) FROM machine_program_data) as program_records,
+    (SELECT COUNT(*) FROM energy_consumption_hourly) as energy_records
+FROM all_dates;
 
 
 -- =============================================================================
@@ -113,6 +137,7 @@ BEGIN
     RAISE NOTICE '  - alerts_daily_count';
     RAISE NOTICE '  - alerts_detail';
     RAISE NOTICE '  - machine_program_data';
+    RAISE NOTICE '  - energy_consumption_hourly';
     RAISE NOTICE 'Views created:';
     RAISE NOTICE '  - v_data_status';
 END $$;

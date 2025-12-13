@@ -83,8 +83,12 @@ This file is used by all team members to record their working hours and activiti
 | Jovan Bajcetic | UI/UX + Scrum master | Documentation | Created first version of the project documentation using sphinx and created instructions to see this documentation on sphinx_documentation file | 2025-12-08 | 3 |
 | Andres Janeiro | Data Analyst | Queries | Created queries for the energy page on Figma | 2025-12-10 | 3 |
 | Javier Pajares | Data Analyst | Queries | Modify queries for working hours and program history | 2025-12-10 | 1.5 |
-| Atle Sund | Frontend/Backend | Frontend/Backend | ETL scripts, models, types, api endpoints and graphs | 2025-11-03 | 3 |
-| Atle Sund | Frontend/Backend | Frontend/Backend | ETL scripts, models, types, api endpoints and graphs | 2025-12-03 | 2 |
+| Atle Sund | Frontend/Backend | Frontend/Backend | ETL scripts, models, types, api endpoints and graphs | 2025-12-11 | 3 |
+| Atle Sund | Frontend/Backend | Frontend/Backend | ETL scripts, models, types, api endpoints and graphs | 2025-12-12 | 2 |
+| Erik Alexander Standal | Frontend | Frontend | Worked on the frontend, api connections and graphs| 2025-12-12 | 2 |
+| Erik Alexander Standal | Frontend | Frontend | Worked on the frontend for Energy Monitoring, api connections and graphs| 2025-12-13 | 1 |
+| Atle Sund | Frontend/Backend | Frontend/Backend | Implementing energy monitoring and cleaned up file structure. Assisted Erik on the Frontend. Also improved comments and docstrings. | 2025-12-13 | 3 |
+| Atle Sund | Frontend/Backend | Frontend/Backend | Created an etl script for daily aggregation | 2025-12-13 | 2 |
 ---
 
  *Tip:*  
