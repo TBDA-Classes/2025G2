@@ -115,7 +115,6 @@
 <li class="toctree-l2"><a class="reference internal" href="devops.html#frontend-deployment-vercel">Frontend Deployment (Vercel)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="devops.html#backend-deployment">Backend Deployment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="devops.html#environment-variables">Environment Variables</a></li>
-<li class="toctree-l2"><a class="reference internal" href="devops.html#vpn-and-database-access">VPN and Database Access</a></li>
 <li class="toctree-l2"><a class="reference internal" href="devops.html#logs-and-monitoring">Logs and Monitoring</a></li>
 </ul>
 </li>
@@ -271,16 +270,16 @@ a <cite>.env</cite> file. A simplified example:</p>
 </section>
 <section id="api-endpoints">
 <h2>API Endpoints<a class="headerlink" href="#api-endpoints" title="Link to this heading"></a></h2>
-<p>All endpoints are prefixed with <cite>/api/v1/</cite>:</p>
+<p>All endpoints are prefixed with <code class="docutils literal notranslate"><span class="pre">/api/v1/</span></code>:</p>
 <ul class="simple">
-<li><p><cite>/temperatures</cite> - Temperature statistics by time bucket</p></li>
-<li><p><cite>/machine_util</cite> - Daily utilization (running vs downtime)</p></li>
-<li><p><cite>/machine_changes</cite> - State timeline for a time window</p></li>
-<li><p><cite>/machine_program</cite> - Program durations per day</p></li>
-<li><p><cite>/energy_consumption</cite> - Hourly energy data</p></li>
-<li><p><cite>/alerts_daily_count</cite> - Alerts count by type</p></li>
-<li><p><cite>/alerts_detail</cite> - Individual alert records</p></li>
-<li><p><cite>/data_status</cite> - Available date range and record counts</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/temperatures</span></code> - Temperature statistics by time bucket</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/machine_util</span></code> - Daily utilization (running vs downtime)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/machine_changes</span></code> - State timeline for a time window</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/machine_program</span></code> - Program durations per day</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/energy_consumption</span></code> - Hourly energy data</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/alerts_daily_count</span></code> - Alerts count by type</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/alerts_detail</span></code> - Individual alert records</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/data_status</span></code> - Available date range and record counts</p></li>
 </ul>
 <p>See also the <a class="reference internal" href="frontend.html"><span class="doc">FRONTEND OVERVIEW</span></a> page for how the API integrates with the UI.
 See also the <a class="reference internal" href="code.html"><span class="doc">CODE REFERENCE</span></a> page for detailed backend code structure.</p>

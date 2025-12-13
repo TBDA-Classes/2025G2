@@ -115,7 +115,6 @@
 <li class="toctree-l2"><a class="reference internal" href="devops.html#frontend-deployment-vercel">Frontend Deployment (Vercel)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="devops.html#backend-deployment">Backend Deployment</a></li>
 <li class="toctree-l2"><a class="reference internal" href="devops.html#environment-variables">Environment Variables</a></li>
-<li class="toctree-l2"><a class="reference internal" href="devops.html#vpn-and-database-access">VPN and Database Access</a></li>
 <li class="toctree-l2"><a class="reference internal" href="devops.html#logs-and-monitoring">Logs and Monitoring</a></li>
 </ul>
 </li>
@@ -278,23 +277,25 @@ Temperature distribution (Nivo)</p></li>
 Machine state segments (Nivo)</p></li>
 <li><p><strong>TimelineSection:</strong>
 Timeline with selectable start time (Custom).</p></li>
-<li><p><strong>EnergyChart</strong>
+<li><p><strong>EnergyChart:</strong>
 Hourly consumption line chart with summary cards (Nivo).</p></li>
-<li><p><strong>AlertListWithDetails</strong>
+<li><p><strong>AlertListWithDetails:</strong>
 Filterable alert list with detail panel.</p></li>
 </ul>
 </section>
 <section id="data-flow">
 <h2>Data Flow<a class="headerlink" href="#data-flow" title="Link to this heading"></a></h2>
 <p>All API calls are in <code class="docutils literal notranslate"><span class="pre">lib/api.ts</span></code>. Each function fetches from the backend:</p>
-<p><code class="docutils literal notranslate"><span class="pre">getTemperatures()</span></code> – Temperature statistics
-<code class="docutils literal notranslate"><span class="pre">getMachineUtilization()</span></code> – Running vs downtime
-<code class="docutils literal notranslate"><span class="pre">getMachineOperations()</span></code> – Timeline segments
-<code class="docutils literal notranslate"><span class="pre">getMachinePrograms()</span></code> – Program history
-<code class="docutils literal notranslate"><span class="pre">getEnergyConsumption()</span></code> – Hourly energy data
-<code class="docutils literal notranslate"><span class="pre">getAlertsDailyCount()</span></code> – Alert summary by type
-<code class="docutils literal notranslate"><span class="pre">getAlertsDetail()</span></code> – Individual alert records
-<code class="docutils literal notranslate"><span class="pre">getDataStatus()</span></code> – Available date range</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">getTemperatures()</span></code> – Temperature statistics</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">getMachineUtilization()</span></code> – Running vs downtime</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">getMachineOperations()</span></code> – Timeline segments</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">getMachinePrograms()</span></code> – Program history</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">getEnergyConsumption()</span></code> – Hourly energy data</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">getAlertsDailyCount()</span></code> – Alert summary by type</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">getAlertsDetail()</span></code> – Individual alert records</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">getDataStatus()</span></code> – Available date range</p></li>
+</ul>
 </section>
 </section>
 

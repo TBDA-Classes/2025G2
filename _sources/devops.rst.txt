@@ -55,13 +55,6 @@ Backend variables are loaded through `.env`. Place the file in the root of the b
 container or server.
 
 
-VPN and Database Access
------------------------
-Access to the production DB requires a VPN connection to UPM’s network.
-
-The aggregation DB can be hosted locally or remotely, depending on performance needs.
-
-
 Logs and Monitoring
 -------------------
 * Backend logs handled through Uvicorn  

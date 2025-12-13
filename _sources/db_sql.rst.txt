@@ -106,7 +106,7 @@ B-Tree indexes are used for reducing lookup time significantly.
 
 Views
 ~~~~~
-The `v_data_status` view provides:
+The ``v_data_status`` view provides:
 
 * Global first/last date across all aggregated tables
 * Record counts per table (sensors, utilization, alerts, programs, energy)

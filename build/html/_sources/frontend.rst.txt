@@ -95,10 +95,10 @@ UI Components
 * **TimelineSection:**
   Timeline with selectable start time (Custom).
 
-* **EnergyChart**  
+* **EnergyChart:**  
   Hourly consumption line chart with summary cards (Nivo).
 
-* **AlertListWithDetails**  
+* **AlertListWithDetails:**  
   Filterable alert list with detail panel.
 
 
@@ -106,11 +106,11 @@ Data Flow
 ---------
 All API calls are in ``lib/api.ts``. Each function fetches from the backend:
 
-``getTemperatures()`` – Temperature statistics
-``getMachineUtilization()`` – Running vs downtime
-``getMachineOperations()`` – Timeline segments
-``getMachinePrograms()`` – Program history
-``getEnergyConsumption()`` – Hourly energy data
-``getAlertsDailyCount()`` – Alert summary by type
-``getAlertsDetail()`` – Individual alert records
-``getDataStatus()`` – Available date range
+* ``getTemperatures()`` – Temperature statistics
+* ``getMachineUtilization()`` – Running vs downtime
+* ``getMachineOperations()`` – Timeline segments
+* ``getMachinePrograms()`` – Program history
+* ``getEnergyConsumption()`` – Hourly energy data
+* ``getAlertsDailyCount()`` – Alert summary by type
+* ``getAlertsDetail()`` – Individual alert records
+* ``getDataStatus()`` – Available date range

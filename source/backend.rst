@@ -82,16 +82,16 @@ Testing:
 
 API Endpoints
 -------------------------
-All endpoints are prefixed with `/api/v1/`:
+All endpoints are prefixed with ``/api/v1/``:
 
-* `/temperatures` - Temperature statistics by time bucket
-* `/machine_util` - Daily utilization (running vs downtime)
-* `/machine_changes` - State timeline for a time window
-* `/machine_program` - Program durations per day
-* `/energy_consumption` - Hourly energy data
-* `/alerts_daily_count` - Alerts count by type
-* `/alerts_detail` - Individual alert records
-* `/data_status` - Available date range and record counts 
+* ``/temperatures`` - Temperature statistics by time bucket
+* ``/machine_util`` - Daily utilization (running vs downtime)
+* ``/machine_changes`` - State timeline for a time window
+* ``/machine_program`` - Program durations per day
+* ``/energy_consumption`` - Hourly energy data
+* ``/alerts_daily_count`` - Alerts count by type
+* ``/alerts_detail`` - Individual alert records
+* ``/data_status`` - Available date range and record counts 
 
 See also the :doc:`frontend` page for how the API integrates with the UI.
 See also the :doc:`code` page for detailed backend code structure.
