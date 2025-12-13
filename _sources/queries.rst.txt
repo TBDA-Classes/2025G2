@@ -5,10 +5,10 @@ This section documents a collection of key SQL queries used during the
 analysis, exploration, and validation phases of the project.
 
 These queries were used to:
-- Understand raw machine behavior
-- Validate ETL logic
-- Derive utilization, energy, and alert metrics
-- Prototype aggregations later implemented in ETL scripts
+    - Understand raw machine behavior
+    - Validate ETL logic
+    - Derive utilization, energy, and alert metrics
+    - Prototype aggregations later implemented in ETL scripts
 
 ---
 

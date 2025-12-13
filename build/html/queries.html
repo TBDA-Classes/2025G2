@@ -126,8 +126,16 @@
 <li class="toctree-l1"><a class="reference internal" href="code.html">CODE REFERENCE</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="code.html#backend-scripts">Backend Scripts</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="code.html#aggregation-database-creation-script">Aggregation Database Creation Script</a></li>
+<li class="toctree-l3"><a class="reference internal" href="code.html#alerts-aggregation-etl-script">Alerts Aggregation ETL Script</a></li>
+<li class="toctree-l3"><a class="reference internal" href="code.html#machine-program-history-etl-script">Machine Program History ETL Script</a></li>
+<li class="toctree-l3"><a class="reference internal" href="code.html#sensor-statistics-etl-script">Sensor Statistics ETL Script</a></li>
+<li class="toctree-l3"><a class="reference internal" href="code.html#machine-utilization-etl-script">Machine Utilization ETL Script</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="code.html#core-backend-code">Core Backend Code</a><ul>
 <li class="toctree-l3"><a class="reference internal" href="code.html#database-connection-layer">Database Connection Layer</a></li>
 <li class="toctree-l3"><a class="reference internal" href="code.html#orm-models">ORM Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="code.html#api-application-entry-point">API Application Entry Point</a></li>
 </ul>
 </li>
 </ul>
@@ -189,11 +197,15 @@
 <h1>MAIN QUERIES<a class="headerlink" href="#main-queries" title="Link to this heading"></a></h1>
 <p>This section documents a collection of key SQL queries used during the
 analysis, exploration, and validation phases of the project.</p>
-<p>These queries were used to:
-- Understand raw machine behavior
-- Validate ETL logic
-- Derive utilization, energy, and alert metrics
-- Prototype aggregations later implemented in ETL scripts</p>
+<dl class="simple">
+<dt>These queries were used to:</dt><dd><ul class="simple">
+<li><p>Understand raw machine behavior</p></li>
+<li><p>Validate ETL logic</p></li>
+<li><p>Derive utilization, energy, and alert metrics</p></li>
+<li><p>Prototype aggregations later implemented in ETL scripts</p></li>
+</ul>
+</dd>
+</dl>
 <p>—</p>
 <section id="machine-utilization-queries">
 <h2>Machine Utilization Queries<a class="headerlink" href="#machine-utilization-queries" title="Link to this heading"></a></h2>

@@ -12,8 +12,6 @@ The codebase is divided into two clearly differentiated categories:
 This separation helps distinguish between *operational logic* (scripts) and
 *structural logic* (core code).
 
----
-
 Backend Scripts
 ---------------
 
@@ -123,7 +121,11 @@ database.
    FROM agg_sensor_stats;
 
 ---
-- Alerts Aggregation ETL Script**
+
+
+Alerts Aggregation ETL Script
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 
 **File:** ``etl_agg_alerts.py``
 
@@ -317,8 +319,11 @@ Allows execution as a standalone script or module.
            run_etl()
 
 ---
+
+
 Machine Program History ETL Script
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 
 **File:** ``etl_agg_program_history.py``
 
@@ -453,9 +458,13 @@ Allows execution as a standalone script or module.
            run_etl(sys.argv[1], sys.argv[2])
        else:
            run_etl()
+
 ---
+
+
 Sensor Statistics ETL Script
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 
 **File:** ``etl_agg_sensor_stats.py``
 
@@ -606,9 +615,13 @@ Allows execution as a standalone script or module.
            run_etl(sys.argv[1], sys.argv[2])
        else:
            run_etl()
+
 ---
+
+
 Machine Utilization ETL Script
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 
 **File:** ``etl_agg_utilization.py``
 
@@ -719,9 +732,13 @@ Allows execution as a standalone script or module.
    if __name__ == "__main__":
        logger = logging.getLogger(__name__)
        run_etl()
+
 ---
+
+
 Core Backend Code
------------------
+------------------
+
 
 This section documents reusable backend modules that define database access,
 ORM models, and shared infrastructure. These files are imported by API services
@@ -729,8 +746,10 @@ and backend scripts.
 
 ---
 
+
 Database Connection Layer
 ~~~~~~~~~~~~~~~~~~~~~~~~~
+
 
 **File:** ``database.py``
 
@@ -823,8 +842,10 @@ It is designed to be compatible with **FastAPI dependency injection**.
 
 ---
 
+
 ORM Models
 ~~~~~~~~~~
+
 
 **File:** ``models.py``
 
@@ -873,9 +894,13 @@ tables and views, using SQLAlchemy 2.0 typed mappings.
        avg_value: Mapped[Optional[float]]
        max_value: Mapped[Optional[float]]
        readings_count: Mapped[Optional[int]]
+
 ---
+
+
 API Application Entry Point
-~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
 
 **File:** ``main.py``
 
