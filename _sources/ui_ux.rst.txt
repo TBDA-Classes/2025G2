@@ -33,6 +33,14 @@ The application uses a three-panel layout:
 * A main content area where the cards and charts for each section
   are rendered.
 
+.. figure:: ../_static/images/uiux/sidebar.png
+   :align: center
+   :width: 90%
+   :alt: Dashboard
+
+  
+
+
 
 
 Machine Utilisation Cards
@@ -51,6 +59,14 @@ Each card combines:
 * A progress bar showing the relative proportion out of the 24h.
 * A small caption with hours over the daily total.
 
+.. figure:: ../_static/images/uiux/Machine_utilization.png
+   :align: center
+   :width: 90%
+   :alt: Dashboard
+
+   Dashboard principal de la aplicación.
+
+
 This information is driven by the aggregation queries from the data
 analysis team and the backend ETL.
 
@@ -62,6 +78,14 @@ There is a horizontal timeline that shows the machine status over 24 hours.
 * Colours are used consistently: green (RUN) and red (IDLE). It didn't make sense to make
   differences between DOWN and IDLE visually (based on the data inputs), so both are shown in red.
 * A time-window selector lets the user zoom into 30-minute intervals
+
+.. figure:: ../_static/images/uiux/Machine_op_timeline.png
+   :align: center
+   :width: 90%
+   :alt: Dashboard
+
+   Dashboard principal de la aplicación.
+
 
 This information is driven by the aggregation queries from the data
 analysis team and the backend ETL.
@@ -79,6 +103,14 @@ The Dashboard page also contains:
   during the day. Each program is represented by a colour and code
   (P1, P2, P3...).
 
+.. figure:: ../_static/images/uiux/Temperature_and_conf.png
+   :align: center
+   :width: 90%
+   :alt: Dashboard
+
+   Dashboard principal de la aplicación.
+
+
 This information is driven by the aggregation queries from the data
 analysis team and the backend ETL.
 
@@ -92,6 +124,14 @@ The main elements are:
 * Hourly Energy Consumption line chart showing kWh usage during the day.
 * Daily Total card with the total MWh for the selected day.
 * Peak hour card showing the hour with the highest consumption and its consumption value.
+
+.. figure:: ../_static/images/uiux/Energy.png
+   :align: center
+   :width: 90%
+   :alt: Dashboard
+
+   Dashboard principal de la aplicación.
+
 
 This information is driven by the aggregation queries from the data
 analysis team and the backend ETL.
@@ -109,6 +149,14 @@ At the top of the page there is an overview:
 
 * Total number of alerts for the selected day.
 * Breakdown by category: Emergency, Error, Warning and `other`.
+
+.. figure:: ../_static/images/uiux/alert_manager1.png
+   :align: center
+   :width: 90%
+   :alt: Dashboard
+
+   Dashboard principal de la aplicación.
+
 
 The categorisation logic is based on text analysis of the alarm
 descriptions (for example detecting keywords like *emergency*, *error*
@@ -130,6 +178,14 @@ The lower part of the page shows:
     * Type.
     * Alarm code.
     * Description.
+
+.. figure:: ../_static/images/uiux/alert_manager2.png
+   :align: center
+   :width: 90%
+   :alt: Dashboard
+
+   Dashboard principal de la aplicación.
+
 
 This structure supports quickly understanding of how many alarms
  occurred, when they happened and which ones require attention.

@@ -3,7 +3,7 @@ PROJECT REQUIREMENTS & COMPLIANCE
 
 Introduction
 ------------
-This section summarizes the project’s functional requirements and
+This section summarizes the project's functional requirements and
 explains how the implemented solution satisfies each of them.
 
 Functional Requirements
@@ -12,47 +12,47 @@ Functional Requirements
 1. Visualize machine utilization
 
    **Status:** Implemented  
-      * **How:**  
-      - Aggregated data from ETL scripts  
-      - Dashboard utilization cards  
-      - 24-hour distribution
+      **How:**  
+         - Aggregated data from ETL scripts  
+         - Dashboard utilization cards  
+         - 24-hour distribution
 
 2. Display machine status timeline
 
    **Status:** Implemented  
-      * **How:**  
-      - TimelineChart component  
-      - 30-minute windows  
-      - Color-coded segments
+      **How:**  
+         - TimelineChart component  
+         - 30-minute windows  
+         - Color-coded segments
 
 3. Show temperature history
 
    **Status:** Implemented  
-      * **How:**  
-      - Aggregated hourly temperature metrics  
-      - Line chart in Dashboard
+      **How:**  
+         - Aggregated hourly temperature metrics  
+         - Line chart in Dashboard
 
 4. Show program execution history
 
    **Status:** Implemented
       **How:**  
-      - View that shows the duration of each CNC program
-      during the day
+         - View that shows the duration of each CNC program
+         during the day
 
 
 5. Monitor energy consumption
 
    **Status:** Implemented  
       **How:**  
-      - Hourly consumption  
-      - Total daily consumption  
-      - Peak hour consumption
+         - Hourly consumption  
+         - Total daily consumption  
+         - Peak hour consumption
 
 6. Present alerts with filtering
 
    **Status:** Implemented  
       **How:**  
-      - Alerts list  
-      - Filter by type  
-      - Detailed alert info panel
+         - Alerts list  
+         - Filter by type  
+         - Detailed alert info panel
 
