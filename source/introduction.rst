@@ -73,4 +73,6 @@ Where to go next
 - :doc:`ui_ux` — Interface logic and UX decisions
 - :doc:`devops` — Deployment and environment setup
 - :doc:`requirements` — Requirements and how the solution satisfies them
+- :doc:`code` — Code structure and key components
+- :doc:`queries` — Key SQL queries used in the project
 
