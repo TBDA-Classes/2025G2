@@ -20,8 +20,8 @@ management. The architecture is divided into four major components:
   aggregation database to achieve <50ms response times.
 
 * **Data Engineering Layer (ETL Scripts)**  
-  Python scripts for Extract–Transform–Load workflows, periodically generating
-  precomputed statistics stored in the aggregation database.
+  Python scripts for Extract–Transform–Load workflows, with one mother script used for daily data aggregation.
+  Precomputed results which are then stored in the aggregation database.
 
 * **UI/UX Layer (Figma Prototyping)**  
   Human-centered interaction design guiding UI flow, dashboard hierarchy, and visual behavior.
