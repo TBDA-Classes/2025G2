@@ -150,22 +150,6 @@ If no dates are provided, the script performs a full historical backfill.
 
 ---
 
-**Alert Type Mapping**
-
-Alert descriptions are normalized into standardized alert categories.
-
-.. code-block:: python
-   :linenos:
-
-   ALERT_TYPE_MAP = {
-       'Emergency': 'emergency',
-       'Error': 'error',
-       'Alert': 'warning',
-       'Other': 'other',
-   }
-
----
-
 **Date Range Resolution (Full Backfill)**
 
 When no dates are provided, the script queries the source database to determine
