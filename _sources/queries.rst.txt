@@ -1,5 +1,5 @@
-Queries
-=======
+MAIN QUERIES
+============
 
 This section documents a collection of key SQL queries used during the
 analysis, exploration, and validation phases of the project.

@@ -1,4 +1,4 @@
-Code Reference
+CODE REFERENCE
 ==============
 
 This page centralizes the most relevant source code used in the project.  
