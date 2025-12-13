@@ -53,7 +53,10 @@ For Temperature statistics: The query retrieves the values of temperature variab
 For Program History: The query identifies the states registered for the variable Program Status (Prog_Status). It assumes a persistence logic: once a state is registered, the machine remains in that state until a new one is recorded. Crucially, it also retrieves the last state from the previous day to account for the time starting exactly at 00:00:00. Finally, the query calculates the total duration in seconds for each state during the entire day.
 
 * ``power_consumption`` 
+Since the database doesn’t give us real energy values, we estimate it using the motor utilization percentages. Each motor has a known nominal power (kW), so we assume that its real power at any moment is (utilization% × nominal kW). 
+We then calculate how long each utilization value stays active and convert that into energy (kWh). Finally, we add up all these segments and group the results by hour to create the hourly energy chart.
 
+The second query used simply retrieves all temperature values from the sensors we found to be reliable. We convert the timestamps from milliseconds to seconds and filter the data to a specific 24 hour period. The result is a clean list of temperature readings over time, which is what the frontend needs for plotting the temperature graph.
 
 
 The Data Analysis Team ingested these tables to compute:
@@ -120,5 +123,6 @@ Aggregations produce metrics for each shift, consumed by:
 * Dashboard  
 * Energy view  
 * Alerts distribution  
+
 
 
