@@ -38,11 +38,23 @@ Data Extraction Strategy
 ------------------------
 The production database schema contains:
 
-* ``machine_state``  
-* ``temperature_readings``  
+* ``machine_state``
+For Machine Operation: The query identifies if the machine is operating based on the variable Machine_in_operation, which is a boolean.
+
+For Machine Utilization: The query analyzes variable changes in fixed 10-minute blocks to determine the utilization level of the machine. If there are no variable changes within a block, the machine is considered to be turned off. In the case that there are 30 variable changes or less in a block, the machine is considered to be Idle. Finally, if there are more than 30 variable changes registered within the block, the machine is considered to be running.
+
+* ``temperature_readings``
+For Temperature statistics: The query retrieves the values of temperature variables registered from different parts of the machine. It is important to note that the query excludes non-significant temperature variables (in other words, variables that only register zeros or NaNs).
+
 * ``alerts``  
-* ``program_usage``  
-* ``power_consumption``  
+
+
+* ``program_usage``
+For Program History: The query identifies the states registered for the variable Program Status (Prog_Status). It assumes a persistence logic: once a state is registered, the machine remains in that state until a new one is recorded. Crucially, it also retrieves the last state from the previous day to account for the time starting exactly at 00:00:00. Finally, the query calculates the total duration in seconds for each state during the entire day.
+
+* ``power_consumption`` 
+
+
 
 The Data Analysis Team ingested these tables to compute:
 
@@ -108,4 +120,5 @@ Aggregations produce metrics for each shift, consumed by:
 * Dashboard  
 * Energy view  
 * Alerts distribution  
+
 
