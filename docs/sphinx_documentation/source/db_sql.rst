@@ -36,30 +36,30 @@ Raw data reflects:
 
 Data Extraction Strategy
 ------------------------
-The production database schema contains:
+The production database schema was analyzed and the data obtained fitted the following categories:
 
 * ``machine_state``
-For Machine Operation: The query identifies if the machine is operating based on the variable Machine_in_operation, which is a boolean.
+For Machine Operation: The query for this part identifies if the machine is operating based on the variable Machine_in_operation, which is a boolean.
 
-For Machine Utilization: The query analyzes variable changes in fixed 10-minute blocks to determine the utilization level of the machine. If there are no variable changes within a block, the machine is considered to be turned off. In the case that there are 30 variable changes or less in a block, the machine is considered to be Idle. Finally, if there are more than 30 variable changes registered within the block, the machine is considered to be running.
+For Machine Utilization: The query used analyzes variable changes in fixed 10-minute blocks to determine the utilization level of the machine. If there are no variable changes within a block, the machine is considered to be turned off. In the case that there are 30 variable changes or less in a block, the machine is considered to be Idle. Finally, if there are more than 30 variable changes registered within the block, the machine is considered to be running.
 
 * ``temperature_readings``
-For Temperature statistics: The query retrieves the values of temperature variables registered from different parts of the machine. It is important to note that the query excludes non-significant temperature variables (in other words, variables that only register zeros or NaNs).
+The query used retrieves the values of temperature variables registered from different parts of the machine. It is important to note that the query excludes non-significant temperature variables (in other words, variables that only register zeros or NaNs).
 
 * ``alerts``  
 
 
 * ``program_usage``
-For Program History: The query identifies the states registered for the variable Program Status (Prog_Status). It assumes a persistence logic: once a state is registered, the machine remains in that state until a new one is recorded. Crucially, it also retrieves the last state from the previous day to account for the time starting exactly at 00:00:00. Finally, the query calculates the total duration in seconds for each state during the entire day.
+The query used identifies the states registered for the variable Program Status (Prog_Status). It assumes a persistence logic: once a state is registered, the machine remains in that state until a new one is recorded. Crucially, it also retrieves the last state from the previous day to account for the time starting exactly at 00:00:00. Finally, the query calculates the total duration in seconds for each state during the entire day.
 
 * ``power_consumption`` 
 Since the database doesn’t give us real energy values, we estimate it using the motor utilization percentages. Each motor has a known nominal power (kW), so we assume that its real power at any moment is (utilization% × nominal kW). 
-We then calculate how long each utilization value stays active and convert that into energy (kWh). Finally, we add up all these segments and group the results by hour to create the hourly energy chart.
+We then calculate how long each utilization value stays active and convert that into energy (kWh). Finally, we culminate the first query by adding up all these segments and then grouping the results by hour to create the hourly energy chart.
 
 The second query used simply retrieves all temperature values from the sensors we found to be reliable. We convert the timestamps from milliseconds to seconds and filter the data to a specific 24 hour period. The result is a clean list of temperature readings over time, which is what the frontend needs for plotting the temperature graph.
 
 
-The Data Analysis Team ingested these tables to compute:
+The Data Analysis Team ingested the tables in the database to compute:
 
 * 24-hour status distributions  
 * Per-shift aggregations  
@@ -123,6 +123,7 @@ Aggregations produce metrics for each shift, consumed by:
 * Dashboard  
 * Energy view  
 * Alerts distribution  
+
 
 
 
