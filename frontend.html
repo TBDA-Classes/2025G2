@@ -58,7 +58,7 @@
 <li class="toctree-l2"><a class="reference internal" href="architecture.html#system-architecture-diagram">System Architecture Diagram</a></li>
 <li class="toctree-l2"><a class="reference internal" href="architecture.html#dual-database-strategy">Dual-Database Strategy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="architecture.html#frontendbackend-interaction">Frontend–Backend Interaction</a></li>
-<li class="toctree-l2"><a class="reference internal" href="architecture.html#user-interface-flow-integration">User Interface Flow Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#dashboard-data-requirements">Dashboard Data Requirements</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="backend.html">BACKEND OVERVIEW</a><ul>
@@ -67,20 +67,14 @@
 <li class="toctree-l2"><a class="reference internal" href="backend.html#database-driver">Database Driver</a></li>
 <li class="toctree-l2"><a class="reference internal" href="backend.html#environment-variables">Environment Variables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="backend.html#running-the-backend">Running the Backend</a></li>
-<li class="toctree-l2"><a class="reference internal" href="backend.html#data-aggregation-strategy">Data Aggregation Strategy</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="backend.html#indexing-strategy">Indexing Strategy</a></li>
-<li class="toctree-l3"><a class="reference internal" href="backend.html#views">Views</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="backend.html#connecting-to-postgresql">Connecting to PostgreSQL</a></li>
-<li class="toctree-l2"><a class="reference internal" href="backend.html#backend-endpoints-simplified">Backend Endpoints (Simplified)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backend.html#api-endpoints">API Endpoints</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">FRONTEND OVERVIEW</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#project-structure">Project Structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#setup-instructions">Setup Instructions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#pages-and-routing">Pages and Routing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#routes-implemented">Routes implemented</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#ui-components">UI Components</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#data-flow">Data Flow</a></li>
 </ul>
@@ -89,7 +83,13 @@
 <li class="toctree-l2"><a class="reference internal" href="db_sql.html#introduction">Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="db_sql.html#cnc-machine-status-semantics">CNC Machine Status Semantics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="db_sql.html#data-extraction-strategy">Data Extraction Strategy</a></li>
-<li class="toctree-l2"><a class="reference internal" href="db_sql.html#aggregation-database-schema">Aggregation Database Schema</a></li>
+<li class="toctree-l2"><a class="reference internal" href="db_sql.html#data-aggregation-strategy">Data Aggregation Strategy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="db_sql.html#indexing-strategy">Indexing Strategy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="db_sql.html#views">Views</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="db_sql.html#connecting-to-postgresql">Connecting to PostgreSQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="db_sql.html#json-and-sql-operations">JSON and SQL Operations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="db_sql.html#shift-based-interpretation">Shift-Based Interpretation</a></li>
 </ul>
 </li>
@@ -198,37 +198,46 @@
 <h1>FRONTEND OVERVIEW<a class="headerlink" href="#frontend-overview" title="Link to this heading"></a></h1>
 <section id="introduction">
 <h2>Introduction<a class="headerlink" href="#introduction" title="Link to this heading"></a></h2>
-<p>The frontend is built with Next.js, React, TypeScript, and
-Tailwind CSS. It provides a modern, responsive, and performant UI that interacts
-with the backend API through Axios.</p>
-<p>The design follows the UI/UX prototype created in Figma, resulting in a clear,
-user-friendly monitoring interface.</p>
+<ul class="simple">
+<li><p>Next.js App Router with server and client components</p></li>
+<li><p>Nivo charts for data visualization (BoxPlot, Line)</p></li>
+<li><p>MUI DatePicker for date selection</p></li>
+<li><p>Tailwind CSS for styling</p></li>
+</ul>
+<p>It provides a modern, responsive UI that interacts
+with the backend API via fetch functions in <cite>lib/api.ts</cite>.</p>
 </section>
 <section id="project-structure">
 <h2>Project Structure<a class="headerlink" href="#project-structure" title="Link to this heading"></a></h2>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>frontend/
-├── public/
-├── src/
-│   ├── app/
-│   │   ├── layout.tsx
-│   │   ├── page.tsx
-│   │   └── dashboard/
-│   │       ├── [date]/page.tsx
-│   │       ├── alerts/page.tsx
-│   │       ├── calendar/page.tsx
-│   │       └── energy/page.tsx
-│   ├── components/
-│   │   ├── BarChart.tsx
-│   │   ├── BoxPlot.tsx
-│   │   ├── TimelineChart.tsx
-│   │   ├── Datepicker.tsx
-│   │   └── Sidebar.tsx
-│   ├── lib/api.ts
-│   └── types/
-│       ├── DateState.ts
-│       ├── Temperature.ts
-│       └── period.ts
-└── README.md
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>frontend/src/
+├── app/
+│   ├── layout.tsx
+│   ├── page.tsx
+│   ├── globals.css
+│   ├── dashboard/
+│   │   ├── layout.tsx                 # Dashboard layout (sidebar)
+│   │   ├── page.tsx                   # Main dashboard
+│   │   ├── alerts/page.tsx            # Alerts page
+│   │   └── energy/page.tsx            # Energy monitoring page
+│   └── components/
+│       ├── Sidebar.tsx                # Navigation sidebar
+│       ├── Datepicker.tsx             # MUI date picker
+│       ├── BoxPlot.tsx                # Temperature box plot (Nivo)
+│       ├── TimelineChart.tsx          # Machine state timeline
+│       ├── TimelineSection.tsx        # Timeline with time selector
+│       ├── EnergyChart.tsx            # Energy consumption chart (Nivo)
+│       └── AlertListWithDetails.tsx   # Interactive alert list
+├── lib/
+│   └── api.ts                         # API functions (fetch wrapper)
+└── types/                             # TypeScript interfaces
+    ├── Temperature.ts
+    ├── Utilization.ts
+    ├── MachineProgram.ts
+    ├── MachineOperation.ts
+    ├── AlertsDailyCount.ts
+    ├── AlertsDetail.ts
+    ├── EnergyConsumption.ts
+    └── DataStatus.ts
 </pre></div>
 </div>
 </section>
@@ -248,22 +257,12 @@ user-friendly monitoring interface.</p>
 </pre></div>
 </div>
 </section>
-<section id="pages-and-routing">
-<h2>Pages and Routing<a class="headerlink" href="#pages-and-routing" title="Link to this heading"></a></h2>
-<p>Next.js App Router conventions:</p>
+<section id="routes-implemented">
+<h2>Routes implemented<a class="headerlink" href="#routes-implemented" title="Link to this heading"></a></h2>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">page.tsx</span></code> – main entry for each route</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">layout.tsx</span></code> – shared layout (sidebar, navbar)</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">loading.tsx</span></code> – suspense state</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">error.tsx</span></code> – error handler</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">not-found.tsx</span></code> – 404 fallback</p></li>
-</ul>
-<p>Routes implemented:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">/dashboard</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">/dashboard/[date]</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">/energy</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">/alerts</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/dashboard</span></code> - Main dashboard with utilization, timeline, temperature, programs</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/dashboard/energy</span></code> - Energy consumption monitoring</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">/dashboard/alerts</span></code> - Alerts summary and details</p></li>
 </ul>
 </section>
 <section id="ui-components">
@@ -272,33 +271,30 @@ user-friendly monitoring interface.</p>
 <li><p><strong>Sidebar:</strong>
 Navigation between Dashboard, Energy, and Alerts.</p></li>
 <li><p><strong>Datepicker:</strong>
-Allows selecting any date from the production calendar.</p></li>
+MUI DatePicker with min/max date restrictions from data.</p></li>
+<li><p><strong>BoxPlot:</strong>
+Temperature distribution (Nivo)</p></li>
 <li><p><strong>TimelineChart:</strong>
-Displays RUN / IDLE / DOWN segments in 10-minute windows.</p></li>
-<li><p><strong>BarChart &amp; BoxPlot:</strong>
-Used for energy and temperature visualizations.</p></li>
-<li><p><strong>Responsive Cards:</strong>
-Show machine utilization percentages, power readings, alerts summary, etc.</p></li>
+Machine state segments (Nivo)</p></li>
+<li><p><strong>TimelineSection:</strong>
+Timeline with selectable start time (Custom).</p></li>
+<li><p><strong>EnergyChart</strong>
+Hourly consumption line chart with summary cards (Nivo).</p></li>
+<li><p><strong>AlertListWithDetails</strong>
+Filterable alert list with detail panel.</p></li>
 </ul>
 </section>
 <section id="data-flow">
 <h2>Data Flow<a class="headerlink" href="#data-flow" title="Link to this heading"></a></h2>
-<p>All data requests are handled through <code class="docutils literal notranslate"><span class="pre">lib/api.ts</span></code>:</p>
-<ul class="simple">
-<li><p>Machine utilization</p></li>
-<li><p>Timeline segments</p></li>
-<li><p>Temperature history</p></li>
-<li><p>Energy metrics</p></li>
-<li><p>Alerts lists and details</p></li>
-</ul>
-<p>The frontend’s reactivity and performance are driven by:</p>
-<ul class="simple">
-<li><p>Suspense boundaries</p></li>
-<li><p>Client components</p></li>
-<li><p>Lightweight Axios wrappers</p></li>
-<li><p>Tailwind-based styling system</p></li>
-</ul>
-<p>All data comes from the aggregation pipeline described in <a class="reference internal" href="db_sql.html"><span class="doc">SQL DATABASE AND DATA ANALYSIS</span></a>.</p>
+<p>All API calls are in <code class="docutils literal notranslate"><span class="pre">lib/api.ts</span></code>. Each function fetches from the backend:</p>
+<p><code class="docutils literal notranslate"><span class="pre">getTemperatures()</span></code> – Temperature statistics
+<code class="docutils literal notranslate"><span class="pre">getMachineUtilization()</span></code> – Running vs downtime
+<code class="docutils literal notranslate"><span class="pre">getMachineOperations()</span></code> – Timeline segments
+<code class="docutils literal notranslate"><span class="pre">getMachinePrograms()</span></code> – Program history
+<code class="docutils literal notranslate"><span class="pre">getEnergyConsumption()</span></code> – Hourly energy data
+<code class="docutils literal notranslate"><span class="pre">getAlertsDailyCount()</span></code> – Alert summary by type
+<code class="docutils literal notranslate"><span class="pre">getAlertsDetail()</span></code> – Individual alert records
+<code class="docutils literal notranslate"><span class="pre">getDataStatus()</span></code> – Available date range</p>
 </section>
 </section>
 

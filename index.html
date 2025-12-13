@@ -57,7 +57,7 @@
 <li class="toctree-l2"><a class="reference internal" href="architecture.html#system-architecture-diagram">System Architecture Diagram</a></li>
 <li class="toctree-l2"><a class="reference internal" href="architecture.html#dual-database-strategy">Dual-Database Strategy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="architecture.html#frontendbackend-interaction">Frontend–Backend Interaction</a></li>
-<li class="toctree-l2"><a class="reference internal" href="architecture.html#user-interface-flow-integration">User Interface Flow Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#dashboard-data-requirements">Dashboard Data Requirements</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="backend.html">BACKEND OVERVIEW</a><ul>
@@ -66,20 +66,14 @@
 <li class="toctree-l2"><a class="reference internal" href="backend.html#database-driver">Database Driver</a></li>
 <li class="toctree-l2"><a class="reference internal" href="backend.html#environment-variables">Environment Variables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="backend.html#running-the-backend">Running the Backend</a></li>
-<li class="toctree-l2"><a class="reference internal" href="backend.html#data-aggregation-strategy">Data Aggregation Strategy</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="backend.html#indexing-strategy">Indexing Strategy</a></li>
-<li class="toctree-l3"><a class="reference internal" href="backend.html#views">Views</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="backend.html#connecting-to-postgresql">Connecting to PostgreSQL</a></li>
-<li class="toctree-l2"><a class="reference internal" href="backend.html#backend-endpoints-simplified">Backend Endpoints (Simplified)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backend.html#api-endpoints">API Endpoints</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="frontend.html">FRONTEND OVERVIEW</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="frontend.html#introduction">Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="frontend.html#project-structure">Project Structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="frontend.html#setup-instructions">Setup Instructions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="frontend.html#pages-and-routing">Pages and Routing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frontend.html#routes-implemented">Routes implemented</a></li>
 <li class="toctree-l2"><a class="reference internal" href="frontend.html#ui-components">UI Components</a></li>
 <li class="toctree-l2"><a class="reference internal" href="frontend.html#data-flow">Data Flow</a></li>
 </ul>
@@ -88,7 +82,13 @@
 <li class="toctree-l2"><a class="reference internal" href="db_sql.html#introduction">Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="db_sql.html#cnc-machine-status-semantics">CNC Machine Status Semantics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="db_sql.html#data-extraction-strategy">Data Extraction Strategy</a></li>
-<li class="toctree-l2"><a class="reference internal" href="db_sql.html#aggregation-database-schema">Aggregation Database Schema</a></li>
+<li class="toctree-l2"><a class="reference internal" href="db_sql.html#data-aggregation-strategy">Data Aggregation Strategy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="db_sql.html#indexing-strategy">Indexing Strategy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="db_sql.html#views">Views</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="db_sql.html#connecting-to-postgresql">Connecting to PostgreSQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="db_sql.html#json-and-sql-operations">JSON and SQL Operations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="db_sql.html#shift-based-interpretation">Shift-Based Interpretation</a></li>
 </ul>
 </li>
@@ -215,7 +215,7 @@ and deployment aspects.</p>
 <li class="toctree-l2"><a class="reference internal" href="architecture.html#system-architecture-diagram">System Architecture Diagram</a></li>
 <li class="toctree-l2"><a class="reference internal" href="architecture.html#dual-database-strategy">Dual-Database Strategy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="architecture.html#frontendbackend-interaction">Frontend–Backend Interaction</a></li>
-<li class="toctree-l2"><a class="reference internal" href="architecture.html#user-interface-flow-integration">User Interface Flow Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#dashboard-data-requirements">Dashboard Data Requirements</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="backend.html">BACKEND OVERVIEW</a><ul>
@@ -224,16 +224,14 @@ and deployment aspects.</p>
 <li class="toctree-l2"><a class="reference internal" href="backend.html#database-driver">Database Driver</a></li>
 <li class="toctree-l2"><a class="reference internal" href="backend.html#environment-variables">Environment Variables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="backend.html#running-the-backend">Running the Backend</a></li>
-<li class="toctree-l2"><a class="reference internal" href="backend.html#data-aggregation-strategy">Data Aggregation Strategy</a></li>
-<li class="toctree-l2"><a class="reference internal" href="backend.html#connecting-to-postgresql">Connecting to PostgreSQL</a></li>
-<li class="toctree-l2"><a class="reference internal" href="backend.html#backend-endpoints-simplified">Backend Endpoints (Simplified)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backend.html#api-endpoints">API Endpoints</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="frontend.html">FRONTEND OVERVIEW</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="frontend.html#introduction">Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="frontend.html#project-structure">Project Structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="frontend.html#setup-instructions">Setup Instructions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="frontend.html#pages-and-routing">Pages and Routing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frontend.html#routes-implemented">Routes implemented</a></li>
 <li class="toctree-l2"><a class="reference internal" href="frontend.html#ui-components">UI Components</a></li>
 <li class="toctree-l2"><a class="reference internal" href="frontend.html#data-flow">Data Flow</a></li>
 </ul>
@@ -242,7 +240,9 @@ and deployment aspects.</p>
 <li class="toctree-l2"><a class="reference internal" href="db_sql.html#introduction">Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="db_sql.html#cnc-machine-status-semantics">CNC Machine Status Semantics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="db_sql.html#data-extraction-strategy">Data Extraction Strategy</a></li>
-<li class="toctree-l2"><a class="reference internal" href="db_sql.html#aggregation-database-schema">Aggregation Database Schema</a></li>
+<li class="toctree-l2"><a class="reference internal" href="db_sql.html#data-aggregation-strategy">Data Aggregation Strategy</a></li>
+<li class="toctree-l2"><a class="reference internal" href="db_sql.html#connecting-to-postgresql">Connecting to PostgreSQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="db_sql.html#json-and-sql-operations">JSON and SQL Operations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="db_sql.html#shift-based-interpretation">Shift-Based Interpretation</a></li>
 </ul>
 </li>

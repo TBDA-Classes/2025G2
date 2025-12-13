@@ -58,7 +58,7 @@
 <li class="toctree-l2"><a class="reference internal" href="architecture.html#system-architecture-diagram">System Architecture Diagram</a></li>
 <li class="toctree-l2"><a class="reference internal" href="architecture.html#dual-database-strategy">Dual-Database Strategy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="architecture.html#frontendbackend-interaction">Frontend–Backend Interaction</a></li>
-<li class="toctree-l2"><a class="reference internal" href="architecture.html#user-interface-flow-integration">User Interface Flow Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#dashboard-data-requirements">Dashboard Data Requirements</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="backend.html">BACKEND OVERVIEW</a><ul>
@@ -67,20 +67,14 @@
 <li class="toctree-l2"><a class="reference internal" href="backend.html#database-driver">Database Driver</a></li>
 <li class="toctree-l2"><a class="reference internal" href="backend.html#environment-variables">Environment Variables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="backend.html#running-the-backend">Running the Backend</a></li>
-<li class="toctree-l2"><a class="reference internal" href="backend.html#data-aggregation-strategy">Data Aggregation Strategy</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="backend.html#indexing-strategy">Indexing Strategy</a></li>
-<li class="toctree-l3"><a class="reference internal" href="backend.html#views">Views</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="backend.html#connecting-to-postgresql">Connecting to PostgreSQL</a></li>
-<li class="toctree-l2"><a class="reference internal" href="backend.html#backend-endpoints-simplified">Backend Endpoints (Simplified)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backend.html#api-endpoints">API Endpoints</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="frontend.html">FRONTEND OVERVIEW</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="frontend.html#introduction">Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="frontend.html#project-structure">Project Structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="frontend.html#setup-instructions">Setup Instructions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="frontend.html#pages-and-routing">Pages and Routing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frontend.html#routes-implemented">Routes implemented</a></li>
 <li class="toctree-l2"><a class="reference internal" href="frontend.html#ui-components">UI Components</a></li>
 <li class="toctree-l2"><a class="reference internal" href="frontend.html#data-flow">Data Flow</a></li>
 </ul>
@@ -89,7 +83,13 @@
 <li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#cnc-machine-status-semantics">CNC Machine Status Semantics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#data-extraction-strategy">Data Extraction Strategy</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#aggregation-database-schema">Aggregation Database Schema</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data-aggregation-strategy">Data Aggregation Strategy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#indexing-strategy">Indexing Strategy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#views">Views</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#connecting-to-postgresql">Connecting to PostgreSQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#json-and-sql-operations">JSON and SQL Operations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#shift-based-interpretation">Shift-Based Interpretation</a></li>
 </ul>
 </li>
@@ -228,12 +228,59 @@ extracting relevant information, and enabling efficient querying through aggrega
 <section id="data-extraction-strategy">
 <h2>Data Extraction Strategy<a class="headerlink" href="#data-extraction-strategy" title="Link to this heading"></a></h2>
 <p>The production database schema contains:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">machine_state</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">temperature_readings</span></code></p></li>
+<ul>
+<li><dl>
+<dt><code class="docutils literal notranslate"><span class="pre">machine_state`</span></code></dt><dd><p>For Machine Operation: The query for this part identifies if
+the machine is operating based on the variable Machine_in_operation,
+which is a boolean.</p>
+<p>For Machine Utilization: The query used analyzes variable changes in
+fixed 10-minute blocks to determine the utilization level of the
+machine. If there are no variable changes within a block, the
+machine is considered to be turned off. In the case that there are
+30 variable changes or less in a block, the machine is considered
+to be Idle. Finally, if there are more than 30 variable changes
+registered within the block, the machine is considered to be running.</p>
+</dd>
+</dl>
+</li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">temperature_readings</span></code></dt><dd><p>The query used retrieves the values of temperature variables
+registered from different parts of the machine. It is important to
+note that the query excludes non-significant temperature variables
+(in other words, variables that only register zeros or NaNs).</p>
+</dd>
+</dl>
+</li>
 <li><p><code class="docutils literal notranslate"><span class="pre">alerts</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">program_usage</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">power_consumption</span></code></p></li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">program_usage</span></code></dt><dd><p>The query used identifies the states registered for the variable
+Program Status (Prog_Status). It assumes a persistence logic:
+once a state is registered, the machine remains in that state
+until a new one is recorded. Crucially, it also retrieves the
+last state from the previous day to account for the time starting
+exactly at 00:00:00. Finally, the query calculates the total
+duration in seconds for each state during the entire day.</p>
+</dd>
+</dl>
+</li>
+<li><dl>
+<dt><code class="docutils literal notranslate"><span class="pre">power_consumption</span></code></dt><dd><p>Since the database doesn’t give us real energy values, we estimate
+it using the motor utilization percentages. Each motor has a known
+nominal power (kW), so we assume that its real power at any moment
+is (utilization% × nominal kW). We then calculate how long each
+utilization value stays active and convert that into energy (kWh).
+Finally, we culminate the first query by adding up all these segments
+and then grouping the results by hour to create the hourly energy
+chart.</p>
+<p>The second query used simply retrieves all temperature values from
+thesensors we found to be reliable. We convert the timestamps
+from milliseconds to seconds and filter the data to a specific 24
+hour period. The result is a clean list of temperature readings
+over time, which is what the frontend needs for plotting the
+temperature graph.</p>
+</dd>
+</dl>
+</li>
 </ul>
 <p>The Data Analysis Team ingested these tables to compute:</p>
 <ul class="simple">
@@ -246,29 +293,55 @@ extracting relevant information, and enabling efficient querying through aggrega
 <li><p>Coverage of available dates</p></li>
 </ul>
 </section>
-<section id="aggregation-database-schema">
-<h2>Aggregation Database Schema<a class="headerlink" href="#aggregation-database-schema" title="Link to this heading"></a></h2>
-<p>Created using:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">scripts</span><span class="o">/</span><span class="n">create_agg_database</span><span class="o">.</span><span class="n">sql</span>
+<section id="data-aggregation-strategy">
+<h2>Data Aggregation Strategy<a class="headerlink" href="#data-aggregation-strategy" title="Link to this heading"></a></h2>
+<p>The production database contains millions of rows. To ensure interactive performance in the frontend:</p>
+<ul class="simple">
+<li><p>ETL scripts extract raw sensor data</p></li>
+<li><p>Transform it through SQL and Python logic</p></li>
+<li><p>Load computed summaries into the aggregation DB</p></li>
+</ul>
+<section id="indexing-strategy">
+<h3>Indexing Strategy<a class="headerlink" href="#indexing-strategy" title="Link to this heading"></a></h3>
+<p>B-Tree indexes are used for reducing lookup time significantly.</p>
+</section>
+<section id="views">
+<h3>Views<a class="headerlink" href="#views" title="Link to this heading"></a></h3>
+<p>The <cite>v_data_status</cite> view provides:</p>
+<ul class="simple">
+<li><p>Global first/last date across all aggregated tables</p></li>
+<li><p>Record counts per table (sensors, utilization, alerts, programs, energy)</p></li>
+<li><p>Used by the frontend datepicker to restrict selectable dates</p></li>
+</ul>
+</section>
+</section>
+<section id="connecting-to-postgresql">
+<h2>Connecting to PostgreSQL<a class="headerlink" href="#connecting-to-postgresql" title="Link to this heading"></a></h2>
+<p>Example:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">psql</span> <span class="o">-</span><span class="n">h</span> <span class="mf">138.100.82.184</span> <span class="o">-</span><span class="n">U</span> <span class="n">lectura</span> <span class="o">-</span><span class="n">d</span> <span class="o">&lt;</span><span class="n">database</span><span class="o">&gt;</span> <span class="o">-</span><span class="n">p</span> <span class="mi">2345</span>
 </pre></div>
 </div>
-<p>The schema contains:</p>
+<p>Useful psql commands:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">agg_sensor_stats</span></code> – summarized RUN/IDLE/DOWN durations</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">agg_machine_utilization</span></code> – distributions by shift</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">agg_temperature_history</span></code> – hourly temperature medians</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">agg_program_history</span></code> – program execution blocks</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">agg_energy_consumption</span></code> – energy curves and shift totals</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">agg_alerts</span></code> – alerts grouped by type and shift</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">\l</span></code> – list databases</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">\dt</span></code> – list tables</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">\dv</span></code> – list views</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">\d</span> <span class="pre">table</span></code> – describe schema</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">\conninfo</span></code> – connection info</p></li>
 </ul>
-<p>Indexes include:</p>
+</section>
+<section id="json-and-sql-operations">
+<h2>JSON and SQL Operations<a class="headerlink" href="#json-and-sql-operations" title="Link to this heading"></a></h2>
+<p>Relevant PostgreSQL operators used during analysis:</p>
 <ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">timestamp</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">shift</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">status</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">program_id</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">alert_type</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">-&gt;</span></code> and <code class="docutils literal notranslate"><span class="pre">-&gt;&gt;</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">jsonb_array_elements</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">jsonb_each_text</span></code></p></li>
+<li><p>Window functions (<code class="docutils literal notranslate"><span class="pre">PARTITION</span> <span class="pre">BY</span></code>)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">GROUP</span> <span class="pre">BY</span></code>, <code class="docutils literal notranslate"><span class="pre">HAVING</span></code></p></li>
 </ul>
+<p>These allowed the team to transform nested or
+semi-structured sensor logs into usable units for aggregation.</p>
 </section>
 <section id="shift-based-interpretation">
 <h2>Shift-Based Interpretation<a class="headerlink" href="#shift-based-interpretation" title="Link to this heading"></a></h2>

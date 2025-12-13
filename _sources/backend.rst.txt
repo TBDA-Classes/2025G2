@@ -8,7 +8,6 @@ The backend is implemented using **FastAPI** and relies on:
 * SQLAlchemy as ORM (Object-Relational Mapper) 
 * psycopg3 as PostgreSQL driver  
 * python-dotenv for configuration  
-* Uvicorn for development server  
 * Custom ETL scripts for data aggregation
 
 This layer provides the REST API consumed by the frontend and manages
@@ -19,15 +18,19 @@ Backend File Structure
 ::
 
    backend/
-   ├── main.py
-   ├── models.py
-   ├── database.py
-   ├── env_example.txt
-   ├── requirements.txt
+   ├── main.py                             # FastAPI application and endpoints
+   ├── models.py                           # SQLAlchemy ORM models
+   ├── database.py                         # Database connection configuration
+   ├── env_example.txt                     # Environment variables template
+   ├── requirements.txt                    # Python dependencies
    ├── scripts/
-   │   ├── create_agg_database.sql
-   │   ├── etl_agg_machine_utilization.py
-   │   └── etl_agg_sensor_stats.py
+   │   ├── create_agg_database.sql         # Schema for aggregation DB
+   │   ├── etl_agg_utilization.py          # Temperature statistics
+   │   └── etl_agg_sensor_stats.py         # Machine utilization
+   │   └── etl_agg_program_history.py      # Program durations
+   │   └── etl_agg_alerts.py               # Alert aggregation
+   │   └── etl_agg_energy_daily.py         # Energy consumption
+   │   └── etl_agg_daily_runner.py         # Orchestrates all ETLs
    └── README.md
 
 
@@ -77,65 +80,18 @@ Testing:
 * http://localhost:8000/docs
 
 
-Data Aggregation Strategy
+API Endpoints
 -------------------------
-The production database contains more than 321 million rows. To ensure interactive
-performance in the frontend:
+All endpoints are prefixed with `/api/v1/`:
 
-* ETL scripts extract raw sensor data  
-* Transform it through SQL and Python logic  
-* Load computed summaries into the aggregation DB  
-
-Indexing Strategy
-~~~~~~~~~~~~~~~~~
-B-Tree indexes are used for:
-
-* ``timestamp`` fields  
-* ``sensor_name``  
-* ``shift`` values  
-
-These indexes reduce lookup time significantly.
-
-Views
-~~~~~
-The aggregation DB includes views (e.g. ``agg_sensor_stats``) to expose:
-
-* First and last available dates  
-* Daily data coverage  
-* Query ranges supported by the system  
-
-
-Connecting to PostgreSQL
-------------------------
-Example:
-
-::
-
-   psql -h 138.100.82.184 -U lectura -d <database> -p 2345
-
-Useful psql commands:
-
-* ``\l`` list databases  
-* ``\dt`` list tables  
-* ``\dv`` list views  
-* ``\d table`` describe schema  
-* ``\conninfo`` connection info  
-
-
-Backend Endpoints (Simplified)
-------------------------------
-Even though `main.py` contains test endpoints, the backend is designed to provide:
-
-* Machine utilization data  
-* State timeline segments  
-* Temperature history  
-* Program execution history  
-* Energy metrics  
-* Alerts (by type, shift, and timestamp)  
-* System status reports  
-
-Final endpoint specifications depend on the integration between backend, ETL logic,
-and frontend requirements.
+* `/temperatures` - Temperature statistics by time bucket
+* `/machine_util` - Daily utilization (running vs downtime)
+* `/machine_changes` - State timeline for a time window
+* `/machine_program` - Program durations per day
+* `/energy_consumption` - Hourly energy data
+* `/alerts_daily_count` - Alerts count by type
+* `/alerts_detail` - Individual alert records
+* `/data_status` - Available date range and record counts 
 
 See also the :doc:`frontend` page for how the API integrates with the UI.
 See also the :doc:`code` page for detailed backend code structure.

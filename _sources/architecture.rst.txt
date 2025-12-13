@@ -62,59 +62,66 @@ Since real-time querying of the production database is impractical, the system u
     * Custom schema created via ``create_agg_database.sql``.
     * ETL processes populate tables with:
 
-      - Machine utilization distributions  
-      - Sensor state timelines  
-      - Temperature history  
-      - Energy consumption  
-      - Alerts 
+      - Machine utilization (running vs downtime)
+      - Sensor statistics (temperature distributions)  
+      - Program history (duration per program per day) 
+      - Energy consumption (hourly estimates) 
+      - Alerts (daily counts and detailed records)
 
 3. **ETL Scripts**
    Located in ``backend/scripts/``:
 
    * ``etl_agg_sensor_stats.py``  
-      Generates aggregated machine state durations (RUN/IDLE/DOWN).
+      Temperature statistics per time bucket.
 
-   * ``etl_agg_machine_utilization.py``  
-       Computes 24-hour distributions and shift-based metrics.
+   * ``etl_agg_utilization.py``  
+       Daily running hours vs downtime.
+    
+    * ``etl_agg_program_history.py``
+        Program execution durations per day.
+    
+    * ``etl_agg_alerts.py``
+        Alert counts and details.
+    
+    * ``etl_agg_energy_daily.py``
+        Hourly energy consumption.
+    
+    * ``etl_daily_runner.py``
+        Orchestrates all ETLs for incremental updates.
 
    * ``create_agg_database.sql``  
-       Initializes the aggregated database schema.
+       Schema initialization.
 
-This strategy reduces response times drastically and enables the frontend to display
-data interactively without delay.
+This pre-aggregation strategy reduces query response times and enables interactive dashboards.
 
 
 Frontend–Backend Interaction
 ----------------------------
-The frontend communicates with the backend via a single Axios wrapper located in
-``src/lib/api.ts``. All components (including dashboards, charts, and alert lists) request
-data using date parameters and/or time-window selections.
+The frontend communicates with the backend via API functions in 
+``src/lib/api.ts``. All requests include a date parameter; the backend returns JSON from the aggregated database .
  
-The backend exposes endpoints that return JSON-structured responses optimized for the
-frontend components.
 
 
-User Interface Flow Integration
+Dashboard Data Requirements
 -------------------------------
-The architecture was heavily shaped by the UI/UX design process:
-  * The Dashboard requires:
-        - 24-hour machine utilization data
-        - 10-minute time window timeline
-        - Temperature history
-        - Program execution history
+Each UI section maps to specific backend endpoints and aggregated tables:
+
+  * Dashboard:
+        - Machine utilization (running vs downtime)
+        - Operational timeline (30-minute window, selectable start time) 
+        - Temperature statistics (box plot)
+        -  Program history (duration per program)
 
   * The Energy section requires:
-        - Real-time power
-        - Hourly consumption
-        - Shift-based totals
+        - Hourly energy consumption (line chart) 
+        - Peak consumption hour 
+        - Daily total
 
   * The Alerts section requires:
-        - Alerts by type
-        - Filterable list of alerts
-        - Details panel for selected alert
+        - Summary counts by type (emergency, error, warning, other) 
+        - Filterable alert list 
+        - Detail panel for selected alert
 
-Backend endpoints and aggregation tables were designed specifically to support these
-data flows efficiently.
 
 **The dashboard UI is described in detail in the** :doc:`ui_ux` **section**
 

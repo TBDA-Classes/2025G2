@@ -58,7 +58,7 @@
 <li class="toctree-l2"><a class="reference internal" href="architecture.html#system-architecture-diagram">System Architecture Diagram</a></li>
 <li class="toctree-l2"><a class="reference internal" href="architecture.html#dual-database-strategy">Dual-Database Strategy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="architecture.html#frontendbackend-interaction">Frontend–Backend Interaction</a></li>
-<li class="toctree-l2"><a class="reference internal" href="architecture.html#user-interface-flow-integration">User Interface Flow Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#dashboard-data-requirements">Dashboard Data Requirements</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">BACKEND OVERVIEW</a><ul>
@@ -67,20 +67,14 @@
 <li class="toctree-l2"><a class="reference internal" href="#database-driver">Database Driver</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#environment-variables">Environment Variables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#running-the-backend">Running the Backend</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#data-aggregation-strategy">Data Aggregation Strategy</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="#indexing-strategy">Indexing Strategy</a></li>
-<li class="toctree-l3"><a class="reference internal" href="#views">Views</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="#connecting-to-postgresql">Connecting to PostgreSQL</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#backend-endpoints-simplified">Backend Endpoints (Simplified)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#api-endpoints">API Endpoints</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="frontend.html">FRONTEND OVERVIEW</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="frontend.html#introduction">Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="frontend.html#project-structure">Project Structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="frontend.html#setup-instructions">Setup Instructions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="frontend.html#pages-and-routing">Pages and Routing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frontend.html#routes-implemented">Routes implemented</a></li>
 <li class="toctree-l2"><a class="reference internal" href="frontend.html#ui-components">UI Components</a></li>
 <li class="toctree-l2"><a class="reference internal" href="frontend.html#data-flow">Data Flow</a></li>
 </ul>
@@ -89,7 +83,13 @@
 <li class="toctree-l2"><a class="reference internal" href="db_sql.html#introduction">Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="db_sql.html#cnc-machine-status-semantics">CNC Machine Status Semantics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="db_sql.html#data-extraction-strategy">Data Extraction Strategy</a></li>
-<li class="toctree-l2"><a class="reference internal" href="db_sql.html#aggregation-database-schema">Aggregation Database Schema</a></li>
+<li class="toctree-l2"><a class="reference internal" href="db_sql.html#data-aggregation-strategy">Data Aggregation Strategy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="db_sql.html#indexing-strategy">Indexing Strategy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="db_sql.html#views">Views</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="db_sql.html#connecting-to-postgresql">Connecting to PostgreSQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="db_sql.html#json-and-sql-operations">JSON and SQL Operations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="db_sql.html#shift-based-interpretation">Shift-Based Interpretation</a></li>
 </ul>
 </li>
@@ -203,7 +203,6 @@
 <li><p>SQLAlchemy as ORM (Object-Relational Mapper)</p></li>
 <li><p>psycopg3 as PostgreSQL driver</p></li>
 <li><p>python-dotenv for configuration</p></li>
-<li><p>Uvicorn for development server</p></li>
 <li><p>Custom ETL scripts for data aggregation</p></li>
 </ul>
 <p>This layer provides the REST API consumed by the frontend and manages
@@ -212,15 +211,19 @@ communication with both the production database and the aggregation database.</p
 <section id="backend-file-structure">
 <h2>Backend File Structure<a class="headerlink" href="#backend-file-structure" title="Link to this heading"></a></h2>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span>backend/
-├── main.py
-├── models.py
-├── database.py
-├── env_example.txt
-├── requirements.txt
+├── main.py                             # FastAPI application and endpoints
+├── models.py                           # SQLAlchemy ORM models
+├── database.py                         # Database connection configuration
+├── env_example.txt                     # Environment variables template
+├── requirements.txt                    # Python dependencies
 ├── scripts/
-│   ├── create_agg_database.sql
-│   ├── etl_agg_machine_utilization.py
-│   └── etl_agg_sensor_stats.py
+│   ├── create_agg_database.sql         # Schema for aggregation DB
+│   ├── etl_agg_utilization.py          # Temperature statistics
+│   └── etl_agg_sensor_stats.py         # Machine utilization
+│   └── etl_agg_program_history.py      # Program durations
+│   └── etl_agg_alerts.py               # Alert aggregation
+│   └── etl_agg_energy_daily.py         # Energy consumption
+│   └── etl_agg_daily_runner.py         # Orchestrates all ETLs
 └── README.md
 </pre></div>
 </div>
@@ -266,64 +269,19 @@ a <cite>.env</cite> file. A simplified example:</p>
 <li><p><a class="reference external" href="http://localhost:8000/docs">http://localhost:8000/docs</a></p></li>
 </ul>
 </section>
-<section id="data-aggregation-strategy">
-<h2>Data Aggregation Strategy<a class="headerlink" href="#data-aggregation-strategy" title="Link to this heading"></a></h2>
-<p>The production database contains more than 321 million rows. To ensure interactive
-performance in the frontend:</p>
+<section id="api-endpoints">
+<h2>API Endpoints<a class="headerlink" href="#api-endpoints" title="Link to this heading"></a></h2>
+<p>All endpoints are prefixed with <cite>/api/v1/</cite>:</p>
 <ul class="simple">
-<li><p>ETL scripts extract raw sensor data</p></li>
-<li><p>Transform it through SQL and Python logic</p></li>
-<li><p>Load computed summaries into the aggregation DB</p></li>
+<li><p><cite>/temperatures</cite> - Temperature statistics by time bucket</p></li>
+<li><p><cite>/machine_util</cite> - Daily utilization (running vs downtime)</p></li>
+<li><p><cite>/machine_changes</cite> - State timeline for a time window</p></li>
+<li><p><cite>/machine_program</cite> - Program durations per day</p></li>
+<li><p><cite>/energy_consumption</cite> - Hourly energy data</p></li>
+<li><p><cite>/alerts_daily_count</cite> - Alerts count by type</p></li>
+<li><p><cite>/alerts_detail</cite> - Individual alert records</p></li>
+<li><p><cite>/data_status</cite> - Available date range and record counts</p></li>
 </ul>
-<section id="indexing-strategy">
-<h3>Indexing Strategy<a class="headerlink" href="#indexing-strategy" title="Link to this heading"></a></h3>
-<p>B-Tree indexes are used for:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">timestamp</span></code> fields</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">sensor_name</span></code></p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">shift</span></code> values</p></li>
-</ul>
-<p>These indexes reduce lookup time significantly.</p>
-</section>
-<section id="views">
-<h3>Views<a class="headerlink" href="#views" title="Link to this heading"></a></h3>
-<p>The aggregation DB includes views (e.g. <code class="docutils literal notranslate"><span class="pre">agg_sensor_stats</span></code>) to expose:</p>
-<ul class="simple">
-<li><p>First and last available dates</p></li>
-<li><p>Daily data coverage</p></li>
-<li><p>Query ranges supported by the system</p></li>
-</ul>
-</section>
-</section>
-<section id="connecting-to-postgresql">
-<h2>Connecting to PostgreSQL<a class="headerlink" href="#connecting-to-postgresql" title="Link to this heading"></a></h2>
-<p>Example:</p>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">psql</span> <span class="o">-</span><span class="n">h</span> <span class="mf">138.100.82.184</span> <span class="o">-</span><span class="n">U</span> <span class="n">lectura</span> <span class="o">-</span><span class="n">d</span> <span class="o">&lt;</span><span class="n">database</span><span class="o">&gt;</span> <span class="o">-</span><span class="n">p</span> <span class="mi">2345</span>
-</pre></div>
-</div>
-<p>Useful psql commands:</p>
-<ul class="simple">
-<li><p><code class="docutils literal notranslate"><span class="pre">\l</span></code> list databases</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">\dt</span></code> list tables</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">\dv</span></code> list views</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">\d</span> <span class="pre">table</span></code> describe schema</p></li>
-<li><p><code class="docutils literal notranslate"><span class="pre">\conninfo</span></code> connection info</p></li>
-</ul>
-</section>
-<section id="backend-endpoints-simplified">
-<h2>Backend Endpoints (Simplified)<a class="headerlink" href="#backend-endpoints-simplified" title="Link to this heading"></a></h2>
-<p>Even though <cite>main.py</cite> contains test endpoints, the backend is designed to provide:</p>
-<ul class="simple">
-<li><p>Machine utilization data</p></li>
-<li><p>State timeline segments</p></li>
-<li><p>Temperature history</p></li>
-<li><p>Program execution history</p></li>
-<li><p>Energy metrics</p></li>
-<li><p>Alerts (by type, shift, and timestamp)</p></li>
-<li><p>System status reports</p></li>
-</ul>
-<p>Final endpoint specifications depend on the integration between backend, ETL logic,
-and frontend requirements.</p>
 <p>See also the <a class="reference internal" href="frontend.html"><span class="doc">FRONTEND OVERVIEW</span></a> page for how the API integrates with the UI.
 See also the <a class="reference internal" href="code.html"><span class="doc">CODE REFERENCE</span></a> page for detailed backend code structure.</p>
 </section>

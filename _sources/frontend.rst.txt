@@ -3,41 +3,49 @@ FRONTEND OVERVIEW
 
 Introduction
 ------------
-The frontend is built with Next.js, React, TypeScript, and
-Tailwind CSS. It provides a modern, responsive, and performant UI that interacts
-with the backend API through Axios.
+* Next.js App Router with server and client components
+* Nivo charts for data visualization (BoxPlot, Line)
+* MUI DatePicker for date selection
+* Tailwind CSS for styling 
 
-The design follows the UI/UX prototype created in Figma, resulting in a clear,
-user-friendly monitoring interface.
+It provides a modern, responsive UI that interacts 
+with the backend API via fetch functions in `lib/api.ts`.
 
 
 Project Structure
 -----------------
 ::
 
-   frontend/
-   ├── public/
-   ├── src/
-   │   ├── app/
-   │   │   ├── layout.tsx
-   │   │   ├── page.tsx
-   │   │   └── dashboard/
-   │   │       ├── [date]/page.tsx
-   │   │       ├── alerts/page.tsx
-   │   │       ├── calendar/page.tsx
-   │   │       └── energy/page.tsx
-   │   ├── components/
-   │   │   ├── BarChart.tsx
-   │   │   ├── BoxPlot.tsx
-   │   │   ├── TimelineChart.tsx
-   │   │   ├── Datepicker.tsx
-   │   │   └── Sidebar.tsx
-   │   ├── lib/api.ts
-   │   └── types/
-   │       ├── DateState.ts
-   │       ├── Temperature.ts
-   │       └── period.ts
-   └── README.md
+   
+    frontend/src/
+    ├── app/
+    │   ├── layout.tsx
+    │   ├── page.tsx
+    │   ├── globals.css
+    │   ├── dashboard/
+    │   │   ├── layout.tsx                 # Dashboard layout (sidebar)
+    │   │   ├── page.tsx                   # Main dashboard
+    │   │   ├── alerts/page.tsx            # Alerts page
+    │   │   └── energy/page.tsx            # Energy monitoring page
+    │   └── components/
+    │       ├── Sidebar.tsx                # Navigation sidebar
+    │       ├── Datepicker.tsx             # MUI date picker
+    │       ├── BoxPlot.tsx                # Temperature box plot (Nivo)
+    │       ├── TimelineChart.tsx          # Machine state timeline
+    │       ├── TimelineSection.tsx        # Timeline with time selector
+    │       ├── EnergyChart.tsx            # Energy consumption chart (Nivo)
+    │       └── AlertListWithDetails.tsx   # Interactive alert list
+    ├── lib/
+    │   └── api.ts                         # API functions (fetch wrapper)
+    └── types/                             # TypeScript interfaces
+        ├── Temperature.ts
+        ├── Utilization.ts
+        ├── MachineProgram.ts
+        ├── MachineOperation.ts
+        ├── AlertsDailyCount.ts
+        ├── AlertsDetail.ts
+        ├── EnergyConsumption.ts
+        └── DataStatus.ts
 
 
 Setup Instructions
@@ -61,22 +69,13 @@ Environment Variable:
    NEXT_PUBLIC_API_URL=http://localhost:8000
 
 
-Pages and Routing
------------------
-Next.js App Router conventions:
+Routes implemented
+-------------------
 
-* ``page.tsx`` – main entry for each route  
-* ``layout.tsx`` – shared layout (sidebar, navbar)  
-* ``loading.tsx`` – suspense state  
-* ``error.tsx`` – error handler  
-* ``not-found.tsx`` – 404 fallback  
 
-Routes implemented:
-
-* ``/dashboard``  
-* ``/dashboard/[date]``  
-* ``/energy``  
-* ``/alerts``  
+* ``/dashboard`` - Main dashboard with utilization, timeline, temperature, programs   
+* ``/dashboard/energy`` - Energy consumption monitoring  
+* ``/dashboard/alerts`` - Alerts summary and details
 
 
 UI Components
@@ -85,33 +84,33 @@ UI Components
   Navigation between Dashboard, Energy, and Alerts.
 
 * **Datepicker:**  
-  Allows selecting any date from the production calendar.
+  MUI DatePicker with min/max date restrictions from data.
+
+* **BoxPlot:**  
+  Temperature distribution (Nivo)
 
 * **TimelineChart:**  
-  Displays RUN / IDLE / DOWN segments in 10-minute windows.
+  Machine state segments (Nivo)
 
-* **BarChart & BoxPlot:**  
-  Used for energy and temperature visualizations.
+* **TimelineSection:**
+  Timeline with selectable start time (Custom).
 
-* **Responsive Cards:**  
-  Show machine utilization percentages, power readings, alerts summary, etc.
+* **EnergyChart**  
+  Hourly consumption line chart with summary cards (Nivo).
+
+* **AlertListWithDetails**  
+  Filterable alert list with detail panel.
 
 
 Data Flow
 ---------
-All data requests are handled through ``lib/api.ts``:
+All API calls are in ``lib/api.ts``. Each function fetches from the backend:
 
-* Machine utilization  
-* Timeline segments  
-* Temperature history  
-* Energy metrics  
-* Alerts lists and details  
-
-The frontend’s reactivity and performance are driven by:
-
-* Suspense boundaries  
-* Client components  
-* Lightweight Axios wrappers  
-* Tailwind-based styling system  
-
-All data comes from the aggregation pipeline described in :doc:`db_sql`.
+``getTemperatures()`` – Temperature statistics
+``getMachineUtilization()`` – Running vs downtime
+``getMachineOperations()`` – Timeline segments
+``getMachinePrograms()`` – Program history
+``getEnergyConsumption()`` – Hourly energy data
+``getAlertsDailyCount()`` – Alert summary by type
+``getAlertsDetail()`` – Individual alert records
+``getDataStatus()`` – Available date range

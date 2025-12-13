@@ -38,11 +38,48 @@ Data Extraction Strategy
 ------------------------
 The production database schema contains:
 
-* ``machine_state``  
-* ``temperature_readings``  
+* ``machine_state```
+   For Machine Operation: The query for this part identifies if 
+   the machine is operating based on the variable Machine_in_operation, 
+   which is a boolean.
+
+   For Machine Utilization: The query used analyzes variable changes in
+   fixed 10-minute blocks to determine the utilization level of the
+   machine. If there are no variable changes within a block, the
+   machine is considered to be turned off. In the case that there are
+   30 variable changes or less in a block, the machine is considered
+   to be Idle. Finally, if there are more than 30 variable changes 
+   registered within the block, the machine is considered to be running.
+* ``temperature_readings``
+   The query used retrieves the values of temperature variables
+   registered from different parts of the machine. It is important to
+   note that the query excludes non-significant temperature variables
+   (in other words, variables that only register zeros or NaNs).  
 * ``alerts``  
-* ``program_usage``  
-* ``power_consumption``  
+* ``program_usage``
+   The query used identifies the states registered for the variable
+   Program Status (Prog_Status). It assumes a persistence logic: 
+   once a state is registered, the machine remains in that state 
+   until a new one is recorded. Crucially, it also retrieves the 
+   last state from the previous day to account for the time starting 
+   exactly at 00:00:00. Finally, the query calculates the total 
+   duration in seconds for each state during the entire day.
+* ``power_consumption``
+   Since the database doesn’t give us real energy values, we estimate
+   it using the motor utilization percentages. Each motor has a known
+   nominal power (kW), so we assume that its real power at any moment
+   is (utilization% × nominal kW). We then calculate how long each
+   utilization value stays active and convert that into energy (kWh).
+   Finally, we culminate the first query by adding up all these segments
+   and then grouping the results by hour to create the hourly energy
+   chart.
+
+   The second query used simply retrieves all temperature values from 
+   thesensors we found to be reliable. We convert the timestamps 
+   from milliseconds to seconds and filter the data to a specific 24 
+   hour period. The result is a clean list of temperature readings 
+   over time, which is what the frontend needs for plotting the 
+   temperature graph.
 
 The Data Analysis Team ingested these tables to compute:
 
@@ -55,31 +92,54 @@ The Data Analysis Team ingested these tables to compute:
 * Coverage of available dates  
 
 
-Aggregation Database Schema
+Data Aggregation Strategy
 ---------------------------
-Created using:
+The production database contains millions of rows. To ensure interactive performance in the frontend:
+
+* ETL scripts extract raw sensor data
+* Transform it through SQL and Python logic
+* Load computed summaries into the aggregation DB
+
+Indexing Strategy
+~~~~~~~~~~~~~~~~~~
+B-Tree indexes are used for reducing lookup time significantly.
+
+Views
+~~~~~
+The `v_data_status` view provides:
+
+* Global first/last date across all aggregated tables
+* Record counts per table (sensors, utilization, alerts, programs, energy)
+* Used by the frontend datepicker to restrict selectable dates
+
+Connecting to PostgreSQL
+------------------------
+Example:
 
 ::
 
-   scripts/create_agg_database.sql
+   psql -h 138.100.82.184 -U lectura -d <database> -p 2345
 
-The schema contains:
 
-* ``agg_sensor_stats`` – summarized RUN/IDLE/DOWN durations  
-* ``agg_machine_utilization`` – distributions by shift  
-* ``agg_temperature_history`` – hourly temperature medians  
-* ``agg_program_history`` – program execution blocks  
-* ``agg_energy_consumption`` – energy curves and shift totals  
-* ``agg_alerts`` – alerts grouped by type and shift  
+Useful psql commands:
 
-Indexes include:
+* ``\l`` – list databases  
+* ``\dt`` – list tables
+* ``\dv`` – list views
+* ``\d table`` – describe schema
+* ``\conninfo`` – connection info
 
-* ``timestamp``  
-* ``shift``  
-* ``status``  
-* ``program_id``  
-* ``alert_type``  
+JSON and SQL Operations
+------------------------
+Relevant PostgreSQL operators used during analysis:
 
+* ``->`` and ``->>``
+* ``jsonb_array_elements``
+* ``jsonb_each_text``
+* Window functions (``PARTITION BY``)
+* ``GROUP BY``, ``HAVING``
+These allowed the team to transform nested or
+semi-structured sensor logs into usable units for aggregation.
 
 Shift-Based Interpretation
 --------------------------
