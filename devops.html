@@ -112,10 +112,14 @@
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">DEVOPS &amp; DEPLOYMENT</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#deployment-architecture">Deployment Architecture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#frontend-deployment-vercel">Frontend Deployment (Vercel)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#backend-deployment">Backend Deployment</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#environment-variables">Environment Variables</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#logs-and-monitoring">Logs and Monitoring</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#backend-environment-configuration">Backend Environment Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#etl-scripts-execution">ETL Scripts Execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#database-deployment-considerations">Database Deployment Considerations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#operational-workflow-summary">Operational Workflow Summary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#logging-and-monitoring">Logging and Monitoring</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="requirements.html">PROJECT REQUIREMENTS &amp; COMPLIANCE</a><ul>
@@ -197,59 +201,170 @@
 <h1>DEVOPS &amp; DEPLOYMENT<a class="headerlink" href="#devops-deployment" title="Link to this heading"></a></h1>
 <section id="overview">
 <h2>Overview<a class="headerlink" href="#overview" title="Link to this heading"></a></h2>
-<p>This project does not rely on a full CI/CD pipeline, but it includes essential
-deployment workflows and operational practices for both backend and frontend.</p>
-<p>The target deployment environment is Vercel for the frontend and local or remote
-server execution for the backend.</p>
+<p>This project does not rely on a fully automated CI/CD pipeline, but it follows
+clear deployment and operational practices adapted to its architecture.</p>
+<p>The system is composed of:</p>
+<ul class="simple">
+<li><p>A <strong>frontend</strong> deployed on a managed platform (Vercel)</p></li>
+<li><p>A <strong>backend API</strong> executed as a long-running service</p></li>
+<li><p><strong>Scheduled ETL scripts</strong> that populate an aggregation database</p></li>
+<li><p>Two PostgreSQL databases (production and aggregation)</p></li>
+</ul>
+<p>The deployment strategy prioritizes simplicity, reproducibility, and separation
+of concerns over heavy automation.</p>
+</section>
+<section id="deployment-architecture">
+<h2>Deployment Architecture<a class="headerlink" href="#deployment-architecture" title="Link to this heading"></a></h2>
+<p>The deployment model follows the logical architecture described in
+<a class="reference internal" href="architecture.html"><span class="doc">SYSTEM ARCHITECTURE</span></a>:</p>
+<ul class="simple">
+<li><p>The <strong>Frontend</strong> is a stateless Next.js application.</p></li>
+<li><p>The <strong>Backend</strong> is a FastAPI service exposing read-only analytical endpoints.</p></li>
+<li><p><strong>ETL scripts</strong> are executed independently of the API lifecycle.</p></li>
+<li><p>The <strong>Aggregation Database</strong> is updated periodically and queried by the API.</p></li>
+</ul>
+<p>No component requires tight coupling to another at runtime, except:</p>
+<ul class="simple">
+<li><p>Frontend → Backend (HTTP)</p></li>
+<li><p>Backend → Aggregation DB</p></li>
+<li><p>ETL scripts → Production DB + Aggregation DB</p></li>
+</ul>
 </section>
 <section id="frontend-deployment-vercel">
 <h2>Frontend Deployment (Vercel)<a class="headerlink" href="#frontend-deployment-vercel" title="Link to this heading"></a></h2>
-<p>The Next.js application is fully compatible with Vercel.</p>
-<p>Deployment steps:</p>
+<p>The frontend is a Next.js application designed for seamless deployment on Vercel.</p>
+<p><strong>Deployment workflow</strong>:</p>
 <ol class="arabic simple">
-<li><p>Push the frontend folder to GitHub.</p></li>
+<li><p>Push the frontend code to a GitHub repository.</p></li>
 <li><p>Import the repository into Vercel.</p></li>
-<li><p>Configure environment variables:</p></li>
+<li><p>Configure environment variables.</p></li>
+<li><p>Trigger automatic deployment.</p></li>
 </ol>
-<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">NEXT_PUBLIC_API_URL</span><span class="o">=</span><span class="n">https</span><span class="p">:</span><span class="o">//</span><span class="n">backend</span><span class="o">-</span><span class="n">url</span>
+<p>Environment variables required:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">NEXT_PUBLIC_API_URL</span><span class="o">=</span><span class="n">http</span><span class="p">:</span><span class="o">//</span><span class="n">localhost</span><span class="p">:</span><span class="mi">8000</span>
 </pre></div>
 </div>
-<ol class="arabic simple" start="4">
-<li><p>Deploy automatically.</p></li>
-</ol>
-<p>Vercel handles:</p>
+<p>Vercel provides:</p>
 <ul class="simple">
-<li><p>CI/CD</p></li>
-<li><p>Build optimizations</p></li>
-<li><p>Global CDN</p></li>
-<li><p>Preview deployments</p></li>
+<li><p>Automatic builds on push</p></li>
+<li><p>Preview deployments for pull requests</p></li>
+<li><p>CDN-backed global delivery</p></li>
+<li><p>HTTPS and caching out of the box</p></li>
 </ul>
+<p>No custom server configuration is required.</p>
 </section>
 <section id="backend-deployment">
 <h2>Backend Deployment<a class="headerlink" href="#backend-deployment" title="Link to this heading"></a></h2>
-<p>The backend uses FastAPI and can be deployed via:</p>
+<p>The backend is a FastAPI application intended to run as a persistent service on a
+local or remote server.</p>
+<p>Supported execution modes:</p>
 <ul class="simple">
-<li><p>Uvicorn</p></li>
-<li><p>Gunicorn + Uvicorn workers</p></li>
-<li><p>Docker</p></li>
+<li><p>Development: <code class="docutils literal notranslate"><span class="pre">uvicorn</span> <span class="pre">--reload</span></code></p></li>
+<li><p>Production:
+- <code class="docutils literal notranslate"><span class="pre">uvicorn</span></code>
+- <code class="docutils literal notranslate"><span class="pre">gunicorn</span></code> with Uvicorn workers
+- Containerized execution (Docker)</p></li>
 </ul>
-<p>Recommended deployment command:</p>
+<p><strong>Recommended production command</strong>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">uvicorn</span> <span class="n">main</span><span class="p">:</span><span class="n">app</span> <span class="o">--</span><span class="n">host</span> <span class="mf">0.0.0.0</span> <span class="o">--</span><span class="n">port</span> <span class="mi">8000</span>
 </pre></div>
 </div>
-</section>
-<section id="environment-variables">
-<h2>Environment Variables<a class="headerlink" href="#environment-variables" title="Link to this heading"></a></h2>
-<p>Backend variables are loaded through <cite>.env</cite>. Place the file in the root of the backend
-container or server.</p>
-</section>
-<section id="logs-and-monitoring">
-<h2>Logs and Monitoring<a class="headerlink" href="#logs-and-monitoring" title="Link to this heading"></a></h2>
+<p>The backend:</p>
 <ul class="simple">
-<li><p>Backend logs handled through Uvicorn</p></li>
-<li><p>Vercel dashboard logs for frontend requests</p></li>
-<li><p>PostgreSQL logging for ETL processes</p></li>
+<li><p>Does not manage authentication</p></li>
+<li><p>Exposes read-only endpoints</p></li>
+<li><p>Depends on external PostgreSQL services</p></li>
+<li><p>Must remain available for frontend requests</p></li>
 </ul>
+</section>
+<section id="backend-environment-configuration">
+<h2>Backend Environment Configuration<a class="headerlink" href="#backend-environment-configuration" title="Link to this heading"></a></h2>
+<p>All backend configuration is managed via environment variables loaded from a
+<code class="docutils literal notranslate"><span class="pre">.env</span></code> file using <code class="docutils literal notranslate"><span class="pre">python-dotenv</span></code>.</p>
+<p>Typical variables include:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">DB_USER</span><span class="o">=</span><span class="n">atle</span>
+<span class="n">DB_PASSWORD</span><span class="o">=********</span>
+<span class="n">DB_HOST</span><span class="o">=</span><span class="n">localhost</span>
+<span class="n">DB_PORT</span><span class="o">=</span><span class="mi">5432</span>
+<span class="n">DB_NAME</span><span class="o">=</span><span class="n">production_db</span>
+<span class="n">AGG_DB_NAME</span><span class="o">=</span><span class="n">aggregation_db</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">.env</span></code> file must be present on the backend host but <strong>must not</strong> be
+committed to version control.</p>
+<p>An <code class="docutils literal notranslate"><span class="pre">env_example.txt</span></code> file is provided as a template.</p>
+</section>
+<section id="etl-scripts-execution">
+<h2>ETL Scripts Execution<a class="headerlink" href="#etl-scripts-execution" title="Link to this heading"></a></h2>
+<p>ETL scripts are <strong>not part of the API runtime</strong>. They are executed independently
+to populate and refresh the aggregation database.</p>
+<p>Scripts are located in:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">backend</span><span class="o">/</span><span class="n">scripts</span><span class="o">/</span>
+</pre></div>
+</div>
+<p>Key ETL scripts include:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">etl_agg_sensor_stats.py</span></code> – hourly sensor statistics</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">etl_agg_utilization.py</span></code> – daily machine utilization</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">etl_agg_program_history.py</span></code> – program execution durations</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">etl_agg_alerts.py</span></code> – alert counts and details</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">etl_agg_energy_daily.py</span></code> – energy consumption</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">etl_agg_daily_runner.py</span></code> – orchestrates incremental ETL runs</p></li>
+</ul>
+<p>Execution modes:</p>
+<ul class="simple">
+<li><p>Manual execution from CLI</p></li>
+<li><p>Scheduled execution (cron, task scheduler, CI runner)</p></li>
+</ul>
+<p>ETL scripts:</p>
+<ul class="simple">
+<li><p>Read from the <strong>production database</strong></p></li>
+<li><p>Write to the <strong>aggregation database</strong></p></li>
+<li><p>Are idempotent where applicable</p></li>
+<li><p>Can be safely re-run for backfills</p></li>
+</ul>
+</section>
+<section id="database-deployment-considerations">
+<h2>Database Deployment Considerations<a class="headerlink" href="#database-deployment-considerations" title="Link to this heading"></a></h2>
+<p>Two PostgreSQL databases are required:</p>
+<ol class="arabic simple">
+<li><p><strong>Production Database</strong>
+- Read-only access
+- High-volume raw sensor data
+- Never queried directly by the frontend</p></li>
+<li><p><strong>Aggregation Database</strong>
+- Custom schema created via <code class="docutils literal notranslate"><span class="pre">create_agg_database.sql</span></code>
+- Optimized for analytics
+- Queried exclusively by the backend API</p></li>
+</ol>
+<p>The aggregation schema must be initialized <strong>once</strong> before running ETL scripts.</p>
+</section>
+<section id="operational-workflow-summary">
+<h2>Operational Workflow Summary<a class="headerlink" href="#operational-workflow-summary" title="Link to this heading"></a></h2>
+<p>A typical operational flow is:</p>
+<ol class="arabic simple">
+<li><p>Production database receives raw machine data.</p></li>
+<li><p>ETL scripts aggregate and store derived metrics.</p></li>
+<li><p>Backend API serves aggregated data.</p></li>
+<li><p>Frontend visualizes data via dashboards.</p></li>
+</ol>
+<p>Each step can be monitored and debugged independently.</p>
+</section>
+<section id="logging-and-monitoring">
+<h2>Logging and Monitoring<a class="headerlink" href="#logging-and-monitoring" title="Link to this heading"></a></h2>
+<p>Logging is handled at multiple levels:</p>
+<ul class="simple">
+<li><p><strong>Backend</strong>
+- Uvicorn logs (startup, requests, errors)
+- Python logging inside ETL scripts</p></li>
+<li><p><strong>Frontend</strong>
+- Vercel deployment logs
+- Runtime logs via browser developer tools</p></li>
+<li><p><strong>Database</strong>
+- PostgreSQL logs (optional, environment-dependent)</p></li>
+</ul>
+<p>No centralized logging system is currently configured, but the architecture
+allows adding one if needed.</p>
 </section>
 </section>
 

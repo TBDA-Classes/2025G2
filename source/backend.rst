@@ -93,5 +93,6 @@ All endpoints are prefixed with ``/api/v1/``:
 * ``/alerts_detail`` - Individual alert records
 * ``/data_status`` - Available date range and record counts 
 
-See also the :doc:`frontend` page for how the API integrates with the UI.
-See also the :doc:`code` page for detailed backend code structure.
+- See also the :doc:`frontend` page for how the API integrates with the UI.
+
+- See also the :doc:`code` page for detailed backend code structure.

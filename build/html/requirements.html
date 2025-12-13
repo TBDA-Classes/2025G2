@@ -20,6 +20,7 @@
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="CODE REFERENCE" href="code.html" />
     <link rel="prev" title="DEVOPS &amp; DEPLOYMENT" href="devops.html" /> 
 </head>
 
@@ -57,7 +58,7 @@
 <li class="toctree-l2"><a class="reference internal" href="architecture.html#system-architecture-diagram">System Architecture Diagram</a></li>
 <li class="toctree-l2"><a class="reference internal" href="architecture.html#dual-database-strategy">Dual-Database Strategy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="architecture.html#frontendbackend-interaction">Frontend–Backend Interaction</a></li>
-<li class="toctree-l2"><a class="reference internal" href="architecture.html#user-interface-flow-integration">User Interface Flow Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#dashboard-data-requirements">Dashboard Data Requirements</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="backend.html">BACKEND OVERVIEW</a><ul>
@@ -66,20 +67,14 @@
 <li class="toctree-l2"><a class="reference internal" href="backend.html#database-driver">Database Driver</a></li>
 <li class="toctree-l2"><a class="reference internal" href="backend.html#environment-variables">Environment Variables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="backend.html#running-the-backend">Running the Backend</a></li>
-<li class="toctree-l2"><a class="reference internal" href="backend.html#data-aggregation-strategy">Data Aggregation Strategy</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="backend.html#indexing-strategy">Indexing Strategy</a></li>
-<li class="toctree-l3"><a class="reference internal" href="backend.html#views">Views</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="backend.html#connecting-to-postgresql">Connecting to PostgreSQL</a></li>
-<li class="toctree-l2"><a class="reference internal" href="backend.html#backend-endpoints-simplified">Backend Endpoints (Simplified)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backend.html#api-endpoints">API Endpoints</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="frontend.html">FRONTEND OVERVIEW</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="frontend.html#introduction">Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="frontend.html#project-structure">Project Structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="frontend.html#setup-instructions">Setup Instructions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="frontend.html#pages-and-routing">Pages and Routing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frontend.html#routes-implemented">Routes implemented</a></li>
 <li class="toctree-l2"><a class="reference internal" href="frontend.html#ui-components">UI Components</a></li>
 <li class="toctree-l2"><a class="reference internal" href="frontend.html#data-flow">Data Flow</a></li>
 </ul>
@@ -88,7 +83,13 @@
 <li class="toctree-l2"><a class="reference internal" href="db_sql.html#introduction">Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="db_sql.html#cnc-machine-status-semantics">CNC Machine Status Semantics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="db_sql.html#data-extraction-strategy">Data Extraction Strategy</a></li>
-<li class="toctree-l2"><a class="reference internal" href="db_sql.html#aggregation-database-schema">Aggregation Database Schema</a></li>
+<li class="toctree-l2"><a class="reference internal" href="db_sql.html#data-aggregation-strategy">Data Aggregation Strategy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="db_sql.html#indexing-strategy">Indexing Strategy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="db_sql.html#views">Views</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="db_sql.html#connecting-to-postgresql">Connecting to PostgreSQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="db_sql.html#json-and-sql-operations">JSON and SQL Operations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="db_sql.html#shift-based-interpretation">Shift-Based Interpretation</a></li>
 </ul>
 </li>
@@ -111,16 +112,63 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="devops.html">DEVOPS &amp; DEPLOYMENT</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="devops.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devops.html#deployment-architecture">Deployment Architecture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="devops.html#frontend-deployment-vercel">Frontend Deployment (Vercel)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="devops.html#backend-deployment">Backend Deployment</a></li>
-<li class="toctree-l2"><a class="reference internal" href="devops.html#environment-variables">Environment Variables</a></li>
-<li class="toctree-l2"><a class="reference internal" href="devops.html#vpn-and-database-access">VPN and Database Access</a></li>
-<li class="toctree-l2"><a class="reference internal" href="devops.html#logs-and-monitoring">Logs and Monitoring</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devops.html#backend-environment-configuration">Backend Environment Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devops.html#etl-scripts-execution">ETL Scripts Execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devops.html#database-deployment-considerations">Database Deployment Considerations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devops.html#operational-workflow-summary">Operational Workflow Summary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devops.html#logging-and-monitoring">Logging and Monitoring</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">PROJECT REQUIREMENTS &amp; COMPLIANCE</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="#introduction">Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#functional-requirements">Functional Requirements</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="code.html">CODE REFERENCE</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="code.html#backend-scripts">Backend Scripts</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="code.html#aggregation-database-creation-script">Aggregation Database Creation Script</a></li>
+<li class="toctree-l3"><a class="reference internal" href="code.html#alerts-aggregation-etl-script">Alerts Aggregation ETL Script</a></li>
+<li class="toctree-l3"><a class="reference internal" href="code.html#machine-program-history-etl-script">Machine Program History ETL Script</a></li>
+<li class="toctree-l3"><a class="reference internal" href="code.html#sensor-statistics-etl-script">Sensor Statistics ETL Script</a></li>
+<li class="toctree-l3"><a class="reference internal" href="code.html#machine-utilization-etl-script">Machine Utilization ETL Script</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="code.html#core-backend-code">Core Backend Code</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="code.html#database-connection-layer">Database Connection Layer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="code.html#orm-models">ORM Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="code.html#api-application-entry-point">API Application Entry Point</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="queries.html">MAIN QUERIES</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="queries.html#machine-utilization-queries">Machine Utilization Queries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="queries.html#machine-utilization-percentages">Machine Utilization (Percentages)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="queries.html#program-history-queries">Program History Queries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="queries.html#program-history-24-hours">Program History (24 Hours)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="queries.html#temperature-queries">Temperature Queries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="queries.html#temperature-history-24-hours">Temperature History (24 Hours)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="queries.html#energy-consumption-queries">Energy Consumption Queries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="queries.html#hourly-consumption">Hourly Consumption</a></li>
+<li class="toctree-l3"><a class="reference internal" href="queries.html#energy-by-shift">Energy by Shift</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="queries.html#alarm-queries">Alarm Queries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="queries.html#alarm-count-by-category">Alarm Count by Category</a></li>
+<li class="toctree-l3"><a class="reference internal" href="queries.html#alarm-count-by-shift-and-category">Alarm Count by Shift and Category</a></li>
+<li class="toctree-l3"><a class="reference internal" href="queries.html#full-list-of-alerts">Full List of Alerts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="queries.html#alarm-detail-for-a-specific-code">Alarm Detail for a Specific Code</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -160,52 +208,38 @@ explains how the implemented solution satisfies each of them.</p>
 <h2>Functional Requirements<a class="headerlink" href="#functional-requirements" title="Link to this heading"></a></h2>
 <ol class="arabic">
 <li><p>Visualize machine utilization</p>
-<dl class="simple">
-<dt><strong>Status:</strong> To be implemented</dt><dd><dl class="simple">
-<dt><strong>How:</strong></dt><dd><ul class="simple">
-<li><p>Aggregated data from ETL scripts</p></li>
-<li><p>Dashboard utilization cards</p></li>
-<li><p>24-hour distribution</p></li>
-</ul>
-</dd>
-</dl>
-</dd>
-</dl>
+<p><strong>Status:</strong> Implemented
+* <strong>How:</strong>
+- Aggregated data from ETL scripts
+- Dashboard utilization cards
+- 24-hour distribution</p>
 </li>
 <li><p>Display machine status timeline</p>
-<dl class="simple">
-<dt><strong>Status:</strong> To be implemented</dt><dd><dl class="simple">
-<dt><strong>How:</strong></dt><dd><ul class="simple">
-<li><p>TimelineChart component</p></li>
-<li><p>10-minute windows</p></li>
-<li><p>Color-coded segments</p></li>
-</ul>
-</dd>
-</dl>
-</dd>
-</dl>
+<p><strong>Status:</strong> Implemented
+* <strong>How:</strong>
+- TimelineChart component
+- 30-minute windows
+- Color-coded segments</p>
 </li>
 <li><p>Show temperature history</p>
-<dl class="simple">
-<dt><strong>Status:</strong> To be implemented</dt><dd><dl class="simple">
-<dt><strong>How:</strong></dt><dd><ul class="simple">
-<li><p>Aggregated hourly temperature metrics</p></li>
-<li><p>Line chart in Dashboard</p></li>
-</ul>
-</dd>
-</dl>
-</dd>
-</dl>
+<p><strong>Status:</strong> Implemented
+* <strong>How:</strong>
+- Aggregated hourly temperature metrics
+- Line chart in Dashboard</p>
 </li>
 <li><p>Show program execution history</p>
-<p><strong>Status:</strong> To be implemented</p>
+<p><strong>Status:</strong> Implemented
+<strong>How:</strong>
+- View that shows the duration of each CNC program
+during the day</p>
 </li>
 <li><p>Monitor energy consumption</p>
 <dl class="simple">
-<dt><strong>Status:</strong> To be implemented</dt><dd><dl class="simple">
+<dt><strong>Status:</strong> Implemented</dt><dd><dl class="simple">
 <dt><strong>How:</strong></dt><dd><ul class="simple">
 <li><p>Hourly consumption</p></li>
-<li><p>Shift-based totals</p></li>
+<li><p>Total daily consumption</p></li>
+<li><p>Peak hour consumption</p></li>
 </ul>
 </dd>
 </dl>
@@ -214,10 +248,10 @@ explains how the implemented solution satisfies each of them.</p>
 </li>
 <li><p>Present alerts with filtering</p>
 <dl class="simple">
-<dt><strong>Status:</strong> To be implemented</dt><dd><dl class="simple">
+<dt><strong>Status:</strong> Implemented</dt><dd><dl class="simple">
 <dt><strong>How:</strong></dt><dd><ul class="simple">
 <li><p>Alerts list</p></li>
-<li><p>Filter by type and shift</p></li>
+<li><p>Filter by type</p></li>
 <li><p>Detailed alert info panel</p></li>
 </ul>
 </dd>
@@ -234,6 +268,7 @@ explains how the implemented solution satisfies each of them.</p>
           </div>
           <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
         <a href="devops.html" class="btn btn-neutral float-left" title="DEVOPS &amp; DEPLOYMENT" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="code.html" class="btn btn-neutral float-right" title="CODE REFERENCE" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
     </div>
 
   <hr/>

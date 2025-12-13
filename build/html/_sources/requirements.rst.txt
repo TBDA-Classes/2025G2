@@ -11,44 +11,48 @@ Functional Requirements
 
 1. Visualize machine utilization
 
-   **Status:** To be implemented  
-    **How:**  
-     - Aggregated data from ETL scripts  
-     - Dashboard utilization cards  
-     - 24-hour distribution
+   **Status:** Implemented  
+   * **How:**  
+   - Aggregated data from ETL scripts  
+   - Dashboard utilization cards  
+   - 24-hour distribution
 
 2. Display machine status timeline
 
-   **Status:** To be implemented  
-    **How:**  
-     - TimelineChart component  
-     - 10-minute windows  
-     - Color-coded segments
+   **Status:** Implemented  
+   * **How:**  
+   - TimelineChart component  
+   - 30-minute windows  
+   - Color-coded segments
 
 3. Show temperature history
 
-   **Status:** To be implemented  
-    **How:**  
-     - Aggregated hourly temperature metrics  
-     - Line chart in Dashboard
+   **Status:** Implemented  
+   * **How:**  
+   - Aggregated hourly temperature metrics  
+   - Line chart in Dashboard
 
 4. Show program execution history
 
-   **Status:** To be implemented
+   **Status:** Implemented
+   **How:**  
+   - View that shows the duration of each CNC program
+   during the day
 
 
 5. Monitor energy consumption
 
-   **Status:** To be implemented  
+   **Status:** Implemented  
     **How:**  
      - Hourly consumption  
-     - Shift-based totals
+     - Total daily consumption  
+     - Peak hour consumption
 
 6. Present alerts with filtering
 
-   **Status:** To be implemented  
+   **Status:** Implemented  
     **How:**  
      - Alerts list  
-     - Filter by type and shift  
+     - Filter by type  
      - Detailed alert info panel
 

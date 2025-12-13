@@ -58,7 +58,7 @@
 <li class="toctree-l2"><a class="reference internal" href="architecture.html#system-architecture-diagram">System Architecture Diagram</a></li>
 <li class="toctree-l2"><a class="reference internal" href="architecture.html#dual-database-strategy">Dual-Database Strategy</a></li>
 <li class="toctree-l2"><a class="reference internal" href="architecture.html#frontendbackend-interaction">Frontend–Backend Interaction</a></li>
-<li class="toctree-l2"><a class="reference internal" href="architecture.html#user-interface-flow-integration">User Interface Flow Integration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="architecture.html#dashboard-data-requirements">Dashboard Data Requirements</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="backend.html">BACKEND OVERVIEW</a><ul>
@@ -67,20 +67,14 @@
 <li class="toctree-l2"><a class="reference internal" href="backend.html#database-driver">Database Driver</a></li>
 <li class="toctree-l2"><a class="reference internal" href="backend.html#environment-variables">Environment Variables</a></li>
 <li class="toctree-l2"><a class="reference internal" href="backend.html#running-the-backend">Running the Backend</a></li>
-<li class="toctree-l2"><a class="reference internal" href="backend.html#data-aggregation-strategy">Data Aggregation Strategy</a><ul>
-<li class="toctree-l3"><a class="reference internal" href="backend.html#indexing-strategy">Indexing Strategy</a></li>
-<li class="toctree-l3"><a class="reference internal" href="backend.html#views">Views</a></li>
-</ul>
-</li>
-<li class="toctree-l2"><a class="reference internal" href="backend.html#connecting-to-postgresql">Connecting to PostgreSQL</a></li>
-<li class="toctree-l2"><a class="reference internal" href="backend.html#backend-endpoints-simplified">Backend Endpoints (Simplified)</a></li>
+<li class="toctree-l2"><a class="reference internal" href="backend.html#api-endpoints">API Endpoints</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="frontend.html">FRONTEND OVERVIEW</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="frontend.html#introduction">Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="frontend.html#project-structure">Project Structure</a></li>
 <li class="toctree-l2"><a class="reference internal" href="frontend.html#setup-instructions">Setup Instructions</a></li>
-<li class="toctree-l2"><a class="reference internal" href="frontend.html#pages-and-routing">Pages and Routing</a></li>
+<li class="toctree-l2"><a class="reference internal" href="frontend.html#routes-implemented">Routes implemented</a></li>
 <li class="toctree-l2"><a class="reference internal" href="frontend.html#ui-components">UI Components</a></li>
 <li class="toctree-l2"><a class="reference internal" href="frontend.html#data-flow">Data Flow</a></li>
 </ul>
@@ -89,7 +83,13 @@
 <li class="toctree-l2"><a class="reference internal" href="db_sql.html#introduction">Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="db_sql.html#cnc-machine-status-semantics">CNC Machine Status Semantics</a></li>
 <li class="toctree-l2"><a class="reference internal" href="db_sql.html#data-extraction-strategy">Data Extraction Strategy</a></li>
-<li class="toctree-l2"><a class="reference internal" href="db_sql.html#aggregation-database-schema">Aggregation Database Schema</a></li>
+<li class="toctree-l2"><a class="reference internal" href="db_sql.html#data-aggregation-strategy">Data Aggregation Strategy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="db_sql.html#indexing-strategy">Indexing Strategy</a></li>
+<li class="toctree-l3"><a class="reference internal" href="db_sql.html#views">Views</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="db_sql.html#connecting-to-postgresql">Connecting to PostgreSQL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="db_sql.html#json-and-sql-operations">JSON and SQL Operations</a></li>
 <li class="toctree-l2"><a class="reference internal" href="db_sql.html#shift-based-interpretation">Shift-Based Interpretation</a></li>
 </ul>
 </li>
@@ -112,16 +112,63 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="devops.html">DEVOPS &amp; DEPLOYMENT</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="devops.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devops.html#deployment-architecture">Deployment Architecture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="devops.html#frontend-deployment-vercel">Frontend Deployment (Vercel)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="devops.html#backend-deployment">Backend Deployment</a></li>
-<li class="toctree-l2"><a class="reference internal" href="devops.html#environment-variables">Environment Variables</a></li>
-<li class="toctree-l2"><a class="reference internal" href="devops.html#vpn-and-database-access">VPN and Database Access</a></li>
-<li class="toctree-l2"><a class="reference internal" href="devops.html#logs-and-monitoring">Logs and Monitoring</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devops.html#backend-environment-configuration">Backend Environment Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devops.html#etl-scripts-execution">ETL Scripts Execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devops.html#database-deployment-considerations">Database Deployment Considerations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devops.html#operational-workflow-summary">Operational Workflow Summary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devops.html#logging-and-monitoring">Logging and Monitoring</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="requirements.html">PROJECT REQUIREMENTS &amp; COMPLIANCE</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="requirements.html#introduction">Introduction</a></li>
 <li class="toctree-l2"><a class="reference internal" href="requirements.html#functional-requirements">Functional Requirements</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="code.html">CODE REFERENCE</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="code.html#backend-scripts">Backend Scripts</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="code.html#aggregation-database-creation-script">Aggregation Database Creation Script</a></li>
+<li class="toctree-l3"><a class="reference internal" href="code.html#alerts-aggregation-etl-script">Alerts Aggregation ETL Script</a></li>
+<li class="toctree-l3"><a class="reference internal" href="code.html#machine-program-history-etl-script">Machine Program History ETL Script</a></li>
+<li class="toctree-l3"><a class="reference internal" href="code.html#sensor-statistics-etl-script">Sensor Statistics ETL Script</a></li>
+<li class="toctree-l3"><a class="reference internal" href="code.html#machine-utilization-etl-script">Machine Utilization ETL Script</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="code.html#core-backend-code">Core Backend Code</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="code.html#database-connection-layer">Database Connection Layer</a></li>
+<li class="toctree-l3"><a class="reference internal" href="code.html#orm-models">ORM Models</a></li>
+<li class="toctree-l3"><a class="reference internal" href="code.html#api-application-entry-point">API Application Entry Point</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="queries.html">MAIN QUERIES</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="queries.html#machine-utilization-queries">Machine Utilization Queries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="queries.html#machine-utilization-percentages">Machine Utilization (Percentages)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="queries.html#program-history-queries">Program History Queries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="queries.html#program-history-24-hours">Program History (24 Hours)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="queries.html#temperature-queries">Temperature Queries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="queries.html#temperature-history-24-hours">Temperature History (24 Hours)</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="queries.html#energy-consumption-queries">Energy Consumption Queries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="queries.html#hourly-consumption">Hourly Consumption</a></li>
+<li class="toctree-l3"><a class="reference internal" href="queries.html#energy-by-shift">Energy by Shift</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="queries.html#alarm-queries">Alarm Queries</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="queries.html#alarm-count-by-category">Alarm Count by Category</a></li>
+<li class="toctree-l3"><a class="reference internal" href="queries.html#alarm-count-by-shift-and-category">Alarm Count by Shift and Category</a></li>
+<li class="toctree-l3"><a class="reference internal" href="queries.html#full-list-of-alerts">Full List of Alerts</a></li>
+<li class="toctree-l3"><a class="reference internal" href="queries.html#alarm-detail-for-a-specific-code">Alarm Detail for a Specific Code</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -155,6 +202,10 @@
 <p>This section documents the user interface and interaction design for the
 Numerical Control Machine dashboard. The UI/UX team used Figma to create
 a high-fidelity prototype that guided the frontend implementation.</p>
+<ul class="simple">
+<li><p>Link to Figma Prototype:</p></li>
+</ul>
+<p><a class="reference external" href="https://www.figma.com/make/RSHfWMGrR5SyWN58c47tp1/Industrial-Dashboard-Prototype?node-id=0-4&amp;t=Glwc8r7wfBXLbx50-1">https://www.figma.com/make/RSHfWMGrR5SyWN58c47tp1/Industrial-Dashboard-Prototype?node-id=0-4&amp;t=Glwc8r7wfBXLbx50-1</a></p>
 <section id="design-goals">
 <h2>Design Goals<a class="headerlink" href="#design-goals" title="Link to this heading"></a></h2>
 <p>The main goals for the interface were:</p>
@@ -163,8 +214,7 @@ a high-fidelity prototype that guided the frontend implementation.</p>
 <li><p>Allow the client to explore details by date and/or time window.</p></li>
 <li><p>Make the relationship between utilisation, energy and alarms easy to
 understand.</p></li>
-<li><p>Keep the layout simple enough to be implemented efficiently in
-Next.js and React.</p></li>
+<li><p>Keep the layout simple enough to be implemented efficiently</p></li>
 </ul>
 </section>
 <section id="global-layout-and-navigation">
@@ -187,18 +237,18 @@ are rendered.</p></li>
 </ul>
 <section id="machine-utilisation-cards">
 <h3>Machine Utilisation Cards<a class="headerlink" href="#machine-utilisation-cards" title="Link to this heading"></a></h3>
-<p>At the top of the page there is a set of summary cards:</p>
+<p>At the lower part of the page (dashboard) there is a set of summary cards:</p>
 <ul class="simple">
 <li><p>Running Time – percentage and minutes the machine has been in a
-running state during the selected day and time window.</p></li>
+running state during the selected day.</p></li>
 <li><p>Idle Time – percentage and minutes in idle state.</p></li>
 <li><p>Down Time – percentage and minutes when the machine is down.</p></li>
 </ul>
 <p>Each card combines:</p>
 <ul class="simple">
 <li><p>A large percentage value.</p></li>
-<li><p>A progress bar showing the relative proportion out of 1440 minutes.</p></li>
-<li><p>A small caption with minutes over the daily total.</p></li>
+<li><p>A progress bar showing the relative proportion out of the 24h.</p></li>
+<li><p>A small caption with hours over the daily total.</p></li>
 </ul>
 <p>This information is driven by the aggregation queries from the data
 analysis team and the backend ETL.</p>
@@ -207,26 +257,26 @@ analysis team and the backend ETL.</p>
 <h3>Machine Status Timeline<a class="headerlink" href="#machine-status-timeline" title="Link to this heading"></a></h3>
 <p>There is a horizontal timeline that shows the machine status over 24 hours.</p>
 <ul class="simple">
-<li><p>Colours are used consistently: green (RUN), yellow (IDLE),
-red (DOWN).</p></li>
-<li><p>A time-window selector lets the user zoom into 10-minute intervals</p></li>
-<li><p>This visualisation is based on queries that reconstruct state changes
-from variables like <code class="docutils literal notranslate"><span class="pre">MACHINE_IN_OPERATION</span></code>, <code class="docutils literal notranslate"><span class="pre">OP_MODE_STANDBY</span></code> and
-<code class="docutils literal notranslate"><span class="pre">MACHINE_EMERGENCY</span></code>.</p></li>
+<li><p>Colours are used consistently: green (RUN) and red (IDLE). It didn’t make sense to make</p></li>
 </ul>
+<p>differences between DOWN and IDLE visually (based on the data inputs), so both are shown in red.
+* A time-window selector lets the user zoom into 30-minute intervals</p>
+<p>This information is driven by the aggregation queries from the data
+analysis team and the backend ETL.</p>
 </section>
 <section id="temperature-and-program-history">
 <h3>Temperature and Program History<a class="headerlink" href="#temperature-and-program-history" title="Link to this heading"></a></h3>
-<p>The lower part of the Dashboard contains:</p>
+<p>The Dashboard page also contains:</p>
 <ul class="simple">
 <li><p>A Temperature History line chart displaying the evolution of key
 temperature variables during the day. The Data Analysis team filtered the relevant variables using
 statistical queries to remove noisy or useless signals.</p></li>
-<li><p>A Program History bar view that shows which CNC program was
-running over time. Each program is represented by a colour and code
-(P1, P2, P3…), aligned with the same 24-hour axis as the temperature
-chart.</p></li>
+<li><p>A Program History view that shows the duration of each CNC program
+during the day. Each program is represented by a colour and code
+(P1, P2, P3…).</p></li>
 </ul>
+<p>This information is driven by the aggregation queries from the data
+analysis team and the backend ETL.</p>
 </section>
 </section>
 <section id="energy-screen">
@@ -234,16 +284,12 @@ chart.</p></li>
 <p>The Energy page focuses on power consumption and daily totals.</p>
 <p>The main elements are:</p>
 <ul class="simple">
-<li><p>Current Power card showing real-time kW usage.</p></li>
+<li><p>Hourly Energy Consumption line chart showing kWh usage during the day.</p></li>
 <li><p>Daily Total card with the total MWh for the selected day.</p></li>
-<li><p>An Hourly Energy Consumption line chart with kW on the y-axis and
-hours on the x-axis.</p></li>
-<li><p>An Energy by Shift bar chart comparing consumption between the
-three shifts.</p></li>
+<li><p>Peak hour card showing the hour with the highest consumption and its consumption value.</p></li>
 </ul>
-<p>These components are designed to sit in a clean two-column layout,
-reusing the same visual language (cards, soft shadows, rounded corners)
-as the Dashboard.</p>
+<p>This information is driven by the aggregation queries from the data
+analysis team and the backend ETL.</p>
 </section>
 <section id="alerts-screen">
 <h2>Alerts Screen<a class="headerlink" href="#alerts-screen" title="Link to this heading"></a></h2>
@@ -254,25 +300,23 @@ machine.</p>
 <p>At the top of the page there is an overview:</p>
 <ul class="simple">
 <li><p>Total number of alerts for the selected day.</p></li>
-<li><p>Breakdown by category: Emergency, Error, Alert.</p></li>
-<li><p>A secondary breakdown by shift, so the client can quickly see in
-which part of the day issues concentrate.</p></li>
+<li><p>Breakdown by category: Emergency, Error, Warning and <cite>other</cite>.</p></li>
 </ul>
 <p>The categorisation logic is based on text analysis of the alarm
 descriptions (for example detecting keywords like <em>emergency</em>, <em>error</em>
-or <em>warn</em>) and is implemented in the SQL queries from the DA team
-(Alerts AQ1–AQ4).</p>
+or <em>warn</em>) and is implemented in the SQL queries from the DA team.</p>
 </section>
 <section id="alert-list-and-detail">
 <h3>Alert List and Detail<a class="headerlink" href="#alert-list-and-detail" title="Link to this heading"></a></h3>
 <p>The lower part of the page shows:</p>
 <ul class="simple">
-<li><p>A filter bar where the user can filter by alert type and shift.</p></li>
+<li><p>A filter bar where the user can filter by alert type.</p></li>
 <li><dl class="simple">
 <dt>A list of alerts showing one row per alarm with:</dt><dd><ul>
-<li><p>Category badge (Emergency / Error / Alert).</p></li>
+<li><p>Category badge (Emergency / Error / Warning / Other).</p></li>
+<li><p>Alarm code.</p></li>
 <li><p>Date and time.</p></li>
-<li><p>Shift.</p></li>
+<li><p>Description.</p></li>
 </ul>
 </dd>
 </dl>
@@ -280,7 +324,7 @@ or <em>warn</em>) and is implemented in the SQL queries from the DA team
 <li><dl class="simple">
 <dt>A detail panel on the right showing:</dt><dd><ul>
 <li><p>Full timestamp.</p></li>
-<li><p>Shift information.</p></li>
+<li><p>Type.</p></li>
 <li><p>Alarm code.</p></li>
 <li><p>Description.</p></li>
 </ul>
@@ -288,9 +332,10 @@ or <em>warn</em>) and is implemented in the SQL queries from the DA team
 </dl>
 </li>
 </ul>
-<p>This structure supports the use cases requested by the client: quickly
-understanding how many alarms occurred, when they happened and which
-ones require attention.</p>
+<dl class="simple">
+<dt>This structure supports quickly understanding of how many alarms</dt><dd><p>occurred, when they happened and which ones require attention.</p>
+</dd>
+</dl>
 </section>
 </section>
 <section id="collaboration-with-frontend-and-data-teams">
@@ -303,9 +348,9 @@ statistics. These queries defined which metrics could be shown in the
 UI and how they should be interpreted.</p></li>
 <li><p>The backend team exposed those metrics through FastAPI endpoints
 and ensured that response times stayed reasonably fast.</p></li>
-<li><p>The frontend team worked on implementing the Figma prototype in Next.js
-using React components, Tailwind CSS and Recharts for the charts.</p></li>
+<li><p>The frontend team worked on implementing the Figma prototype using</p></li>
 </ul>
+<p>the most suitable tools.</p>
 <p>As a result the final interface closely matches the prototype while
 remaining technically feasible and performant on top of the available
 data.</p>

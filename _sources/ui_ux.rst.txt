@@ -5,6 +5,9 @@ This section documents the user interface and interaction design for the
 Numerical Control Machine dashboard. The UI/UX team used Figma to create
 a high-fidelity prototype that guided the frontend implementation.
 
+* Link to Figma Prototype:
+https://www.figma.com/make/RSHfWMGrR5SyWN58c47tp1/Industrial-Dashboard-Prototype?node-id=0-4&t=Glwc8r7wfBXLbx50-1
+
 Design Goals
 ------------
 
@@ -14,8 +17,7 @@ The main goals for the interface were:
 * Allow the client to explore details by date and/or time window.
 * Make the relationship between utilisation, energy and alarms easy to
   understand.
-* Keep the layout simple enough to be implemented efficiently in
-  Next.js and React.
+* Keep the layout simple enough to be implemented efficiently
 
 Global Layout and Navigation
 ----------------------------
@@ -36,18 +38,18 @@ The application uses a three-panel layout:
 Machine Utilisation Cards
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
-At the top of the page there is a set of summary cards:
+At the lower part of the page (dashboard) there is a set of summary cards:
 
 * Running Time – percentage and minutes the machine has been in a
-  running state during the selected day and time window.
+  running state during the selected day.
 * Idle Time – percentage and minutes in idle state.
 * Down Time – percentage and minutes when the machine is down.
 
 Each card combines:
 
 * A large percentage value.
-* A progress bar showing the relative proportion out of 1440 minutes.
-* A small caption with minutes over the daily total.
+* A progress bar showing the relative proportion out of the 24h.
+* A small caption with hours over the daily total.
 
 This information is driven by the aggregation queries from the data
 analysis team and the backend ETL.
@@ -57,25 +59,28 @@ Machine Status Timeline
 
 There is a horizontal timeline that shows the machine status over 24 hours.
 
-* Colours are used consistently: green (RUN), yellow (IDLE),
-  red (DOWN).
-* A time-window selector lets the user zoom into 10-minute intervals
-* This visualisation is based on queries that reconstruct state changes
-  from variables like ``MACHINE_IN_OPERATION``, ``OP_MODE_STANDBY`` and
-  ``MACHINE_EMERGENCY``.
+* Colours are used consistently: green (RUN) and red (IDLE). It didn't make sense to make
+differences between DOWN and IDLE visually (based on the data inputs), so both are shown in red.
+* A time-window selector lets the user zoom into 30-minute intervals
+
+This information is driven by the aggregation queries from the data
+analysis team and the backend ETL.
+
 
 Temperature and Program History
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The lower part of the Dashboard contains:
+The Dashboard page also contains:
 
 * A Temperature History line chart displaying the evolution of key
   temperature variables during the day. The Data Analysis team filtered the relevant variables using
   statistical queries to remove noisy or useless signals.
-* A Program History bar view that shows which CNC program was
-  running over time. Each program is represented by a colour and code
-  (P1, P2, P3...), aligned with the same 24-hour axis as the temperature
-  chart.
+* A Program History view that shows the duration of each CNC program
+  during the day. Each program is represented by a colour and code
+  (P1, P2, P3...).
+
+This information is driven by the aggregation queries from the data
+analysis team and the backend ETL.
 
 Energy Screen
 -------------
@@ -84,16 +89,12 @@ The Energy page focuses on power consumption and daily totals.
 
 The main elements are:
 
-* Current Power card showing real-time kW usage.
+* Hourly Energy Consumption line chart showing kWh usage during the day.
 * Daily Total card with the total MWh for the selected day.
-* An Hourly Energy Consumption line chart with kW on the y-axis and
-  hours on the x-axis.
-* An Energy by Shift bar chart comparing consumption between the
-  three shifts.
+* Peak hour card showing the hour with the highest consumption and its consumption value.
 
-These components are designed to sit in a clean two-column layout,
-reusing the same visual language (cards, soft shadows, rounded corners)
-as the Dashboard.
+This information is driven by the aggregation queries from the data
+analysis team and the backend ETL.
 
 Alerts Screen
 -------------
@@ -107,34 +108,31 @@ Summary View
 At the top of the page there is an overview:
 
 * Total number of alerts for the selected day.
-* Breakdown by category: Emergency, Error, Alert.
-* A secondary breakdown by shift, so the client can quickly see in
-  which part of the day issues concentrate.
+* Breakdown by category: Emergency, Error, Warning and `other`.
 
 The categorisation logic is based on text analysis of the alarm
 descriptions (for example detecting keywords like *emergency*, *error*
-or *warn*) and is implemented in the SQL queries from the DA team
-(Alerts AQ1–AQ4).
+or *warn*) and is implemented in the SQL queries from the DA team.
 
 Alert List and Detail
 ~~~~~~~~~~~~~~~~~~~~~
 
 The lower part of the page shows:
 
-* A filter bar where the user can filter by alert type and shift.
+* A filter bar where the user can filter by alert type.
 * A list of alerts showing one row per alarm with:
-    * Category badge (Emergency / Error / Alert).
+    * Category badge (Emergency / Error / Warning / Other).
+    * Alarm code.
     * Date and time.
-    * Shift.
+    * Description.
 * A detail panel on the right showing:
     * Full timestamp.
-    * Shift information.
+    * Type.
     * Alarm code.
     * Description.
 
-This structure supports the use cases requested by the client: quickly
-understanding how many alarms occurred, when they happened and which
-ones require attention.
+This structure supports quickly understanding of how many alarms
+ occurred, when they happened and which ones require attention.
 
 Collaboration with Frontend and Data Teams
 ------------------------------------------
@@ -147,8 +145,8 @@ The UI/UX work is tightly connected with the other sub-teams:
   UI and how they should be interpreted.
 * The backend team exposed those metrics through FastAPI endpoints
   and ensured that response times stayed reasonably fast.
-* The frontend team worked on implementing the Figma prototype in Next.js
-  using React components, Tailwind CSS and Recharts for the charts.
+* The frontend team worked on implementing the Figma prototype using 
+the most suitable tools.
 
 As a result the final interface closely matches the prototype while
 remaining technically feasible and performant on top of the available
