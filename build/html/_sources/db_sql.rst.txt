@@ -95,3 +95,4 @@ Aggregations produce metrics for each shift, consumed by:
 * Energy view  
 * Alerts distribution  
 
+See :doc:`queries` for SQL queries used during analysis and validation.

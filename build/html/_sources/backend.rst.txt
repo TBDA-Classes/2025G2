@@ -138,3 +138,4 @@ Final endpoint specifications depend on the integration between backend, ETL log
 and frontend requirements.
 
 See also the :doc:`frontend` page for how the API integrates with the UI.
+See also the :doc:`code` page for detailed backend code structure.
