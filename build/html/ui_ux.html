@@ -90,7 +90,6 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="db_sql.html#connecting-to-postgresql">Connecting to PostgreSQL</a></li>
 <li class="toctree-l2"><a class="reference internal" href="db_sql.html#json-and-sql-operations">JSON and SQL Operations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="db_sql.html#shift-based-interpretation">Shift-Based Interpretation</a></li>
 </ul>
 </li>
 <li class="toctree-l1 current"><a class="current reference internal" href="#">UI / UX DESIGN</a><ul>
@@ -203,9 +202,9 @@
 Numerical Control Machine dashboard. The UI/UX team used Figma to create
 a high-fidelity prototype that guided the frontend implementation.</p>
 <ul class="simple">
-<li><p>Link to Figma Prototype:</p></li>
+<li><p>Link to Figma Prototype:
+<a class="reference external" href="https://www.figma.com/make/RSHfWMGrR5SyWN58c47tp1/Industrial-Dashboard-Prototype?node-id=0-4&amp;t=Glwc8r7wfBXLbx50-1">https://www.figma.com/make/RSHfWMGrR5SyWN58c47tp1/Industrial-Dashboard-Prototype?node-id=0-4&amp;t=Glwc8r7wfBXLbx50-1</a></p></li>
 </ul>
-<p><a class="reference external" href="https://www.figma.com/make/RSHfWMGrR5SyWN58c47tp1/Industrial-Dashboard-Prototype?node-id=0-4&amp;t=Glwc8r7wfBXLbx50-1">https://www.figma.com/make/RSHfWMGrR5SyWN58c47tp1/Industrial-Dashboard-Prototype?node-id=0-4&amp;t=Glwc8r7wfBXLbx50-1</a></p>
 <section id="design-goals">
 <h2>Design Goals<a class="headerlink" href="#design-goals" title="Link to this heading"></a></h2>
 <p>The main goals for the interface were:</p>
@@ -257,10 +256,10 @@ analysis team and the backend ETL.</p>
 <h3>Machine Status Timeline<a class="headerlink" href="#machine-status-timeline" title="Link to this heading"></a></h3>
 <p>There is a horizontal timeline that shows the machine status over 24 hours.</p>
 <ul class="simple">
-<li><p>Colours are used consistently: green (RUN) and red (IDLE). It didn’t make sense to make</p></li>
+<li><p>Colours are used consistently: green (RUN) and red (IDLE). It didn’t make sense to make
+differences between DOWN and IDLE visually (based on the data inputs), so both are shown in red.</p></li>
+<li><p>A time-window selector lets the user zoom into 30-minute intervals</p></li>
 </ul>
-<p>differences between DOWN and IDLE visually (based on the data inputs), so both are shown in red.
-* A time-window selector lets the user zoom into 30-minute intervals</p>
 <p>This information is driven by the aggregation queries from the data
 analysis team and the backend ETL.</p>
 </section>
@@ -348,9 +347,9 @@ statistics. These queries defined which metrics could be shown in the
 UI and how they should be interpreted.</p></li>
 <li><p>The backend team exposed those metrics through FastAPI endpoints
 and ensured that response times stayed reasonably fast.</p></li>
-<li><p>The frontend team worked on implementing the Figma prototype using</p></li>
+<li><p>The frontend team worked on implementing the Figma prototype using
+the most suitable tools.</p></li>
 </ul>
-<p>the most suitable tools.</p>
 <p>As a result the final interface closely matches the prototype while
 remaining technically feasible and performant on top of the available
 data.</p>

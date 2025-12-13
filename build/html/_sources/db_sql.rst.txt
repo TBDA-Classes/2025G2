@@ -55,7 +55,12 @@ The production database schema contains:
    registered from different parts of the machine. It is important to
    note that the query excludes non-significant temperature variables
    (in other words, variables that only register zeros or NaNs).  
-* ``alerts``  
+* ``alerts``
+   We assumed that alarm severity could be accurately determined by searching
+   for specific keywords in the alarm descriptions, grouping them into three categories
+   (Emergency, Error, Alert) based on linguistic patterns rather than explicit severity codes.
+   We also assumed the timestamp format required conversion from milliseconds and that shifts could
+   be calculated directly from the time portion of each alarm's timestamp. 
 * ``program_usage``
    The query used identifies the states registered for the variable
    Program Status (Prog_Status). It assumes a persistence logic: 
@@ -141,18 +146,6 @@ Relevant PostgreSQL operators used during analysis:
 These allowed the team to transform nested or
 semi-structured sensor logs into usable units for aggregation.
 
-Shift-Based Interpretation
---------------------------
-Production teams work in:
 
-* **Shift 1** – 06:00–14:00  
-* **Shift 2** – 14:00–22:00  
-* **Shift 3** – 22:00–06:00  
-
-Aggregations produce metrics for each shift, consumed by:
-
-* Dashboard  
-* Energy view  
-* Alerts distribution  
 
 See :doc:`queries` for SQL queries used during analysis and validation.

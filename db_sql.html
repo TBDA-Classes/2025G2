@@ -90,7 +90,6 @@
 </li>
 <li class="toctree-l2"><a class="reference internal" href="#connecting-to-postgresql">Connecting to PostgreSQL</a></li>
 <li class="toctree-l2"><a class="reference internal" href="#json-and-sql-operations">JSON and SQL Operations</a></li>
-<li class="toctree-l2"><a class="reference internal" href="#shift-based-interpretation">Shift-Based Interpretation</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="ui_ux.html">UI / UX DESIGN</a><ul>
@@ -112,10 +111,14 @@
 </li>
 <li class="toctree-l1"><a class="reference internal" href="devops.html">DEVOPS &amp; DEPLOYMENT</a><ul>
 <li class="toctree-l2"><a class="reference internal" href="devops.html#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devops.html#deployment-architecture">Deployment Architecture</a></li>
 <li class="toctree-l2"><a class="reference internal" href="devops.html#frontend-deployment-vercel">Frontend Deployment (Vercel)</a></li>
 <li class="toctree-l2"><a class="reference internal" href="devops.html#backend-deployment">Backend Deployment</a></li>
-<li class="toctree-l2"><a class="reference internal" href="devops.html#environment-variables">Environment Variables</a></li>
-<li class="toctree-l2"><a class="reference internal" href="devops.html#logs-and-monitoring">Logs and Monitoring</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devops.html#backend-environment-configuration">Backend Environment Configuration</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devops.html#etl-scripts-execution">ETL Scripts Execution</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devops.html#database-deployment-considerations">Database Deployment Considerations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devops.html#operational-workflow-summary">Operational Workflow Summary</a></li>
+<li class="toctree-l2"><a class="reference internal" href="devops.html#logging-and-monitoring">Logging and Monitoring</a></li>
 </ul>
 </li>
 <li class="toctree-l1"><a class="reference internal" href="requirements.html">PROJECT REQUIREMENTS &amp; COMPLIANCE</a><ul>
@@ -250,7 +253,15 @@ note that the query excludes non-significant temperature variables
 </dd>
 </dl>
 </li>
-<li><p><code class="docutils literal notranslate"><span class="pre">alerts</span></code></p></li>
+<li><dl class="simple">
+<dt><code class="docutils literal notranslate"><span class="pre">alerts</span></code></dt><dd><p>We assumed that alarm severity could be accurately determined by searching
+for specific keywords in the alarm descriptions, grouping them into three categories
+(Emergency, Error, Alert) based on linguistic patterns rather than explicit severity codes.
+We also assumed the timestamp format required conversion from milliseconds and that shifts could
+be calculated directly from the time portion of each alarm’s timestamp.</p>
+</dd>
+</dl>
+</li>
 <li><dl class="simple">
 <dt><code class="docutils literal notranslate"><span class="pre">program_usage</span></code></dt><dd><p>The query used identifies the states registered for the variable
 Program Status (Prog_Status). It assumes a persistence logic:
@@ -341,21 +352,6 @@ temperature graph.</p>
 </ul>
 <p>These allowed the team to transform nested or
 semi-structured sensor logs into usable units for aggregation.</p>
-</section>
-<section id="shift-based-interpretation">
-<h2>Shift-Based Interpretation<a class="headerlink" href="#shift-based-interpretation" title="Link to this heading"></a></h2>
-<p>Production teams work in:</p>
-<ul class="simple">
-<li><p><strong>Shift 1</strong> – 06:00–14:00</p></li>
-<li><p><strong>Shift 2</strong> – 14:00–22:00</p></li>
-<li><p><strong>Shift 3</strong> – 22:00–06:00</p></li>
-</ul>
-<p>Aggregations produce metrics for each shift, consumed by:</p>
-<ul class="simple">
-<li><p>Dashboard</p></li>
-<li><p>Energy view</p></li>
-<li><p>Alerts distribution</p></li>
-</ul>
 <p>See <a class="reference internal" href="queries.html"><span class="doc">MAIN QUERIES</span></a> for SQL queries used during analysis and validation.</p>
 </section>
 </section>
