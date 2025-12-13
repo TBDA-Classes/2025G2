@@ -89,7 +89,7 @@ This file is used by all team members to record their working hours and activiti
 | Erik Alexander Standal | Frontend | Frontend | Worked on the frontend for Energy Monitoring, api connections and graphs| 2025-12-13 | 1 |
 | Atle Sund | Frontend/Backend | Frontend/Backend | Implementing energy monitoring and cleaned up file structure. Assisted Erik on the Frontend. Also improved comments and docstrings. | 2025-12-13 | 3 |
 | Atle Sund | Frontend/Backend | Frontend/Backend | Created an etl script for daily aggregation | 2025-12-13 | 2 |
-| Jovan Bajcetic | UI/UX + Scrum master | Documentation | Final version of the project documentation content + added code/queries + improved aesthetics | 2025-12-13 | 4 |
+| Jovan Bajcetic | UI/UX + Scrum master | Documentation | Final version of the project documentation content + added code/queries + improved aesthetics | 2025-12-13 | 5 |
 
 ---
 
