@@ -29,8 +29,6 @@ export default function DashboardLayout({children}: { children: ReactNode; }) {
 
   const date = searchParams.get('date') || "2021-09-14";
 
-  const date_status = getDataStatus();
-
   const handleDateChange = (newDate: string) => {
     router.push(`${pathname}?date=${newDate}`, { scroll: false });
   }

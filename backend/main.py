@@ -2,11 +2,10 @@
 from typing import List, Optional 
 from fastapi import FastAPI, HTTPException, Depends   
 from fastapi.middleware.cors import CORSMiddleware 
-from database import prod_engine, agg_engine, get_prod_db, get_agg_db
+from database import prod_engine, get_prod_db, get_agg_db
 from pydantic import BaseModel
-from models import Period
 from sqlalchemy.orm import Session
-from sqlalchemy import func, text
+from sqlalchemy import text
 from datetime import date as DateType
 
 # Create our API app instance, with versioning
@@ -21,13 +20,7 @@ app.add_middleware(
     allow_headers=["*"],  # Allow all headers
 )
 
-
 # We use BaseModel from pydantic to enforce and shape the GET response
-class MachineActivityOut(BaseModel):
-    date: str
-    state_idle: int
-    state_active: int
-    state_running: int
 
 class SensorStatsOut(BaseModel):
     dt: str
@@ -51,10 +44,6 @@ class DataStatusOut(BaseModel):
     total_records: Optional[int]
     number_of_sensors: Optional[int]
 
-class AlertsOut(BaseModel):
-    alert_type: str
-    unique_alarms: int
-    total_occurrences: int
 
 class MachineChangeOut(BaseModel):
     ts: str
@@ -86,6 +75,12 @@ def home():
 # Test endpoint to check database connection
 @app.get("/api/status")
 def status():
+    """
+    Health check endpoint for the API and database connection.
+    
+    Returns:
+        Status message with database version if connected.
+    """
     try:
         with prod_engine.connect() as connection:
             # Simply gives us the version information of POSTgreSQL
@@ -95,94 +90,6 @@ def status():
     except Exception as e:
         return {"status": "API is running", "database": f"Connection failed: {str(e)}"}
 
-
-# Up for removal ...
-@app.get("/api/v1/machine_activity", response_model=List[MachineActivityOut])
-def get_machine_activity(
-    target_date: DateType,
-    db: Session = Depends(get_prod_db)
-    ):
-    """
-    Get the number of hours of which machine was in each state on the given date.
-
-    Args:
-        db: Database Session
-        target_date: The date of interest, format: "2021-01-15"
-    Returns:
-        List of MachineActivityOut objects
-    """
-
-    # Using the text() property of SQLAlchemy since it is too complicated to translate
-    # the generate_series() function is inclusive, so the end time is 23.
-    # We use SQLAlchemy's placeholder syntax, :parameter
-    query = text("""
-        WITH horas AS (
-        SELECT dt
-        FROM (
-            SELECT generate_series(
-                CAST(:target_date AS date) + interval '0 hours',
-                CAST(:target_date AS date) + interval '23 hours',
-                interval '1 hour'
-            ) AS dt
-        ) sub
-        WHERE EXTRACT(DOW FROM dt) NOT IN (0, 6)  -- weekdays only
-        ),
-        cambios_por_hora AS (
-            SELECT
-                to_timestamp(
-                    ROUND((TRUNC(CAST(date AS bigint) / 1000) / 3600)) * 3600
-                ) AS dt,
-                COUNT(DISTINCT id_var) AS total_variables
-            FROM public.variable_log_float
-            WHERE to_timestamp(TRUNC(CAST(date AS bigint) / 1000)) >= CAST(:target_date AS date)
-            AND to_timestamp(TRUNC(CAST(date AS bigint) / 1000)) <  CAST(:target_date AS date) + interval '1 day'
-            GROUP BY dt
-        ),
-        clasificado AS (
-            SELECT
-                h.dt,
-                h.dt::date AS date,
-                COALESCE(c.total_variables, 0) AS total_variables,
-                CASE
-                    WHEN COALESCE(c.total_variables, 0) = 0 THEN 'Máquina parada'
-                    WHEN COALESCE(c.total_variables, 0) <= 80 THEN 'Actividad media'
-                    ELSE 'Máquina en operación'
-                END AS estado
-            FROM horas h
-            LEFT JOIN cambios_por_hora c ON h.dt = c.dt
-        )
-        SELECT
-            date,
-            COUNT(*) FILTER (WHERE estado = 'Actividad media')       AS active,
-            COUNT(*) FILTER (WHERE estado = 'Máquina en operación')  AS operating,
-            COUNT(*) FILTER (WHERE estado = 'Máquina parada')        AS idle
-        FROM clasificado
-        GROUP BY date
-        ORDER BY date;
-    """)
-
-    try:
-        # Executing with parameters prevents SQL injections because the input is treated as a data value, not SQL code.
-        result = db.execute(query, {"target_date": str(target_date)})
-        data = result.fetchall()
-
-        if not data:
-            raise HTTPException(status_code=404, detail=f"No data found for {target_date}")
-        return[
-            MachineActivityOut(
-                date=str(row.date), 
-                state_idle=row.idle, 
-                state_active=row.active, 
-                state_running=row.operating
-            ) 
-            for row in data
-        ]
-    except HTTPException: # Catch the 404 and re-raise
-        raise
-    except Exception as e: # Catches (almost) any other error
-        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
-    
-
 @app.get("/api/v1/temperature", response_model=List[SensorStatsOut])
 def get_temperature_stats(
     target_date: DateType,
@@ -190,8 +97,14 @@ def get_temperature_stats(
     db: Session = Depends(get_agg_db)
 ):
     """
-    Returns aggregated temperature statistics (min/avg/max/count) for a given sensor
-    on a specific date. Uses the agg_sensor_stats materialized table.
+    Hourly temperature statistics for a sensor on a given day.
+    
+    Params:
+        target_date: Date to query, e.g. "2021-09-14"
+        sensor_name: Name of the sensor, e.g. "TEMPERATURA_BASE"
+    
+    Returns:
+        List of hourly stats with min, avg, max, std_dev, and reading count.
     """
 
     query = text("""
@@ -243,8 +156,16 @@ def get_temperature_stats(
 def get_machine_util(
     target_date: DateType,
     db: Session = Depends(get_agg_db)
-    ):
-
+):
+    """
+    Daily machine utilization summary showing running vs. downtime hours.
+    
+    Params:
+        target_date: Date to query, e.g. "2021-09-14"
+    
+    Returns:
+        Running hours, downtime hours, and their percentages for the day.
+    """
     params = {
         'target_date': target_date
         }
@@ -267,7 +188,7 @@ def get_machine_util(
         if not rows:
             raise HTTPException(
                 status_code=404,
-                detail=f"No temperature data found for machine utilization {target_date}"
+                detail=f"No utilization data found for {target_date}"
             )
         return [
             MachineUtilOut(
@@ -291,8 +212,14 @@ def get_machine_util(
 
 @app.get("/api/v1/data_status", response_model=List[DataStatusOut])
 def get_data_status(
-db : Session = Depends(get_agg_db)
+    db: Session = Depends(get_agg_db)
 ):
+    """
+    Overview of available data across all aggregated tables.
+    
+    Returns:
+        Date range and record counts for each table, useful for the date picker.
+    """
     query = '''
     SELECT
     table_name,
@@ -326,84 +253,6 @@ db : Session = Depends(get_agg_db)
         raise HTTPException(status_code=500, detail="Database error")
 
 
-@app.get("/api/v1/alerts", response_model=List[AlertsOut])
-def get_alerts(
-    target_date: DateType,
-    db: Session = Depends(get_prod_db)
-):
-    """
-    Get alert counts categorized by type (Emergency, Error, Alert, Other) for a given date.
-
-    Args:
-        db: Database Session
-        target_date: The date of interest, format: "2022-02-23"
-    Returns:
-        List of AlertsOut objects with alert_type, unique_alarms, and total_occurrences
-    """
-
-    query = text("""
-        WITH alarm_data AS (
-            SELECT
-                to_timestamp(a.date / 1000) AS timestamp,
-                TRIM(elem ->> 0) AS alarm_code,
-                TRIM(elem ->> 1) AS alarm_description
-            FROM variable_log_string a
-            JOIN variable b ON a.id_var = b.id
-            CROSS JOIN LATERAL jsonb_array_elements(a.value::jsonb) AS elem
-            WHERE b.id = 447
-              AND a.value IS NOT NULL
-              AND a.value != '[]'
-              AND to_timestamp(a.date / 1000)::date = :target_date
-        ),
-        categorized AS (
-            SELECT
-                timestamp,
-                alarm_code,
-                alarm_description,
-                CASE
-                    WHEN alarm_description ILIKE '%emerg%' THEN 'Emergency'
-                    WHEN alarm_description ILIKE '%error%' OR 
-                         alarm_description ILIKE '%err%' OR
-                         alarm_description ILIKE '%fallo%' OR
-                         alarm_description ILIKE '%fault%' THEN 'Error'
-                    WHEN alarm_description ILIKE '%alert%' OR 
-                         alarm_description ILIKE '%alarm%' OR 
-                         alarm_description ILIKE '%warn%' OR
-                         alarm_description ILIKE '%aviso%' OR
-                         alarm_description ILIKE '%attention%' THEN 'Alert'
-                    ELSE 'Other'
-                END AS alert_type
-            FROM alarm_data
-        )
-        SELECT 
-            alert_type,
-            COUNT(DISTINCT alarm_code) AS unique_alarms,
-            COUNT(*) AS total_occurrences
-        FROM categorized
-        GROUP BY alert_type
-        ORDER BY alert_type;
-    """)
-
-    try:
-        result = db.execute(query, {"target_date": str(target_date)})
-        data = result.fetchall()
-
-        if not data:
-            raise HTTPException(status_code=404, detail=f"No alert data found for {target_date}")
-        
-        return [
-            AlertsOut(
-                alert_type=row.alert_type,
-                unique_alarms=row.unique_alarms,
-                total_occurrences=row.total_occurrences
-            )
-            for row in data
-        ]
-    except HTTPException:
-        raise
-    except Exception as e:
-        raise HTTPException(status_code=500, detail=f"Database error: {str(e)}")
-    
 @app.get("/api/v1/machine_changes", response_model=List[MachineChangeOut])
 def get_machine_changes(
     start: str,
@@ -411,11 +260,15 @@ def get_machine_changes(
     db: Session = Depends(get_prod_db)
 ):
     """
-    Returns only the timestamp where MACHINE_IN_OPERATION changes value.
-
+    Machine operation state changes within a time window (variable id=597).
+    Used to render the operational timeline chart.
+    
     Params:
-        start: datetime string, e.g. '2022-01-30 15:00:00'
-        end:   datetime string, e.g. '2022-01-30 15:30:00'
+        start: Start of time window, e.g. "2022-01-30 15:00:00+00:00"
+        end:   End of time window, e.g. "2022-01-30 15:30:00+00:00"
+    
+    Returns:
+        Timestamps and values (255=running, 0=idle) for each state change.
     """
 
     query = text("""
@@ -451,13 +304,13 @@ def get_machine_program(
     db: Session = Depends(get_agg_db)
 ):
     """
-    Get machine program usage data for a given date.
-    Returns program numbers and their duration in seconds.
-
-    Args:
-        target_date: The date of interest, format: "2021-01-15"
+    Program usage breakdown for a given day, sorted by duration.
+    
+    Params:
+        target_date: Date to query, e.g. "2021-09-14"
+    
     Returns:
-        List of MachineProgramOut objects with program and duration_seconds
+        Each program number (P0, P1, etc.) and how long it ran in seconds.
     """
 
     query = text("""
@@ -500,12 +353,13 @@ def get_alerts_daily_count(
     db: Session = Depends(get_agg_db)
 ):
     """
-    Get daily alert counts by type for a given date from the aggregated database.
-
-    Args:
-        target_date: The date of interest, format: "2022-02-23"
+    Summary count of alerts by category for a given day.
+    
+    Params:
+        target_date: Date to query, e.g. "2021-09-14"
+    
     Returns:
-        List of AlertsDailyCountOut objects with alert_type and amount
+        Count per alert type (emergency, error, warning, other).
     """
 
     query = text("""
@@ -543,12 +397,13 @@ def get_alerts_detail(
     db: Session = Depends(get_agg_db)
 ):
     """
-    Get detailed alert records for a given date from the aggregated database.
-
-    Args:
-        target_date: The date of interest, format: "2022-02-23"
+    Individual alert records for a given day, ordered chronologically.
+    
+    Params:
+        target_date: Date to query, e.g. "2021-09-14"
+    
     Returns:
-        List of AlertsDetailOut objects with timestamp, type, code, and description
+        Each alert with timestamp, type, alarm code, and description.
     """
 
     query = text("""

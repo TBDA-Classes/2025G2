@@ -40,8 +40,12 @@ CREATE TABLE IF NOT EXISTS agg_sensor_stats (
     PRIMARY KEY (sensor_name, dt)
 );
 
--- TABLE alerts
--- Purpose: Store daily alerts (only the ones of importance)
+-- B-Tree indexes for fast date-based lookups
+-- Tailored for our request: GET sensor X's data for date Y
+CREATE INDEX IF NOT EXISTS idx_sensor_date ON agg_sensor_stats(sensor_name, CAST(dt AS DATE));
+
+-- Table: alerts_daily_count
+-- Purpose: Daily summary of alerts by category (used for the alerts summary box)
 
 CREATE TABLE IF NOT EXISTS alerts_daily_count(
     day DATE NOT NULL,
@@ -50,6 +54,10 @@ CREATE TABLE IF NOT EXISTS alerts_daily_count(
     amount INT NOT NULL,
     PRIMARY KEY (day, alert_type)
 );
+
+
+-- Table: alerts_detail
+-- Purpose: Individual alert records with timestamps (used for the alerts list)
 
 CREATE TABLE IF NOT EXISTS alerts_detail(
     id SERIAL PRIMARY KEY,
@@ -61,22 +69,11 @@ CREATE TABLE IF NOT EXISTS alerts_detail(
     alarm_description TEXT,
     raw_elem_json JSONB
 );
+
 CREATE INDEX idx_alerts_detail_day_type ON alerts_detail (day, alert_type);
 
-
-CREATE TABLE IF NOT EXISTS machine_utilization(
-    id SERIAL PRIMARY KEY,
-    
-    machine_state VARCHAR(20) NOT NULL
-        CHECK(machine_state in ('down', 'running')),
-    state_start_time TIMESTAMP NOT NULL,
-    state_end_time TIMESTAMP NOT NULL,
-    
-    dt DATE GENERATED ALWAYS AS (state_start_time::DATE) STORED,
-
-    duration INTERVAL
-        GENERATED ALWAYS AS (state_end_time - state_start_time) STORED
-);
+-- Table: machine_program_data
+-- Purpose: Program usage per day (P0, P1, etc. and their run duration)
 
 CREATE TABLE IF NOT EXISTS machine_program_data(
     id SERIAL PRIMARY KEY,
@@ -86,25 +83,13 @@ CREATE TABLE IF NOT EXISTS machine_program_data(
 );
 
 -- =============================================================================
--- INDEXES
--- =============================================================================
-
--- B-Tree indexes for fast date-based lookups
--- Tailored for our request: GET sensor X's data for date Y
-CREATE INDEX IF NOT EXISTS idx_sensor_date ON agg_sensor_stats(sensor_name, CAST(dt AS DATE));
-
-
--- =============================================================================
 -- VIEWS
 -- =============================================================================
 
--- -----------------------------------------------------------------------------
--- View: v_data_status
--- Purpose: Quick overview of data availability. Gives summary of available data
--- -----------------------------------------------------------------------------
 
 DROP VIEW IF EXISTS v_data_status;
 
+-- Purpose: Quick overview of data availability. Gives summary of available data
 CREATE OR REPLACE VIEW v_data_status AS
 SELECT 
     'agg_sensor_stats' as table_name,
@@ -125,5 +110,10 @@ BEGIN
     RAISE NOTICE 'Tables created:';
     RAISE NOTICE '  - agg_machine_activity_daily';
     RAISE NOTICE '  - agg_sensor_stats';
+    RAISE NOTICE '  - alerts_daily_count';
+    RAISE NOTICE '  - alerts_detail';
+    RAISE NOTICE '  - machine_program_data';
+    RAISE NOTICE 'Views created:';
+    RAISE NOTICE '  - v_data_status';
 END $$;
 
