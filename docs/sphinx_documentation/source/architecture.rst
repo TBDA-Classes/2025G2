@@ -19,8 +19,9 @@ management. The architecture is divided into four major components:
   aggregation database to achieve <50ms response times.
 
 * **Data Engineering Layer (ETL Scripts)**  
-  Python scripts for Extract–Transform–Load workflows, periodically generating
-  precomputed statistics stored in the aggregation database.
+  Python scripts for Extract–Transform–Load workflows that precomputed results which are then stored in the aggregation database. 
+  One parent script (scripts/etl_daily_runner.py) is used for running all etl's as subscripts and is intended for daily data aggregation.
+  
 
 * **UI/UX Layer (Figma Prototyping)**  
   Human-centered interaction design guiding UI flow, dashboard hierarchy, and visual behavior.
@@ -49,7 +50,7 @@ System Architecture Diagram
 
 Dual-Database Strategy
 ----------------------
-Since real-time querying of the production database is impractical, the system uses:
+Since real-time querying of the production database is impractical and, for the most part, slow the system uses:
 
 1. **Production DB**
     * Read-only access.
@@ -57,69 +58,51 @@ Since real-time querying of the production database is impractical, the system u
     * Very large (over 321 million rows).
 
 2. **Aggregation DB**
-    * Custom schema created via ``create_agg_database.sql``.
-    * ETL processes populate tables with:
+   Custom schema created via ``create_agg_database.sql``. ETL scripts populate:
 
-    - Machine utilization distributions  
-    - Sensor state timelines  
-    - Temperature history  
-    - Energy consumption  
-    - Alerts summarized by shift  
+   - Sensor statistics (temperature distributions)
+   - Machine utilization (running vs downtime)
+   - Program history (duration per program per day)
+   - Alerts (daily counts and detailed records)
+   - Energy consumption (hourly estimates)
 
-3. **ETL Scripts**
-   Located in ``backend/scripts/``:
+3. **ETL Scripts** (``backend/scripts/``)
 
-   * ``etl_agg_sensor_stats.py``  
-     Generates aggregated machine state durations (RUN/IDLE/DOWN).
+   * ``etl_agg_sensor_stats.py`` – Temperature statistics per time bucket
+   * ``etl_agg_utilization.py`` – Daily running hours vs downtime
+   * ``etl_agg_program_history.py`` – Program durations per day
+   * ``etl_agg_alerts.py`` – Alert counts and details
+   * ``etl_agg_energy_daily.py`` – Hourly energy consumption
+   * ``etl_daily_runner.py`` – Orchestrates all ETLs for incremental updates
+   * ``create_agg_database.sql`` – Schema initialization
 
-   * ``etl_agg_machine_utilization.py``  
-     Computes 24-hour distributions and shift-based metrics.
-
-   * ``create_agg_database.sql``  
-     Initializes the aggregated database schema.
-
-This strategy reduces response times drastically and enables the frontend to display
-data interactively without delay.
+This pre-aggregation strategy reduces query response times and enables interactive dashboards.
 
 
 Frontend–Backend Interaction
 ----------------------------
-The frontend communicates with the backend via a single Axios wrapper located in
-``src/lib/api.ts``. All components—including dashboards, charts, and alert lists—request
-data using:
-
-* Date parameters  
-* Time-window selection  
-* Shift filtering  
-* Alert severity filtering  
-
-The backend exposes endpoints that return JSON-structured responses optimized for the
-frontend components.
+The frontend communicates with the backend via API functions in ``frontend/src/lib/api.ts``.
+All requests include a date parameter; the backend returns JSON from the aggregated database.
 
 
-User Interface Flow Integration
--------------------------------
-The architecture was heavily shaped by the UI/UX design process:
-* The Dashboard requires:
-  - 24-hour machine utilization data
-  - 10-minute time window timeline
-  - Temperature history
-  - Program execution history
+Dashboard Data Requirements
+---------------------------
+Each UI section maps to specific backend endpoints and aggregated tables:
 
-* The Energy section requires:
-  - Real-time power
-  - Hourly consumption
-  - Shift-based totals
+* **Dashboard** (``/dashboard``)
+  - Machine utilization (running vs downtime)
+  - Operational timeline (30-minute window, selectable start time)
+  - Temperature statistics (box plot)
+  - Program history (duration per program)
 
-* The Alerts section requires:
-  - Alerts by type and shift
-  - Filterable list of alerts
-  - Details panel for selected alert
+* **Energy** (``/dashboard/energy``)
+  - Hourly energy consumption (line chart)
+  - Peak consumption hour
+  - Daily total
 
-Backend endpoints and aggregation tables were designed specifically to support these
-data flows efficiently.
+* **Alerts** (``/dashboard/alerts``)
+  - Summary counts by type (emergency, error, warning, other)
+  - Filterable alert list
+  - Detail panel for selected alert
 
-The dashboard UI is described in detail in the :doc:`ui_ux` section.
-
-
-
+The UI design is described in :doc:`ui_ux`.

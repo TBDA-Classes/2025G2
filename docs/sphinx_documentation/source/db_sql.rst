@@ -69,31 +69,43 @@ The Data Analysis Team ingested the tables in the database to compute:
 * Emergent alerts by severity  
 * Coverage of available dates  
 
+Data Aggregation Strategy
+-------------------------
+The production database contains millions of rows. To ensure interactive
+performance in the frontend:
 
-Aggregation Database Schema
----------------------------
-Created using:
+* ETL scripts extract raw sensor data  
+* Transform it through SQL and Python logic  
+* Load computed summaries into the aggregation DB  
+
+Indexing Strategy
+~~~~~~~~~~~~~~~~~
+B-Tree indexes are used for reducing lookup time significantly.
+
+Views
+~~~~~
+The ``v_data_status`` view provides:
+
+* Global first/last date across all aggregated tables
+* Record counts per table (sensors, utilization, alerts, programs, energy)
+* Used by the frontend datepicker to restrict selectable dates  
+
+
+Connecting to PostgreSQL
+------------------------
+Example:
 
 ::
 
-   scripts/create_agg_database.sql
+   psql -h 138.100.82.184 -U lectura -d <database> -p 2345
 
-The schema contains:
+Useful psql commands:
 
-* ``agg_sensor_stats`` – summarized RUN/IDLE/DOWN durations  
-* ``agg_machine_utilization`` – distributions by shift  
-* ``agg_temperature_history`` – hourly temperature medians  
-* ``agg_program_history`` – program execution blocks  
-* ``agg_energy_consumption`` – energy curves and shift totals  
-* ``agg_alerts`` – alerts grouped by type and shift  
-
-Indexes include:
-
-* ``timestamp``  
-* ``shift``  
-* ``status``  
-* ``program_id``  
-* ``alert_type``  
+* ``\l`` list databases  
+* ``\dt`` list tables  
+* ``\dv`` list views  
+* ``\d table`` describe schema  
+* ``\conninfo`` connection info  
 
 
 JSON and SQL Operations
