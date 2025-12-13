@@ -18,6 +18,9 @@ and deployment aspects.
    ui_ux
    devops
    requirements
+   code
+   queries
+
 
 
 Indexes & Tables
