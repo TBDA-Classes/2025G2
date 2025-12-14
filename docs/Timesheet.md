@@ -90,7 +90,7 @@ This file is used by all team members to record their working hours and activiti
 | Atle Sund | Frontend/Backend | Frontend/Backend | Implementing energy monitoring and cleaned up file structure. Assisted Erik on the Frontend. Also improved comments and docstrings. | 2025-12-13 | 3 |
 | Atle Sund | Frontend/Backend | Frontend/Backend | Created an etl script for daily aggregation | 2025-12-13 | 2 |
 | Jovan Bajcetic | UI/UX + Scrum master | Documentation | Final version of the project documentation content + added code/queries + improved aesthetics | 2025-12-13 | 5 |
-
+| Clemence Tardivel | UI/UX | Last updates UI/UX | Update figma and UI/UX documentation | 2025-12-13 | 2  |
 ---
 
  *Tip:*  
