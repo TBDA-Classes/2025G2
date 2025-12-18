@@ -1,5 +1,5 @@
 "use client"
-import { usePathname } from "next/navigation"
+import { usePathname, useSearchParams } from "next/navigation"
 import Link from "next/link";
 
 // SVG icons for each nav item
@@ -33,7 +33,13 @@ const items = [
 
 
 export default function SideBar(){
-    const pathname = usePathname()
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
+    
+    // Preserve the date query parameter when navigating
+    const date = searchParams.get('date');
+    const queryString = date ? `?date=${date}` : '';
+
     return (
         <aside className="sticky top-0 w-64 h-screen bg-[#1e3a5f] text-slate-200 p-6 flex flex-col">
           <div className="text-2xl font-bold mb-10 tracking-wide">CNC Monitor</div>
@@ -47,7 +53,7 @@ export default function SideBar(){
                     ? 'bg-blue-500 text-white font-semibold' 
                     : 'hover:bg-blue-500/20'
                 }`}
-                href={item.href}
+                href={`${item.href}${queryString}`}
                 key={item.href}>
                   {icons[item.href]}
                   {item.label}
